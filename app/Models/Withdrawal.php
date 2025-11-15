@@ -5,12 +5,12 @@ namespace App\Models;
 use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Model;
 
-class Withdrawal extends Model
+class WithDrawal extends Model
 {
     use UUID;
 
     protected $fillable = [
-        'store_ballance_id',
+        'store_balance_id',
         'amount',
         'bank_account_name',
         'bank_account_number',
