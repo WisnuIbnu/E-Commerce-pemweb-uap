@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // Nonaktifkan CSRF untuk endpoint product
+        $middleware->validateCsrfTokens(except: [
+            '/product',
+            '/product/*',
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
