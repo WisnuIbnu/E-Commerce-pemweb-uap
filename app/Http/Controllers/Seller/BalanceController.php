@@ -5,62 +5,21 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\StoreBalance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BalanceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
-    }
+        $store = Auth::user()->store;
+        $balance = StoreBalance::firstOrCreate(
+            ['store_id' => $store->id],
+            ['balance' => 0]
+        );
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        // Kalau ada tabel history, bisa fetch history juga
+        $history = $balance->history()->orderBy('created_at', 'desc')->get(); // asumsikan relasi history
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(StoreBalance $storeBalance)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(StoreBalance $storeBalance)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, StoreBalance $storeBalance)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(StoreBalance $storeBalance)
-    {
-        //
+        return view('seller.balance.index', compact('balance', 'history'));
     }
 }
