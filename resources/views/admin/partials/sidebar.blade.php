@@ -1,13 +1,39 @@
-<div class="w-64 bg-white shadow h-screen sticky top-0">
-    <div class="p-4 border-b">
-        <img src="/images/logo.png" alt="Lunpia" class="w-40 mx-auto">
+<div class="space-y-4">
+    <div class="flex justify-center mb-6">
+        <img src="/img/logo.png" class="h-16" alt="">
     </div>
 
-    <nav class="p-4">
-        <a href="{{ route('admin.dashboard') }}" class="block py-2 px-3 rounded hover:bg-lunpia-peach {{ request()->routeIs('admin.dashboard') ? 'bg-lunpia-peach' : '' }}">Dashboard</a>
-        <a href="{{ route('admin.users') }}"     class="block py-2 px-3 rounded hover:bg-lunpia-peach {{ request()->routeIs('admin.users') ? 'bg-lunpia-peach' : '' }}">Users</a>
-        <a href="{{ route('admin.sellers') }}"   class="block py-2 px-3 rounded hover:bg-lunpia-peach {{ request()->routeIs('admin.sellers') ? 'bg-lunpia-peach' : '' }}">Sellers</a>
-        <a href="{{ route('admin.products') }}"  class="block py-2 px-3 rounded hover:bg-lunpia-peach {{ request()->routeIs('admin.products') ? 'bg-lunpia-peach' : '' }}">Products</a>
-        <a href="{{ route('admin.orders') }}"    class="block py-2 px-3 rounded hover:bg-lunpia-peach {{ request()->routeIs('admin.orders') ? 'bg-lunpia-peach' : '' }}">Orders</a>
+    <nav class="space-y-1">
+
+        <a href="{{ route('admin.dashboard') }}"
+           class="block px-4 py-2 rounded-lg 
+           {{ request()->routeIs('admin.dashboard') ? 'bg-lunpia-yellow text-lunpia-dark font-semibold' : 'hover:bg-gray-100' }}">
+            Dashboard
+        </a>
+
+        <a href="{{ route('admin.users') }}"
+           class="block px-4 py-2 rounded-lg 
+           {{ request()->routeIs('admin.users') ? 'bg-lunpia-yellow text-lunpia-dark font-semibold' : 'hover:bg-gray-100' }}">
+            Users
+        </a>
+
+        <a href="{{ route('admin.sellers') }}"
+           class="block px-4 py-2 rounded-lg 
+           {{ request()->routeIs('admin.sellers') ? 'bg-lunpia-yellow text-lunpia-dark font-semibold' : 'hover:bg-gray-100' }}">
+            Sellers
+        </a>
+
+        <a href="{{ route('admin.products') }}"
+           class="block px-4 py-2 rounded-lg 
+           {{ request()->routeIs('admin.products') ? 'bg-lunpia-yellow text-lunpia-dark font-semibold' : 'hover:bg-gray-100' }}">
+            Products
+        </a>
+
+        <a href="{{ route('admin.orders') }}"
+           class="block px-4 py-2 rounded-lg 
+           {{ request()->routeIs('admin.orders') ? 'bg-lunpia-yellow text-lunpia-dark font-semibold' : 'hover:bg-gray-100' }}">
+            Orders
+        </a>
+
     </nav>
 </div>
