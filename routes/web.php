@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 // PUBLIC ROUTES (Untuk guest dan semua user)
@@ -23,6 +23,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+});
+
 
 require __DIR__.'/auth.php';
 
