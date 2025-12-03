@@ -1,13 +1,20 @@
 <?php
-<<<<<<< HEAD
 
-
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Buyer\BuyerHomeController;
 use App\Http\Controllers\Buyer\BuyerProductController;
 use App\Http\Controllers\Buyer\BuyerStoreController;
 use App\Http\Controllers\Seller\SellerDashboardController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminStoreApprovalController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\StoreVerificationController;
+use App\Http\Controllers\Admin\WithdrawalController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Setelah login, arahkan ke halaman sesuai role
@@ -21,43 +28,6 @@ Route::get('/home', function () {
         if (\App\Models\Store::where('user_id', auth()->id())->where('status', 'approved')->exists()) {
             return redirect('/seller');  // Seller langsung ke dashboard seller
         }
-=======
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\User\HomeController;
-
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\SellerController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\StoreVerificationController;
-use App\Http\Controllers\Admin\WithdrawalController;  
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    
-    // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Manage Users
-    Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
-    Route::put('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.update-role');
-    Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
-    
-    // Store Verification
-    Route::get('/stores', [StoreVerificationController::class, 'index'])->name('store-verification');
-    Route::post('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
-    Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
-    Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
-    
-    // Withdrawal Management - YANG BARU INI
-    Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
-    Route::post('/withdrawals/{withdrawal}/status', [WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
-    
-});
->>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
-
         return redirect('/');  // Buyer ke halaman utama
     }
 })->middleware(['auth'])->name('home');
@@ -86,4 +56,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminDashboardController::class, 'index']);  // Halaman dashboard admin
     Route::get('/admin/stores', [AdminStoreApprovalController::class, 'index']);  // Daftar toko yang perlu disetujui
     Route::post('/admin/stores/{id}/approve', [AdminStoreApprovalController::class, 'approve']);  // Proses persetujuan toko
+    Route::get('/admin/stores', [StoreVerificationController::class, 'index'])->name('store-verification');
+    Route::post('/admin/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
+    Route::get('/admin/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
+    Route::delete('/admin/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
+    Route::get('/admin/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
+    Route::post('/admin/withdrawals/{withdrawal}/status', [WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
 });
