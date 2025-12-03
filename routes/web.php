@@ -10,25 +10,26 @@ use App\Http\Controllers\Admin\OrderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::middleware(['auth', 'admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-
-        // Dashboard Admin
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-
-        // Manage Users
-        Route::get('/users', [AdminController::class, 'users'])->name('users');
-
-        // Manage Sellers
-        Route::get('/sellers', [SellerController::class, 'index'])->name('sellers');
-
-        // Manage Products
-        Route::get('/products', [ProductController::class, 'index'])->name('products');
-
-        // Manage Orders
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Manage Users
+    Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
+    Route::put('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.update-role');
+    Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+    
+    // Store Verification
+    Route::get('/stores', [StoreVerificationController::class, 'index'])->name('store-verification');
+    Route::post('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
+    Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
+    Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
+    
+    // Withdrawal Management - YANG BARU INI
+    Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals');
+    Route::post('/withdrawals/{withdrawal}/status', [WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
+    
 });
 
 Route::middleware('auth')->group(function () {
