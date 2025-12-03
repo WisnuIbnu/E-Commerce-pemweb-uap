@@ -25,7 +25,7 @@ class RoleMiddleware
         if (! Auth::check()) {
             return redirect()->route('login');
         }
-
+        
         // Jika tidak ada role yang diberikan pada middleware, biarkan lanjut
         if (empty($roles)) {
             return $next($request);
