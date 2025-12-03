@@ -6,7 +6,11 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
+<<<<<<< HEAD
                         <img src="{{ asset('images/logo.png') }}" class="h-12 w-auto" alt="Logo">
+=======
+                        <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="Logo">
+>>>>>>> luna
                     </a>
                 </div>
 
