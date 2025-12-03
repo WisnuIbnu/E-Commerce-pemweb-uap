@@ -7,11 +7,6 @@
 
     <div class="py-6 bg-lunpia-cream min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-6 gap-6">
-
-            <div class="md:col-span-1">
-                @include('admin.partials.sidebar')
-            </div>
-
             <div class="md:col-span-5">
 
                 <div class="bg-white shadow rounded-xl p-6">
