@@ -1,11 +1,12 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\HomeController;
+
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\StoreVerificationController;
-use App\Http\Controllers\Admin\WithdrawalController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\SellerController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\OrderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -18,20 +19,17 @@ Route::middleware(['auth', 'admin'])
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
         // Manage Users
-        Route::get('/users', [AdminController::class, 'manageUsers'])->name('users');
-        Route::put('/users/{user}/role', [AdminController::class, 'updateUserRole'])->name('users.update-role');
-        Route::delete('/users/{user}', [AdminController::class, 'deleteUser'])->name('users.delete');
+        Route::get('/users', [AdminController::class, 'users'])->name('users');
 
-        // Store Verification
-        Route::get('/stores', [StoreVerificationController::class, 'index'])->name('store-verification');
-        Route::post('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
-        Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
-        Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
+        // Manage Sellers
+        Route::get('/sellers', [SellerController::class, 'index'])->name('sellers');
 
-        // Withdrawal Management
-        Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalController::class, 'index'])->name('withdrawals');
-        Route::post('/withdrawals/{withdrawal}/status', [\App\Http\Controllers\Admin\WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
-        });
+        // Manage Products
+        Route::get('/products', [ProductController::class, 'index'])->name('products');
+
+        // Manage Orders
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
