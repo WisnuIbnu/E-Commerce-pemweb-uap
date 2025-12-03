@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
 :root {
     --lunpia-orange: #F4A261;
     --lunpia-red: #E76F51;
     --lunpia-peach: #FFDAC1;
     --lunpia-brown: #8D6E63;
     --lunpia-cream: #FFF9F4;
+<<<<<<< HEAD
     --lunpia-yellow: #f5d99a;
+=======
+      --lunpia-yellow:#f5d99a;
+
+>>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
 }
 
 .text-lunpia-dark {

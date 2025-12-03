@@ -6,14 +6,22 @@
     </x-slot>
 
     <div class="py-10 bg-lunpia-cream min-h-screen">
+<<<<<<< HEAD
         <div class="max-w-8xl mx-auto sm:px-10 lg:px-10">
+=======
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+>>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
 
             <!-- Hero Section -->
             <div class="bg-lunpia-peach shadow-lg rounded-2xl p-8 flex items-center gap-8 mb-10">
                 <img src="/images/logo.png" alt="Lunpia Snack" class="w-40 drop-shadow-lg">
                 <div>
                     <h1 class="text-3xl font-bold text-lunpia-red">Selamat Datang di Lunpia Snack!</h1>
+<<<<<<< HEAD
                     <p class="text-lunpia-dark mt-2 text-lg">Buah Tangan asli Kota Malang .</p>
+=======
+                    <p class="text-lunpia-dark mt-2 text-lg">Kelola produk, pesanan, dan pelanggan dengan mudah.</p>
+>>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
                 </div>
             </div>
 
