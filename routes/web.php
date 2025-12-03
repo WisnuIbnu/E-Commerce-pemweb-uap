@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\StoreVerificationController;
 use App\Http\Controllers\Admin\WithdrawalController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\HomeController;
-use Illuminate\Support\Facades\Route;
+
 
 // Setelah login, arahkan ke halaman sesuai role
 Route::get('/home', function () {

@@ -5,13 +5,13 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-<<<<<<< HEAD
+
                     <a href="{{ route('dashboard') }}">
                         <img src="{{ asset('images/logo.png') }}" class="h-12 w-auto" alt="Logo">
-=======
+
                     <a href="{{ route('admin.dashboard') }}">
                         <img src="{{ asset('images/logo.png') }}" class="h-10 w-auto" alt="Logo">
->>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
+
                     </a>
                 </div>
 
