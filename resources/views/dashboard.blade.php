@@ -10,7 +10,7 @@
 
             <!-- Hero Section -->
             <div class="bg-lunpia-peach shadow-lg rounded-2xl p-8 flex items-center gap-8 mb-10">
-                <img src="/images/lunpia_logo.png" alt="Lunpia Snack" class="w-40 drop-shadow-lg">
+                <img src="/images/logo.png" alt="Lunpia Snack" class="w-40 drop-shadow-lg">
                 <div>
                     <h1 class="text-3xl font-bold text-lunpia-red">Selamat Datang di Lunpia Snack!</h1>
                     <p class="text-lunpia-dark mt-2 text-lg">Kelola produk, pesanan, dan pelanggan dengan mudah.</p>
