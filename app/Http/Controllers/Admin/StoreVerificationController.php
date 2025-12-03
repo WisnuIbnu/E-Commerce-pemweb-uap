@@ -22,6 +22,9 @@ class StoreVerificationController extends Controller
         return view('admin.store-verification', compact('stores'));
     }
 
+    /**
+     * Approve/Reject toko
+     */
     public function verify(Request $request, Store $store)
     {
         $request->validate([
@@ -39,6 +42,9 @@ class StoreVerificationController extends Controller
         return back()->with('success', $message);
     }
 
+    /**
+     * Lihat detail toko
+     */
     public function show(Store $store)
     {
         $store->load(['user', 'products.productImages', 'storeBallance']);
@@ -46,8 +52,12 @@ class StoreVerificationController extends Controller
         return view('admin.store-detail', compact('store'));
     }
 
+    /**
+     * Hapus toko
+     */
     public function destroy(Store $store)
     {
+        // Hapus semua produk toko juga
         $store->products()->delete();
         $store->delete();
 
