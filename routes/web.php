@@ -24,6 +24,10 @@ Route::middleware(['auth', 'admin'])
         Route::post('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])->name('stores.verify');
         Route::get('/stores/{store}', [StoreVerificationController::class, 'show'])->name('stores.show');
         Route::delete('/stores/{store}', [StoreVerificationController::class, 'destroy'])->name('stores.delete');
+
+        // Withdrawal Management
+Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalController::class, 'index'])->name('withdrawals');
+Route::post('/withdrawals/{withdrawal}/status', [\App\Http\Controllers\Admin\WithdrawalController::class, 'updateStatus'])->name('withdrawals.update-status');
     });
 
 Route::get('/dashboard', function () {
