@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\StoreVerificationController;
+use App\Http\Controllers\Admin\WithdrawalController;  
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
