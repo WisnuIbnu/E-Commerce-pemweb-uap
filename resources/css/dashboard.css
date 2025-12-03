@@ -1,0 +1,25 @@
+
+:root {
+    --lunpia-orange: #F4A261;
+    --lunpia-red: #E76F51;
+    --lunpia-peach: #FFDAC1;
+    --lunpia-brown: #8D6E63;
+    --lunpia-cream: #FFF9F4;
+    --lunpia-yellow: #f5d99a;
+}
+
+.text-lunpia-dark {
+    color: var(--lunpia-brown);
+}
+
+.text-lunpia-red {
+    color: var(--lunpia-red);
+}
+
+.bg-lunpia-peach {
+    background: var(--lunpia-yellow);
+}
+
+.bg-lunpia-cream {
+    background: var(--lunpia-cream);
+}
