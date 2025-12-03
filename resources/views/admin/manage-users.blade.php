@@ -18,6 +18,7 @@
                     <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-gray-900">Dashboard</a>
                     <a href="{{ route('admin.users') }}" class="text-gray-900 font-bold">Kelola User</a>
                     <a href="{{ route('admin.store-verification') }}" class="text-gray-700 hover:text-gray-900">Verifikasi Toko</a>
+                    <a href="{{ route('admin.withdrawals') }}" class="text-gray-900">Withdrawal</a>
                     
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf

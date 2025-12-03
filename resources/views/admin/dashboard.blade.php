@@ -15,7 +15,7 @@
                 <h1 class="text-2xl font-bold text-red-600">👨‍💼 Admin Panel</h1>
                 
                 <div class="flex gap-4 items-center">
-                    <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-gray-900">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="text-gray-700 hover:text-gray-900 font-bold">Dashboard</a>
                     <a href="{{ route('admin.users') }}" class="text-gray-700 hover:text-gray-900">Kelola User</a>
                     <a href="{{ route('admin.store-verification') }}" class="text-gray-700 hover:text-gray-900">Verifikasi Toko</a>
                     <a href="{{ route('admin.withdrawals') }}" class="text-gray-700 hover:text-gray-900">Withdrawal</a>
