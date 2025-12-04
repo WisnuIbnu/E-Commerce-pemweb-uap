@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -14,21 +16,19 @@ class Store extends Model
         'about',
         'phone',
         'address_id',
-        'city',
         'address',
+        'city',
         'postal_code',
         'is_verified',
     ];
 
-    // relationships one store has one owner (user)
+    protected $casts = [
+        'is_verified' => 'boolean',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function storeBallance()
-    {
-        return $this->hasOne(StoreBalance::class);
     }
 
     public function products()
@@ -39,5 +39,20 @@ class Store extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function balance()
+    {
+        return $this->hasOne(StoreBalance::class);
+    }
+
+    public function balanceHistory()
+    {
+        return $this->hasMany(StoreBalanceHistory::class, 'store_balance_id');
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class);
     }
 }
