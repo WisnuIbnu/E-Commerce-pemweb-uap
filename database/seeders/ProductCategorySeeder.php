@@ -3,93 +3,70 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ProductCategory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductCategorySeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        // PARENT CATEGORY
-        $dessert = ProductCategory::create([
-            'parent_id' => null,
-            'image' => 'dessert.png',
-            'name' => 'Dessert',
-            'slug' => 'dessert',
-            'tagline' => 'Manis dan lezat',
-            'description' => 'Makanan pencuci mulut'
-        ]);
+        // matikan foreign key
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        // CHILD CATEGORY
-        ProductCategory::insert([
-            [
-                'parent_id' => $dessert->id,
-                'image' => 'donut.png',
-                'name' => 'Donat',
-                'slug' => 'donat',
-                'tagline' => 'Manis dan empuk',
-                'description' => 'Donat aneka topping'
-            ],
-            [
-                'parent_id' => $dessert->id,
-                'image' => 'coklat.png',
-                'name' => 'Coklat',
-                'slug' => 'coklat',
-                'tagline' => 'Leleh di mulut',
-                'description' => 'Coklat premium'
-            ],
-            [
-                'parent_id' => $dessert->id,
-                'image' => 'eskrim.png',
-                'name' => 'Es Krim',
-                'slug' => 'es-krim',
-                'tagline' => 'Segar dan creamy',
-                'description' => 'Es krim berbagai rasa'
-            ],
-        ]);
+        // kosongkan tabel
+        DB::table('product_categories')->truncate();
 
-        // CATEGORY LAIN TANPA PARENT
-        ProductCategory::insert([
-            [
+        // aktifkan lagi foreign key
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // Kategori utama
+        $mainCategories = [
+            ['name' => 'Cake', 'tagline' => 'Aneka cake lezat', 'description' => 'Kumpulan cake premium'],
+            ['name' => 'Pastry', 'tagline' => 'Pastry renyah & fresh', 'description' => 'Croissant & pastry'],
+            ['name' => 'Donuts', 'tagline' => 'Donat empuk', 'description' => 'Aneka donat premium'],
+            ['name' => 'Ice Cream', 'tagline' => 'Es krim lembut', 'description' => 'Gelato dan ice cream'],
+            ['name' => 'Pudding', 'tagline' => 'Pudding lembut', 'description' => 'Pudding berbagai rasa'],
+            ['name' => 'Dessert Box', 'tagline' => 'Dessert kekinian', 'description' => 'Dessert dalam box']
+        ];
+
+        $categoryIds = [];
+
+        foreach ($mainCategories as $cat) {
+            $id = DB::table('product_categories')->insertGetId([
                 'parent_id' => null,
                 'image' => null,
-                'name' => 'Cake',
-                'slug' => 'cake',
-                'tagline' => 'Kategori Cake',
-                'description' => 'Aneka cake'
-            ],
-            [
-                'parent_id' => null,
+                'name' => $cat['name'],
+                'slug' => Str::slug($cat['name']),
+                'tagline' => $cat['tagline'],
+                'description' => $cat['description'],
+            ]);
+
+            $categoryIds[$cat['name']] = $id;
+        }
+
+        // Subkategori
+        $subCategories = [
+            ['parent' => 'Cake', 'name' => 'Chocolate Cake'],
+            ['parent' => 'Cake', 'name' => 'Cheesecake'],
+            ['parent' => 'Cake', 'name' => 'Fruit Cake'],
+            ['parent' => 'Pastry', 'name' => 'Croissant'],
+            ['parent' => 'Pastry', 'name' => 'Danish Pastry'],
+            ['parent' => 'Donuts', 'name' => 'Bomboloni'],
+            ['parent' => 'Donuts', 'name' => 'Ring Donut'],
+            ['parent' => 'Ice Cream', 'name' => 'Gelato'],
+            ['parent' => 'Pudding', 'name' => 'Pudding Coklat'],
+            ['parent' => 'Dessert Box', 'name' => 'Tiramisu Box'],
+        ];
+
+        foreach ($subCategories as $sub) {
+            DB::table('product_categories')->insert([
+                'parent_id' => $categoryIds[$sub['parent']],
                 'image' => null,
-                'name' => 'Dessert Box',
-                'slug' => 'dessert-box',
-                'tagline' => 'Kategori Dessert Box',
-                'description' => 'Dessert dalam box'
-            ],
-            [
-                'parent_id' => null,
-                'image' => null,
-                'name' => 'Pudding',
-                'slug' => 'pudding',
-                'tagline' => 'Kategori Pudding',
-                'description' => 'Pudding manis'
-            ],
-            [
-                'parent_id' => null,
-                'image' => null,
-                'name' => 'Ice Cream',
-                'slug' => 'ice-cream',
-                'tagline' => 'Kategori Ice Cream',
-                'description' => 'Es krim'
-            ],
-            [
-                'parent_id' => null,
-                'image' => null,
-                'name' => 'Pastry',
-                'slug' => 'pastry',
-                'tagline' => 'Kategori Pastry',
-                'description' => 'Pastry & bakery'
-            ],
-        ]);
+                'name' => $sub['name'],
+                'slug' => Str::slug($sub['name']),
+                'tagline' => $sub['name'],
+                'description' => $sub['name'] . ' premium'
+            ]);
+        }
     }
 }
