@@ -28,7 +28,7 @@
     <header class="header-main">
         <div class="header-content">
               <a href="{{ route('home') }}" class="logo">
-                <img src="{{ asset('images/elshop-logo.png') }}" alt="ELSHOP Logo" style="height: 40px; margin-right: 10px;">
+                <img src="{{ asset('images/elshop-logo.png') }}" alt="ELSHOP Logo" style="height: 80px; margin-right: 2px;">
             <a href="{{ route('home') }}" class="logo">ELSHOP</a>
             
             <button class="category-btn">
