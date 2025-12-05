@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite(['resources/css/app.css'])
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-header-custom">
         <div class="container-fluid" style="padding: 0 20px;">
             <a class="navbar-brand-custom" href="{{ route('dashboard') }}">
-                <i class="fas fa-shopping-bag"></i>
+                <img src="{{ asset('images/elshop-logo.png') }}" alt="ELSHOP Logo" class="navbar-logo">
                 ELSHOP
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -20,14 +22,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    @guest
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">Register</a>
-                        </li>
-                    @endguest
                     @auth
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
@@ -35,7 +29,8 @@
                         <li class="nav-item">
                             <form action="{{ route('logout') }}" method="POST" style="display:inline;">
                                 @csrf
-                                <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">Logout</button>
+                                <button type="submit" class="nav-link"
+                                    style="background: none; border: none; cursor: pointer;">Logout</button>
                             </form>
                         </li>
                     @endauth
@@ -56,4 +51,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </body>
+
 </html>
