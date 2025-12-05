@@ -1,35 +1,51 @@
 @extends('layouts.app')
 
+@vite(['resources/css/login.css'])
+
 @section('content')
-<div class="container">
-    <div class="form-container">
+<div class="login-wrapper">
+    <div class="login-card">
         <h2>Login</h2>
 
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <!-- Email -->
-            <input class="input-field" type="email" name="email" value="{{ old('email') }}" placeholder="Email" required autofocus>
-            
-            <!-- Password -->
-            <input class="input-field" type="password" name="password" placeholder="Password" required>
+            <div class="form-group">
+                <input 
+                    class="form-input" 
+                    type="email" 
+                    name="email" 
+                    value="{{ old('email') }}" 
+                    placeholder="Email" 
+                    required 
+                    autofocus>
+                @if ($errors->has('email'))
+                    <span class="form-error">{{ $errors->first('email') }}</span>
+                @endif
+            </div>
 
-            <!-- Error message -->
-            @if ($errors->has('email') || $errors->has('password'))
-                <div class="error-message">
-                    <strong>{{ $errors->first('email') }}</strong>
-                    <strong>{{ $errors->first('password') }}</strong>
-                </div>
-            @endif
+            <div class="form-group">
+                <input 
+                    class="form-input" 
+                    type="password" 
+                    name="password" 
+                    placeholder="Password" 
+                    required>
+                @if ($errors->has('password'))
+                    <span class="form-error">{{ $errors->first('password') }}</span>
+                @endif
+            </div>
 
-            <!-- Login Button -->
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn-submit">Login</button>
 
-            <!-- Register Link -->
-            <div class="link">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+            <div class="form-footer">
+                <a href="{{ route('password.request') }}">Lupa password?</a>
             </div>
         </form>
+
+        <div class="form-divider">
+            <p>Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>
+        </div>
     </div>
 </div>
 @endsection
