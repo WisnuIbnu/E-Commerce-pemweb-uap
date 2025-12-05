@@ -1,6 +1,6 @@
 @extends('layouts.seller')
-@section('title','Dashboard')
+@section('title','Edit Image')
 
 @section('content')
-<h1>Seller Dashboard</h1>
+<h1>Edit Image</h1>
 @endsection
