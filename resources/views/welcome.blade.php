@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELSHOP - Marketplace Makanan Ringan Premium</title>
-    <style>
-        {!! file_get_contents(resource_path('css/app.css')) !!}
-    </style>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
     <!-- Header Top -->
@@ -27,9 +25,9 @@
     <!-- Header Main -->
     <header class="header-main">
         <div class="header-content">
-              <a href="{{ route('home') }}" class="logo">
-                <img src="{{ asset('images/elshop-logo.png') }}" alt="ELSHOP Logo" style="height: 80px; margin-right: 2px;">
-            <a href="{{ route('home') }}" class="logo">ELSHOP</a>
+            <a href="{{ route('home') }}" class="logo">
+                ELSHOP
+            </a>
             
             <button class="category-btn">
                 ☰ Kategori
@@ -46,7 +44,7 @@
                 @auth
                     <a href="{{ route('buyer.cart') }}" class="icon-btn">🛒</a>
                 @else
-                    <span class="icon-btn">🛒</span>
+                    <span class="icon-btn" style="opacity: 0.5; cursor: not-allowed;">🛒</span>
                 @endauth
             </div>
 
@@ -56,10 +54,15 @@
                 @else
                     <a href="{{ route('login') }}" class="btn-login">Masuk</a>
                     <a href="{{ route('register') }}" class="btn-register">Daftar</a>
-                @endguest
+                @endauth
             </div>
         </div>
     </header>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+        🎉 DISKON HINGGA 70%! Gratis Ongkir Min. Pembelian Rp50.000 - Gunakan Kode: DISKON70
+    </div>
 
     <!-- Hero Banner -->
     <div class="hero-banner">
@@ -82,20 +85,17 @@
                     <a href="{{ route('products.index', ['category' => $category->id]) }}" class="category-item">
                         <div class="category-icon">
                             @switch($category->name)
-                                @case('Kue & Biskuit')
+                                @case('Biskuit')
                                     🍪
                                     @break
-                                @case('Snack Asin')
-                                    🍿
+                                @case('Keripik')
+                                    🥔
                                     @break
-                                @case('Cokelat')
+                                @case('Coklat')
                                     🍫
                                     @break
                                 @case('Permen')
                                     🍬
-                                    @break
-                                @case('Kacang')
-                                    🥜
                                     @break
                                 @default
                                     🍩
@@ -105,29 +105,30 @@
                     </a>
                 @endforeach
             @else
-                <a href="#" class="category-item">
+                <!-- Default Categories -->
+                <a href="{{ route('products.index') }}" class="category-item">
                     <div class="category-icon">🍪</div>
-                    <div class="category-name">Kue & Biskuit</div>
+                    <div class="category-name">Biskuit</div>
                 </a>
-                <a href="#" class="category-item">
-                    <div class="category-icon">🍿</div>
-                    <div class="category-name">Snack Asin</div>
+                <a href="{{ route('products.index') }}" class="category-item">
+                    <div class="category-icon">🥔</div>
+                    <div class="category-name">Keripik</div>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{{ route('products.index') }}" class="category-item">
                     <div class="category-icon">🍫</div>
                     <div class="category-name">Cokelat</div>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{{ route('products.index') }}" class="category-item">
                     <div class="category-icon">🍬</div>
                     <div class="category-name">Permen</div>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{{ route('products.index') }}" class="category-item">
                     <div class="category-icon">🥜</div>
                     <div class="category-name">Kacang</div>
                 </a>
-                <a href="#" class="category-item">
+                <a href="{{ route('products.index') }}" class="category-item">
                     <div class="category-icon">🍩</div>
-                    <div class="category-name">Donat & Roti</div>
+                    <div class="category-name">Roti</div>
                 </a>
             @endif
         </div>
@@ -143,10 +144,12 @@
             @forelse($products as $product)
                 <a href="{{ route('product.detail', $product->id) }}" class="product-card">
                     <div class="product-image">
-                        @if($product->images->isNotEmpty())
-                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                        @if($product->images && $product->images->isNotEmpty())
+                            <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}">
                         @else
-                            <img src="https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop" alt="Snack">
+                            <div style="font-size: 64px; display: flex; align-items: center; justify-content: center; height: 100%;">
+                                🍪
+                            </div>
                         @endif
                     </div>
                     <div class="product-info">
@@ -166,152 +169,167 @@
                     </div>
                 </a>
             @empty
-                <!-- Placeholder Products with Real Images -->
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=400&h=400&fit=crop" alt="Biskuit Cokelat">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Biskuit Cokelat Premium</div>
-                        <div class="product-price">Rp25.000</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>4.8</span>
-                            </div>
-                            <span>|</span>
-                            <span>150 stok</span>
-                        </div>
-                        <div class="store-badge">Snack Paradise</div>
-                    </div>
-                </a>
-
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1607920591413-4ec007e70023?w=400&h=400&fit=crop" alt="Keripik Kentang">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Keripik Kentang Balado</div>
-                        <div class="product-price">Rp18.500</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>4.9</span>
-                            </div>
-                            <span>|</span>
-                            <span>200 stok</span>
-                        </div>
-                        <div class="store-badge">Crispy Shop</div>
-                    </div>
-                </a>
-
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1566454419290-0a58b7b25df8?w=400&h=400&fit=crop" alt="Cokelat Bar">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Cokelat Bar Dark 70%</div>
-                        <div class="product-price">Rp35.000</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>5.0</span>
-                            </div>
-                            <span>|</span>
-                            <span>80 stok</span>
-                        </div>
-                        <div class="store-badge">Choco Heaven</div>
-                    </div>
-                </a>
-
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?w=400&h=400&fit=crop" alt="Kacang Almond">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Kacang Almond Panggang</div>
-                        <div class="product-price">Rp45.000</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>4.7</span>
-                            </div>
-                            <span>|</span>
-                            <span>120 stok</span>
-                        </div>
-                        <div class="store-badge">Nutty Store</div>
-                    </div>
-                </a>
-
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=400&h=400&fit=crop" alt="Permen Jelly">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Permen Jelly Rainbow</div>
-                        <div class="product-price">Rp12.000</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>4.6</span>
-                            </div>
-                            <span>|</span>
-                            <span>300 stok</span>
-                        </div>
-                        <div class="store-badge">Sweet Corner</div>
-                    </div>
-                </a>
-
-                <a href="#" class="product-card">
-                    <div class="product-image">
-                        <img src="https://images.unsplash.com/photo-1626356795203-bd8e50c5e42c?w=400&h=400&fit=crop" alt="Wafer Roll">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">Wafer Roll Cokelat</div>
-                        <div class="product-price">Rp22.000</div>
-                        <div class="product-meta">
-                            <div class="rating">
-                                <span class="star">⭐</span>
-                                <span>4.8</span>
-                            </div>
-                            <span>|</span>
-                            <span>180 stok</span>
-                        </div>
-                        <div class="store-badge">Wafer World</div>
-                    </div>
-                </a>
+                <!-- Placeholder if no products -->
+                <div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <p style="font-size: 18px; color: #666;">Belum ada produk. Silakan login sebagai seller untuk menambah produk.</p>
+                    @guest
+                        <a href="{{ route('register') }}" class="btn-register" style="display: inline-block; margin-top: 20px;">Daftar Sebagai Seller</a>
+                    @endguest
+                </div>
             @endforelse
         </div>
     </div>
+
+    <!-- CTA Section for Guest -->
+    @guest
+    <div class="cta-section">
+        <div class="cta-content">
+            <h2>Belanja Lebih Mudah dengan Akun ElSHOP</h2>
+            <p>Daftar sekarang dan nikmati berbagai keuntungan:</p>
+            <ul>
+                <li>✓ Akses ke ribuan produk makanan ringan</li>
+                <li>✓ Gratis ongkir untuk pembelian tertentu</li>
+                <li>✓ Promo eksklusif member</li>
+                <li>✓ Riwayat transaksi tersimpan</li>
+            </ul>
+            <div class="cta-buttons">
+                <a href="{{ route('register') }}" class="btn-cta-primary">Daftar Sekarang</a>
+                <a href="{{ route('login') }}" class="btn-cta-secondary">Sudah Punya Akun? Login</a>
+            </div>
+        </div>
+    </div>
+    @endguest
 
     <!-- Info Section -->
     <div class="info-section">
         <div class="info-grid">
             <div class="info-item">
-                <h3>🛍️ Untuk Pembeli</h3>
+                <h3>Untuk Pembeli</h3>
                 <p>Jelajahi ribuan pilihan makanan ringan berkualitas dari berbagai penjual terpercaya. Belanja mudah, pembayaran aman, dan pengiriman cepat ke seluruh Indonesia.</p>
                 @guest
-                    <a href="{{ route('login') }}">Mulai Belanja →</a>
+                    <a href="{{ route('register') }}">Daftar & Mulai Belanja →</a>
                 @else
                     <a href="{{ route('products.index') }}">Lihat Semua Produk →</a>
                 @endguest
             </div>
             <div class="info-item">
-                <h3>🏪 Untuk Penjual</h3>
+                <h3>Untuk Penjual</h3>
                 <p>Bergabung dengan ElSHOP dan jangkau jutaan pelanggan potensial. Proses pendaftaran mudah, sistem pembayaran terpercaya, dan dukungan penuh untuk kesuksesan bisnis Anda.</p>
                 @auth
-                    <a href="{{ route('buyer.store.apply') }}">Daftar Sekarang →</a>
+                    <a href="{{ route('buyer.store.apply') }}">Daftar Toko Sekarang →</a>
                 @else
-                    <a href="{{ route('register') }}">Mulai Berjualan →</a>
+                    <a href="{{ route('register') }}">Daftar & Buka Toko →</a>
                 @endguest
             </div>
             <div class="info-item">
-                <h3>✨ Keunggulan ElSHOP</h3>
+                <h3>Keunggulan ElSHOP</h3>
                 <p>Gratis ongkir untuk pembelian minimal Rp50.000, garansi 100% original, transaksi aman dengan berbagai metode pembayaran, dan customer service yang responsif 24/7.</p>
                 <a href="#">Pelajari Lebih Lanjut →</a>
             </div>
         </div>
     </div>
+
+    <style>
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #304674 0%, #98bad5 100%);
+            padding: 60px 20px;
+            margin: 40px 0;
+        }
+
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .cta-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .cta-content ul {
+            list-style: none;
+            margin-bottom: 40px;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .cta-content ul li {
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta-primary {
+            background: white;
+            color: #304674;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-cta-secondary {
+            background: transparent;
+            color: white;
+            padding: 15px 40px;
+            border: 2px solid white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-cta-secondary:hover {
+            background: white;
+            color: #304674;
+        }
+
+        @media (max-width: 768px) {
+            .cta-content h2 {
+                font-size: 24px;
+            }
+
+            .cta-content p {
+                font-size: 16px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-cta-primary,
+            .btn-cta-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 
     <!-- Footer -->
     <footer>
@@ -337,7 +355,11 @@
             <div class="footer-section">
                 <h3>Jual</h3>
                 <ul>
-                    <li><a href="{{ route('buyer.store.apply') }}">Daftar Seller</a></li>
+                    @auth
+                        <li><a href="{{ route('buyer.store.apply') }}">Daftar Toko</a></li>
+                    @else
+                        <li><a href="{{ route('register') }}">Daftar Seller</a></li>
+                    @endauth
                     <li><a href="#">Panduan Seller</a></li>
                     <li><a href="#">Pusat Edukasi</a></li>
                     <li><a href="#">Tips Sukses</a></li>

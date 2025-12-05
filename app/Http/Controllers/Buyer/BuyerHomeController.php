@@ -1,9 +1,5 @@
 <?php
 
-// ============================================
-// BuyerHomeController.php
-// ============================================
-
 namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +11,8 @@ class BuyerHomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['store', 'images'])->where('stock', '>', 0);
+        $query = Product::with(['store', 'images'])
+            ->where('stock', '>', 0);
 
         // Filter by category
         if ($request->filled('category')) {
