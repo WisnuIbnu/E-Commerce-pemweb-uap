@@ -106,4 +106,4 @@ class StoreManagementController extends Controller
         return redirect()->route('admin.stores.index')
             ->with('success', 'Store deleted successfully');
     }
-}\
+}
