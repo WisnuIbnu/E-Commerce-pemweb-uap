@@ -22,3 +22,8 @@
 .navbar-brand-custom:hover {
     color: #98bad5 !important;
 }
+.navbar-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
