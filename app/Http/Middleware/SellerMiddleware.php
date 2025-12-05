@@ -4,35 +4,25 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Store;
 
 class SellerMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
-        // Check if user has approved store
         $store = Store::where('user_id', auth()->id())
             ->where('status', 'approved')
             ->first();
 
         if (!$store) {
-            return redirect()->route('buyer.home')->with('error', 'Anda belum memiliki toko yang disetujui. Silakan ajukan toko terlebih dahulu.');
+            return redirect()->route('buyer.home')
+                ->with('error', 'Anda belum memiliki toko yang disetujui.');
         }
-
-        // Store the store info in request for easy access
-        $request->attributes->add(['seller_store' => $store]);
 
         return $next($request);
     }
