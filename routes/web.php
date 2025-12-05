@@ -28,6 +28,21 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 });
 
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        Route::get('dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::resource('products', AdminProductController::class);
+        Route::resource('categories', AdminCategoryController::class);
+        Route::resource('users', AdminUserController::class);
+        Route::resource('stores', AdminStoreController::class);
+        Route::resource('transactions', AdminTransactionController::class)->only(['index','show']);
+        Route::resource('withdrawals', AdminWithdrawalController::class)->only(['index','show','update']);
+});
 
 require __DIR__.'/auth.php';
 
