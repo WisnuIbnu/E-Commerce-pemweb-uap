@@ -1,0 +1,99 @@
+/* ===== SNACKSHOP REGISTER PAGE ===== */
+
+/* Soft Background */
+body {
+    background: linear-gradient(135deg, #fafafa, #f3f4f6);
+    font-family: "Inter", sans-serif;
+}
+
+/* Container utama */
+.register-box {
+    background: #ffffff;
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 32px;
+    border-radius: 22px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    transition: 0.25s ease-in-out;
+}
+
+.register-box:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Judul SnackShop */
+.register-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #4b5563;
+}
+
+/* Subjudul */
+.register-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #374151;
+    margin-top: -6px;
+}
+
+/* Input */
+.register-input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.register-input:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* Label */
+.register-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* Error */
+.register-error {
+    font-size: 13px;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+/* Button */
+.register-btn {
+    width: 100%;
+    background: #6366f1;
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.register-btn:hover {
+    background: #4f46e5;
+}
+
+/* Footer */
+.register-footer {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.register-link {
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.register-link:hover {
+    color: #4338ca;
+}
