@@ -1,50 +1,17 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-lunpia-dark leading-tight">
-            {{ __('Dashboard Lunpia Snack') }}
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-10 bg-lunpia-cream min-h-screen">
-<<<<<<< HEAD
-        <div class="max-w-8xl mx-auto sm:px-10 lg:px-10">
-=======
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
->>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
-
-            <!-- Hero Section -->
-            <div class="bg-lunpia-peach shadow-lg rounded-2xl p-8 flex items-center gap-8 mb-10">
-                <img src="/images/logo.png" alt="Lunpia Snack" class="w-40 drop-shadow-lg">
-                <div>
-                    <h1 class="text-3xl font-bold text-lunpia-red">Selamat Datang di Lunpia Snack!</h1>
-<<<<<<< HEAD
-                    <p class="text-lunpia-dark mt-2 text-lg">Buah Tangan asli Kota Malang .</p>
-=======
-                    <p class="text-lunpia-dark mt-2 text-lg">Kelola produk, pesanan, dan pelanggan dengan mudah.</p>
->>>>>>> b0b46824e7117a1e921401d96d3ae30944a86e05
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    {{ __("You're logged in!") }}
                 </div>
             </div>
-
-            <!-- Info Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h3 class="text-lg font-semibold text-lunpia-dark mb-2">Total Produk</h3>
-                    <p class="text-3xl font-bold text-lunpia-red">42</p>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h3 class="text-lg font-semibold text-lunpia-dark mb-2">Total Pesanan</h3>
-                    <p class="text-3xl font-bold text-lunpia-red">129</p>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h3 class="text-lg font-semibold text-lunpia-dark mb-2">Pelanggan Terdaftar</h3>
-                    <p class="text-3xl font-bold text-lunpia-red">87</p>
-                </div>
-
-            </div>
-
         </div>
     </div>
 </x-app-layout>

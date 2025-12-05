@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Models\Store;
 
 class SellerMiddleware
@@ -12,29 +11,28 @@ class SellerMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-        // Cek apakah user sudah login
+        // Check if user is authenticated
         if (!auth()->check()) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
+            return redirect()->route('login');
         }
 
-        // Cek apakah user adalah member
-        if (auth()->user()->role !== 'member') {
-            abort(403, 'Hanya member yang bisa mengakses halaman seller');
-        }
-
-        // Cek apakah user punya toko yang sudah di-ACC
-        $hasToko = Store::where('user_id', auth()->id())
+        // Check if user has approved store
+        $store = Store::where('user_id', auth()->id())
             ->where('status', 'approved')
-            ->exists();
+            ->first();
 
-        if (!$hasToko) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Kamu belum punya toko yang disetujui admin. Silakan ajukan toko terlebih dahulu.');
+        if (!$store) {
+            return redirect()->route('buyer.home')->with('error', 'Anda belum memiliki toko yang disetujui. Silakan ajukan toko terlebih dahulu.');
         }
+
+        // Store the store info in request for easy access
+        $request->attributes->add(['seller_store' => $store]);
 
         return $next($request);
     }
