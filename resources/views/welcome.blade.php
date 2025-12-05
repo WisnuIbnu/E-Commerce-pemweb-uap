@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElSHOP - Marketplace Makanan Ringan Premium</title>
+    <title>ELSHOP - Marketplace Makanan Ringan Premium</title>
     <style>
         {!! file_get_contents(resource_path('css/app.css')) !!}
     </style>
@@ -13,11 +13,10 @@
     <div class="header-top">
         <div class="header-top-content">
             <div class="location-info">
-                <span>📍</span>
-                <span>Dikirim ke <strong>Jakarta Pusat</strong></span>
+                <span><strong>Tempat Jual Beli Online</strong></span>
             </div>
             <div class="header-top-links">
-                <a href="#">Tentang ElSHOP</a>
+                <a href="#">Tentang Kami</a>
                 <a href="#">Mulai Berjualan</a>
                 <a href="#">Promo</a>
                 <a href="#">Bantuan</a>
@@ -28,7 +27,9 @@
     <!-- Header Main -->
     <header class="header-main">
         <div class="header-content">
-            <a href="{{ route('home') }}" class="logo">elshop</a>
+              <a href="{{ route('home') }}" class="logo">
+                <img src="{{ asset('images/elshop-logo.png') }}" alt="ELSHOP Logo" style="height: 40px; margin-right: 10px;">
+            <a href="{{ route('home') }}" class="logo">ELSHOP</a>
             
             <button class="category-btn">
                 ☰ Kategori
