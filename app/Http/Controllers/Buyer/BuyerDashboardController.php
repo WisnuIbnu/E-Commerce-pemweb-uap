@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
-class BuyerHomeController extends Controller
+class BuyerDashboardController extends Controller
 {
     public function index(Request $request)
     {
@@ -37,6 +37,6 @@ class BuyerHomeController extends Controller
         $products = $query->latest()->paginate(12);
         $categories = ProductCategory::all();
 
-        return view('buyer.home', compact('products', 'categories'));
+        return view('buyer.dashboard', compact('products', 'categories'));
     }
 }

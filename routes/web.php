@@ -1,7 +1,8 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Buyer\{
-    BuyerHomeController,
+    BuyerDashboardController,
     BuyerProductController,
     BuyerCartController,
     BuyerCheckoutController,
@@ -24,7 +25,7 @@ use App\Http\Controllers\Admin\{
 };
 
 // ============================================
-// ROOT REDIRECT - Langsung ke Dashboard
+// ROOT REDIRECT
 // ============================================
 Route::get('/dashboard', function () {
     if (auth()->check()) {
@@ -37,52 +38,66 @@ Route::get('/dashboard', function () {
 // DASHBOARD - WAJIB LOGIN
 // ============================================
 Route::middleware(['auth', 'verified'])->group(function () {
-    
-    // Dashboard redirect berdasarkan role
+
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        
-        // Admin
+
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
-        
-        // Cek apakah user punya toko approved (Seller)
+
         $store = \App\Models\Store::where('user_id', $user->id)
-            ->where('status', 'approved')
+            ->where('is_verified', 1)
             ->first();
-        
+
         if ($store) {
             return redirect()->route('seller.dashboard');
         }
-        
-        // Default: buyer
+
         return redirect()->route('buyer.dashboard');
     })->name('dashboard');
 
     // ===========================================
     // BUYER ROUTES
     // ===========================================
-    Route::middleware(['role:member'])->prefix('buyer')->name('buyer.')->group(function () {
-        Route::get('/dashboard', [BuyerHomeController::class, 'index'])->name('dashboard');
-        Route::get('/products', [BuyerProductController::class, 'index'])->name('products.index');
-        Route::get('/product/{id}', [BuyerProductController::class, 'show'])->name('product.show');
-        Route::get('/cart', [BuyerCartController::class, 'index'])->name('cart');
-        Route::post('/cart/add', [BuyerCartController::class, 'add'])->name('cart.add');
-        Route::patch('/cart/{id}', [BuyerCartController::class, 'update'])->name('cart.update');
-        Route::delete('/cart/{id}', [BuyerCartController::class, 'destroy'])->name('cart.destroy');
-        Route::get('/checkout', [BuyerCheckoutController::class, 'index'])->name('checkout');
-        Route::post('/checkout/process', [BuyerCheckoutController::class, 'process'])->name('checkout.process');
-        Route::get('/orders', [BuyerOrderController::class, 'index'])->name('orders');
-        Route::get('/order/{id}', [BuyerOrderController::class, 'show'])->name('order.show');
-        Route::get('/profile', [BuyerProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [BuyerProfileController::class, 'update'])->name('profile.update');
-        
-        // Store Application
-        Route::get('/apply-store', [BuyerStoreController::class, 'create'])->name('store.apply');
-        Route::post('/apply-store', [BuyerStoreController::class, 'store'])->name('store.submit');
-        Route::get('/store-status', [BuyerStoreController::class, 'status'])->name('store.status');
-    });
+Route::middleware(['role:member'])->prefix('buyer')->name('buyer.')->group(function () {
+
+    Route::get('/dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
+
+    // HOME
+    Route::get('/home', function () {
+        return redirect()->route('buyer.dashboard');
+    })->name('home');
+
+    // Products
+    Route::get('/products', [BuyerProductController::class, 'index'])->name('products');
+    Route::get('/product/{id}', [BuyerProductController::class, 'show'])->name('product.show');
+
+    // Cart
+    Route::get('/cart', [BuyerCartController::class, 'index'])->name('cart');
+
+    // Profile
+    Route::get('/profile', [BuyerProfileController::class, 'edit'])->name('profile');
+    Route::post('/profile/update', [BuyerProfileController::class, 'update'])->name('profile.update');
+
+    // Checkout
+    Route::get('/checkout', [BuyerCheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout/process', [BuyerCheckoutController::class, 'process'])->name('checkout.process');
+
+    // Orders
+    Route::get('/orders', [BuyerOrderController::class, 'index'])->name('orders');
+    Route::get('/order/{id}', [BuyerOrderController::class, 'show'])->name('order.show');
+
+    // Transactions
+    Route::get('/transactions', [BuyerOrderController::class, 'index'])->name('transactions');
+
+    // Apply Store
+    Route::get('/apply-store', [BuyerStoreController::class, 'create'])->name('store.apply');
+    Route::post('/apply-store', [BuyerStoreController::class, 'store'])->name('store.submit');
+    Route::get('/store-status', [BuyerStoreController::class, 'status'])->name('store.status');
+
+});
+
 
     // ===========================================
     // SELLER ROUTES
@@ -110,7 +125,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
     });
+
 });
 
 // Auth routes
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

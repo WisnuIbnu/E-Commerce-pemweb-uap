@@ -1,7 +1,4 @@
 <?php
-// ============================================
-// BuyerProfileController.php
-// ============================================
 
 namespace App\Http\Controllers\Buyer;
 

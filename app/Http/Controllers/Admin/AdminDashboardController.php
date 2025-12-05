@@ -9,7 +9,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
+class AdminDashboardController extends Controller
 {
     /**
      * Dashboard Admin - Tampilkan statistik

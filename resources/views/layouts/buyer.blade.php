@@ -1,38 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUNPIA SNACK - Buyer</title>
-
-    @vite([
-        'resources/css/buyer/buyer.css',
-        'resources/js/app.js'
-    ])
+    <title>Buyer - @yield('title')</title>
 </head>
 <body>
-
-    <header class="buyer-header">
-        <div class="logo-area">
-            <img src="/images/lunpia-logo.png" class="logo">
-            <h1>LUNPIA SNACK</h1>
-        </div>
-
-        <nav class="buyer-nav">
-            <a href="{{ route('buyer.home') }}">Home</a>
-            <a href="{{ route('buyer.products') }}">Products</a>
+    <header>
+        <nav>
+            <a href="{{ route('buyer.dashboard') }}">Dashboard</a>
+            <a href="{{ route('buyer.products.index') }}">Products</a>
             <a href="{{ route('buyer.cart') }}">Cart</a>
-            <a href="{{ route('buyer.profile') }}">Profile</a>
+            <a href="{{ route('buyer.orders') }}">Orders</a>
+            <a href="{{ route('buyer.profile.edit') }}">Profile</a>
+            <a href="{{ route('buyer.store.apply') }}">Apply Store</a>
         </nav>
     </header>
 
-    <main class="content">
+    <main>
         @yield('content')
     </main>
-
-    <footer class="buyer-footer">
-        <p>© 2025 LUNPIA SNACK Marketplace</p>
-    </footer>
-
 </body>
 </html>
