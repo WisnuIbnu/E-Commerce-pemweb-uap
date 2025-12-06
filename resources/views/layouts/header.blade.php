@@ -69,7 +69,38 @@
                 <button class="action-btn mobile-menu-btn" id="hamburgerBtn">☰</button>
                 <button class="action-btn desktop-action">🔍</button>
                 <button class="action-btn desktop-action">🤍</button>
-                <button class="action-btn desktop-action">👤</button>
+                <!-- User Dropdown -->
+                <div class="user-dropdown-wrapper">
+                    <button class="action-btn desktop-action user-dropdown-btn">
+                        👤
+                    </button>
+
+                    <!-- DROPDOWN MENU -->
+                    <div class="user-dropdown-menu">
+                        @auth
+                            <p class="user-name">{{ Auth::user()->name }}</p>
+
+                            <a href="{{ route('profile.edit') }}" class="user-dropdown-link">
+                                Profile
+                            </a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button class="user-dropdown-link logout-btn">
+                                    Logout
+                                </button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="user-dropdown-link">
+                                Login
+                            </a>
+
+                            <a href="{{ route('register') }}" class="user-dropdown-link">
+                                Register
+                            </a>
+                        @endauth
+                    </div>
+                </div>
                 <button class="action-btn">🛒</button>
             </div>
         </div>
