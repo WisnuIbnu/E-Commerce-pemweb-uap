@@ -3,24 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductImage extends Model
 {
-    protected $fillable = [
-        'product_id',
-        'image_url',
-        'is_primary',
-        'order'
-    ];
+    protected $fillable = ['product_id', 'image', 'is_thumbnail'];
 
-    protected $casts = [
-        'is_primary' => 'boolean'
-    ];
+    protected $casts = ['is_thumbnail' => 'boolean'];
 
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
 }
-

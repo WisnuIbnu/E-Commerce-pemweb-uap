@@ -1,373 +1,265 @@
-<x-app-layout>
-<x-slot name="title">SORAÉ - Elevate Style, Embrace Story</x-slot>
+@extends('layouts.app')
 
+@section('title', 'SORAE - Premium Fashion Import')
+
+@section('styles')
 <style>
-/* Hero Section */
-.hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    padding: 80px 0;
-    min-height: 600px;
-}
-
-.hero-content h1 {
-    font-size: 4rem;
-    line-height: 1.2;
-    margin-bottom: 30px;
-    color: var(--color-primary);
-}
-
-.hero-content p {
-    font-size: 1.1rem;
-    margin-bottom: 40px;
-    color: var(--color-secondary);
-    line-height: 1.8;
-}
-
-.hero-image {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(86, 28, 36, 0.2);
-}
-
-.hero-image img {
-    width: 100%;
-    height: auto;
-    display: block;
-    min-height: 500px;
-    object-fit: cover;
-}
-
-/* Section Title */
-.section-title {
-    text-align: center;
-    margin: 80px 0 50px;
-}
-
-.section-title h2 {
-    font-size: 3rem;
-    color: var(--color-primary);
-    margin-bottom: 15px;
-}
-
-.section-title p {
-    font-size: 1.1rem;
-    color: var(--color-secondary);
-}
-
-/* Product Grid */
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 40px;
-    margin-bottom: 50px;
-}
-
-.product-card {
-    background: var(--color-white);
-    border-radius: 15px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-decoration: none;
-    color: inherit;
-    box-shadow: 0 5px 15px rgba(86, 28, 36, 0.1);
-}
-
-.product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(86, 28, 36, 0.2);
-}
-
-.product-image {
-    width: 100%;
-    height: 350px;
-    object-fit: cover;
-    background: var(--color-light);
-}
-
-.product-info {
-    padding: 25px;
-}
-
-.product-title {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    color: var(--color-primary);
-    font-weight: 600;
-}
-
-.product-price {
-    font-size: 1.2rem;
-    color: var(--color-secondary);
-    font-weight: 600;
-}
-
-.product-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.product-actions button {
-    flex: 1;
-}
-
-/* Collections Section */
-.collections-section {
-    background: var(--color-white);
-    padding: 80px 0;
-    margin: 80px 0;
-    border-radius: 30px;
-}
-
-.collection-showcase {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    margin-bottom: 50px;
-}
-
-.collection-item {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    height: 500px;
-    box-shadow: 0 10px 30px rgba(86, 28, 36, 0.15);
-}
-
-.collection-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.collection-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 40px;
-    background: linear-gradient(to top, rgba(86, 28, 36, 0.95), transparent);
-    color: var(--color-white);
-}
-
-.collection-overlay h3 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-}
-
-.view-all-btn {
-    text-align: center;
-    margin-top: 40px;
-}
-
-/* Testimonials */
-.testimonials {
-    padding: 80px 0;
-}
-
-.testimonial-card {
-    background: var(--color-white);
-    padding: 40px;
-    border-radius: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(86, 28, 36, 0.1);
-}
-
-.testimonial-content {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 30px;
-    color: var(--color-secondary);
-    line-height: 1.8;
-}
-
-.testimonial-author {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
-
-.author-image {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.author-info h4 {
-    color: var(--color-primary);
-    margin-bottom: 5px;
-}
-
-.author-info p {
-    color: var(--color-tertiary);
-    font-size: 0.9rem;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 80px 20px;
-    background: var(--color-white);
-    border-radius: 20px;
-}
-
-.empty-state-icon {
-    font-size: 5rem;
-    margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-    .hero {
-        grid-template-columns: 1fr;
-        padding: 40px 0;
+    .hero-section {
+        background: linear-gradient(135deg, #561C24 0%, #8B2E3B 100%);
+        color: white;
+        padding: 100px 0;
+        margin: -40px -15px 40px -15px;
+        text-align: center;
     }
     
-    .hero-content h1 {
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        letter-spacing: 5px;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        color: var(--secondary-color);
+    }
+    
+    .section-title {
         font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 40px;
+        text-align: center;
+        position: relative;
+        padding-bottom: 15px;
     }
     
-    .collection-showcase {
-        grid-template-columns: 1fr;
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: var(--primary-color);
     }
     
-    .product-grid {
-        grid-template-columns: 1fr;
+    .category-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        height: 100%;
     }
-}
+    
+    .category-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(86, 28, 36, 0.2);
+    }
+    
+    .category-icon {
+        font-size: 4rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+    
+    .category-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(86, 28, 36, 0.2);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .product-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+    
+    .product-category {
+        display: inline-block;
+        background: var(--secondary-color);
+        color: var(--primary-color);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+    
+    .features-section {
+        background: var(--secondary-color);
+        padding: 60px 0;
+        margin: 60px -15px 40px -15px;
+    }
+    
+    .feature-box {
+        text-align: center;
+        padding: 30px;
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
 </style>
+@endsection
 
+@section('content')
 <!-- Hero Section -->
-<section class="hero container">
-    <div class="hero-content">
-        <h1>Elevate Style.<br>Embrace Story.</h1>
-        <p>We provide designers' styles and collections for any season. You can choose trendy or classic designs as you like or your purposes. Our service has a spice that will not vanish anytime.</p>
-        <a href="{{ route('products.index') }}" class="btn btn-primary">Explore →</a>
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">SORAE</h1>
+        <p class="hero-subtitle">Discover Premium Fashion from Around the World</p>
+        <a href="{{ url('/products') }}" class="btn btn-light btn-lg px-5 py-3">
+            <i class="fas fa-shopping-bag"></i> Shop Now
+        </a>
     </div>
-    <div class="hero-image">
-        <img src="{{ asset('images/hero-couple.jpg') }}" alt="Fashion Couple">
-    </div>
-</section>
+</div>
 
-<!-- Trending Collections -->
-<section class="container">
-    <div class="section-title">
-        <h2>Trending Collections</h2>
-        <p>Have a look at what's trending now!</p>
-    </div>
-    
-    @if($trendingProducts->count() > 0)
-        <div class="product-grid">
-            @foreach($trendingProducts as $product)
-                <a href="{{ route('products.show', $product) }}" class="product-card">
-                    <img src="{{ $product->images->first()?->image_url ? asset('storage/' . $product->images->first()->image_url) : asset('images/placeholder.jpg') }}"
-                         alt="{{ $product->name }}"
-                         class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">{{ $product->name }}</h3>
-                        <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                        <div class="product-actions">
-                            <button class="btn btn-primary" onclick="event.preventDefault(); event.stopPropagation(); alert('Added to cart!');">Add to Cart</button>
+<!-- Categories Section -->
+<section class="mb-5">
+    <h2 class="section-title">Shop by Category</h2>
+    <div class="row g-4">
+        @forelse($categories as $category)
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url('/products?category=' . $category->id) }}" class="text-decoration-none">
+                <div class="category-card">
+                    @if($category->image)
+                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" 
+                             style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 15px;">
+                    @else
+                        <div class="category-icon">
+                            <i class="fas fa-tag"></i>
                         </div>
-                    </div>
-                </a>
-            @endforeach
+                    @endif
+                    <h3 class="category-name">{{ $category->name }}</h3>
+                    <p class="text-muted small mb-0">{{ $category->products_count ?? 0 }} Products</p>
+                </div>
+            </a>
         </div>
-    @else
-        <div class="empty-state">
-            <div class="empty-state-icon">📦</div>
-            <h3 style="color: var(--color-primary); margin-bottom: 15px;">No Products Yet</h3>
-            <p style="color: var(--color-secondary);">Check back soon for new arrivals!</p>
+        @empty
+        <div class="col-12 text-center">
+            <p class="text-muted">No categories available</p>
         </div>
-    @endif
+        @endforelse
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="mb-5">
+    <h2 class="section-title">Featured Products</h2>
+    <div class="row g-4">
+        @forelse($products as $product)
+        <div class="col-md-6 col-lg-3">
+            <div class="product-card">
+                @if($product->images->first())
+                    <img src="{{ asset('storage/' . $product->images->first()->image) }}" 
+                         alt="{{ $product->name }}" class="product-image">
+                @else
+                    <img src="https://via.placeholder.com/300x300?text=No+Image" 
+                         alt="{{ $product->name }}" class="product-image">
+                @endif
+                
+                <div class="product-info">
+                    <span class="product-category">
+                        {{ $product->category->name ?? 'Uncategorized' }}
+                    </span>
+                    <h3 class="product-name">{{ $product->name }}</h3>
+                    <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
+                    <a href="{{ url('/products/' . $product->id) }}" class="btn btn-primary w-100">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-12 text-center">
+            <p class="text-muted">No products available</p>
+        </div>
+        @endforelse
+    </div>
     
-    <div class="view-all-btn">
-        <a href="{{ route('products.index') }}" class="btn btn-secondary">View All →</a>
+    @if($products->count() > 0)
+    <div class="text-center mt-4">
+        <a href="{{ url('/products') }}" class="btn btn-outline-primary btn-lg px-5">
+            View All Products <i class="fas fa-arrow-right"></i>
+        </a>
     </div>
+    @endif
 </section>
 
-<!-- Summer Collections -->
-<section class="collections-section">
+<!-- Features Section -->
+<div class="features-section">
     <div class="container">
-        <div class="section-title">
-            <h2>Summer Collections</h2>
-            <p>We curated your look and comfort on scoreless weather.</p>
-        </div>
-        <div class="collection-showcase">
-            <div class="collection-item">
-                <img src="{{ asset('images/summer-1.jpg') }}" alt="Summer Collection 1">
-                <div class="collection-overlay">
-                    <h3>Casual Comfort</h3>
-                    <p>Your daily style in the screen, your tranquility with kinetic sound a product.</p>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h4 class="fw-bold" style="color: var(--primary-color);">Fast Shipping</h4>
+                    <p class="text-muted">Reliable and fast delivery to your doorstep</p>
                 </div>
             </div>
-            <div class="collection-item">
-                <img src="{{ asset('images/summer-2.jpg') }}" alt="Summer Collection 2">
-                <div class="collection-overlay">
-                    <h3>Beach Ready</h3>
-                    <p>Our main claim in the perfect your expression with kinetic quality a product.</p>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 class="fw-bold" style="color: var(--primary-color);">Secure Payment</h4>
+                    <p class="text-muted">Your payment information is safe with us</p>
                 </div>
             </div>
-        </div>
-        <div class="view-all-btn">
-            <a href="{{ route('products.index') }}?season=summer" class="btn btn-primary">Explore →</a>
-        </div>
-    </div>
-</section>
-
-<!-- Winter Collections -->
-<section class="container">
-    <div class="section-title">
-        <h2>Winter Collections</h2>
-        <p>We curated your look and comfort on cold weather.</p>
-    </div>
-    <div class="collection-showcase">
-        <div class="collection-item">
-            <img src="{{ asset('images/winter-1.jpg') }}" alt="Winter Collection">
-            <div class="collection-overlay">
-                <h3>Cozy & Warm</h3>
-                <p>We provide the spread original collection for any season.</p>
-            </div>
-        </div>
-        <div class="collection-item">
-            <img src="{{ asset('images/winter-2.jpg') }}" alt="Winter Accessories">
-            <div class="collection-overlay">
-                <h3>Winter Essentials</h3>
-                <p>That main with is in screen our exclusivity so luxury quality a product.</p>
-            </div>
-        </div>
-    </div>
-    <div class="view-all-btn">
-        <a href="{{ route('products.index') }}?season=winter" class="btn btn-primary">Explore →</a>
-    </div>
-</section>
-
-<!-- Testimonials -->
-<section class="testimonials">
-    <div class="container">
-        <div class="section-title">
-            <h2>What our Customer says</h2>
-            <p>We value our customers' feedback to provide the best service.</p>
-        </div>
-        <div class="testimonial-card">
-            <div class="testimonial-content">
-                <p>"Soraé has provided me the best quality products I could imagine. I was so sick with the lack of good design, feels like there is no hope, but Soraé had it all."</p>
-            </div>
-            <div class="testimonial-author">
-                <img src="{{ asset('images/customer-1.jpg') }}" alt="Jane Bennet" class="author-image">
-                <div class="author-info">
-                    <h4>Jane Bennet</h4>
-                    <p>Fashion Model</p>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h4 class="fw-bold" style="color: var(--primary-color);">Premium Quality</h4>
+                    <p class="text-muted">Only the finest imported fashion products</p>
                 </div>
             </div>
         </div>
     </div>
-</section>
-</x-app-layout>
+</div>
+@endsection

@@ -2,60 +2,48 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'store_id',
-        'category_id',
+        'product_category_id',
         'name',
         'slug',
-        'description',
+        'about',
+        'condition',
         'price',
+        'weight',
         'stock',
-        'sku',
-        'season'
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2'
-    ];
-
-    protected static function boot()
-    {
-        parent::boot();
-        
-        static::creating(function ($product) {
-            if (empty($product->slug)) {
-                $product->slug = Str::slug($product->name);
-            }
-            if (empty($product->sku)) {
-                $product->sku = 'PRD-' . strtoupper(Str::random(8));
-            }
-        });
-    }
-
-    public function store(): BelongsTo
+    // Relationships
+    public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function category(): BelongsTo
+    public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    public function images(): HasMany
+    public function images()
     {
-        return $this->hasMany(ProductImage::class)->orderBy('order');
+        return $this->hasMany(ProductImage::class);
     }
 
-    public function reviews(): HasMany
+    public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class);
     }
 }

@@ -10,14 +10,28 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Get trending products (latest 6 products)
-        $trendingProducts = Product::with(['images', 'category', 'store'])
+        // Get featured products (latest 8 products)
+        $products = Product::with(['category', 'images'])
             ->where('stock', '>', 0)
             ->latest()
-            ->take(6)
+            ->limit(8)
             ->get();
         
-        return view('home', compact('trendingProducts'));
+        // Get all categories with product count
+        $categories = ProductCategory::withCount('products')
+            ->orderBy('name')
+            ->get();
+        
+        return view('home', compact('products', 'categories'));
+    }
+    
+    public function about()
+    {
+        return view('about');
+    }
+    
+    public function contact()
+    {
+        return view('contact');
     }
 }
-

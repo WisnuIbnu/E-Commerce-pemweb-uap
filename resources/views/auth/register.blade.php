@@ -1,364 +1,181 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+@extends('layouts.app')
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+@section('title', 'Register - SORAE')
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - SORAÉ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+@section('styles')
+<style>
+    .register-container {
+        max-width: 600px;
+        margin: 50px auto;
+    }
     
-    <style>
-        :root {
-            --color-primary: #561C24;
-            --color-secondary: #6D2932;
-            --color-tertiary: #C7B7A3;
-            --color-light: #E8D8C4;
-            --color-white: #FFFFFF;
-        }
+    .register-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 40px rgba(86, 28, 36, 0.1);
+    }
+    
+    .register-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .role-selector {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .role-option {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .role-option:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(86, 28, 36, 0.05);
+    }
+    
+    .role-option input[type="radio"] {
+        display: none;
+    }
+    
+    .role-option input[type="radio"]:checked + label {
+        color: var(--primary-color);
+    }
+    
+    .role-option.active {
+        border-color: var(--primary-color);
+        background-color: rgba(86, 28, 36, 0.1);
+    }
+    
+    .role-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+</style>
+@endsection
+
+@section('content')
+<div class="register-container">
+    <div class="register-card">
+        <h1 class="register-title">Create Account</h1>
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--color-light) 0%, var(--color-tertiary) 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        h1, h2 {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .auth-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            max-width: 1000px;
-            width: 100%;
-            background: var(--color-white);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(86, 28, 36, 0.15);
-        }
-        
-        .auth-visual {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: var(--color-white);
-        }
-        
-        .auth-visual img {
-            max-width: 150px;
-            margin-bottom: 30px;
-            filter: brightness(0) invert(1);
-        }
-        
-        .auth-visual h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .auth-visual p {
-            text-align: center;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-        
-        .auth-form {
-            padding: 60px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .form-header {
-            margin-bottom: 35px;
-        }
-        
-        .form-header h1 {
-            font-size: 2rem;
-            color: var(--color-primary);
-            margin-bottom: 10px;
-        }
-        
-        .form-header p {
-            color: var(--color-secondary);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--color-primary);
-            font-weight: 500;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid var(--color-tertiary);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-        }
-        
-        .form-checkbox {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        
-        .form-checkbox input {
-            width: 18px;
-            height: 18px;
-            margin-top: 3px;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        
-        .btn-primary {
-            background: var(--color-primary);
-            color: var(--color-white);
-        }
-        
-        .btn-primary:hover {
-            background: var(--color-secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(86, 28, 36, 0.25);
-        }
-        
-        .divider {
-            text-align: center;
-            margin: 25px 0;
-            position: relative;
-        }
-        
-        .divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: var(--color-tertiary);
-        }
-        
-        .divider span {
-            background: var(--color-white);
-            padding: 0 15px;
-            position: relative;
-            color: var(--color-tertiary);
-        }
-        
-        .login-link {
-            text-align: center;
-            color: var(--color-secondary);
-        }
-        
-        .login-link a {
-            color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-        
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .error-message {
-            background: #ffe6e6;
-            color: #cc0000;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-        
-        .error-list {
-            margin-top: 8px;
-            padding-left: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .auth-container {
-                grid-template-columns: 1fr;
-            }
+        <form action="{{ url('/register') }}" method="POST">
+            @csrf
             
-            .auth-visual {
-                display: none;
-            }
-            
-            .auth-form {
-                padding: 40px 30px;
-            }
-        }
-    </style>
-</head>
-<body>
-<div class="auth-container">
-        <div class="auth-visual">
-            <img src="{{ asset('images/soraelogo.png') }}" alt="SORAÉ">
-            <h2>Join SORAÉ</h2>
-            <p>Create your account and start your fashion journey with exclusive collections and personalized recommendations.</p>
-        </div>
-        
-        <div class="auth-form">
-            <div class="form-header">
-                <h1>Create Account</h1>
-                <p>Fill in your details to get started</p>
-            </div>
-            
-            @if ($errors->any())
-            <div class="error-message">
-                <strong>Please fix the following errors:</strong>
-                <ul class="error-list">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-            
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
-                
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" name="name" class="form-input" 
-                           value="{{ old('name') }}" 
-                           placeholder="John Doe" 
-                           required autofocus>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" name="email" class="form-input" 
-                           value="{{ old('email') }}" 
-                           placeholder="your@email.com" 
-                           required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Phone Number</label>
-                    <input type="tel" name="phone" class="form-input" 
-                           value="{{ old('phone') }}" 
-                           placeholder="08123456789" 
-                           required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-input" 
-                           placeholder="Minimum 8 characters" 
-                           required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" class="form-input" 
-                           placeholder="Re-enter your password" 
-                           required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-checkbox">
-                        <input type="checkbox" name="terms" required>
-                        <span>I agree to the <a href="#" style="color: var(--color-primary);">Terms & Conditions</a> and <a href="#" style="color: var(--color-primary);">Privacy Policy</a></span>
+            <!-- Role Selection -->
+            <label class="form-label">I want to:</label>
+            <div class="role-selector">
+                <div class="role-option active" onclick="selectRole('buyer')">
+                    <input type="radio" name="role" value="buyer" id="role_buyer" checked>
+                    <label for="role_buyer" style="cursor: pointer;">
+                        <div class="role-icon"><i class="fas fa-shopping-bag"></i></div>
+                        <strong>Shop</strong>
+                        <p class="mb-0 small text-muted">Buy products</p>
                     </label>
                 </div>
-                
-                <button type="submit" class="btn btn-primary">Create Account</button>
-            </form>
-            
-            <div class="divider">
-                <span>or</span>
+                <div class="role-option" onclick="selectRole('seller')">
+                    <input type="radio" name="role" value="seller" id="role_seller">
+                    <label for="role_seller" style="cursor: pointer;">
+                        <div class="role-icon"><i class="fas fa-store"></i></div>
+                        <strong>Sell</strong>
+                        <p class="mb-0 small text-muted">Open a store</p>
+                    </label>
+                </div>
             </div>
             
-            <p class="login-link">
-                Already have an account? <a href="{{ route('login') }}">Sign in here</a>
-            </p>
+            <!-- Name -->
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                       id="name" name="name" placeholder="Full Name" 
+                       value="{{ old('name') }}" required>
+                <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <!-- Email -->
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                       id="email" name="email" placeholder="name@example.com" 
+                       value="{{ old('email') }}" required>
+                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+            
+            <!-- Password -->
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                       id="password" name="password" placeholder="Password" required>
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+                <small class="text-muted">Minimum 8 characters</small>
+            </div>
+            
+            <!-- Confirm Password -->
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" 
+                       id="password_confirmation" name="password_confirmation" 
+                       placeholder="Confirm Password" required>
+                <label for="password_confirmation"><i class="fas fa-lock"></i> Confirm Password</label>
+            </div>
+            
+            <!-- Terms & Conditions -->
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
+                <label class="form-check-label" for="terms">
+                    I agree to the <a href="#">Terms & Conditions</a>
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-login">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>OR</span>
+        </div>
+        
+        <div class="text-center">
+            <p class="mb-2">Already have an account?</p>
+            <a href="{{ url('/login') }}" class="btn btn-outline-primary w-100">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
         </div>
     </div>
-</body>
-</html>
+</div>
+@endsection
 
+@section('scripts')
+<script>
+    function selectRole(role) {
+        // Remove active class from all options
+        document.querySelectorAll('.role-option').forEach(opt => {
+            opt.classList.remove('active');
+        });
+        
+        // Add active class to selected option
+        event.currentTarget.classList.add('active');
+        
+        // Check the radio button
+        document.getElementById('role_' + role).checked = true;
+    }
+</script>
+@endsection

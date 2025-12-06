@@ -2,167 +2,115 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProfileController;
-
-// Seller Controllers
-use App\Http\Controllers\Seller\StoreController as SellerStoreController;
 use App\Http\Controllers\Seller\DashboardController as SellerDashboardController;
+use App\Http\Controllers\Seller\StoreController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
-use App\Http\Controllers\Seller\ProductImageController;
-use App\Http\Controllers\Seller\OrderController as SellerOrderController;
+use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\BalanceController;
 use App\Http\Controllers\Seller\WithdrawalController;
-
-// Admin Controllers
-use App\Http\Controllers\Admin\UserManagementController;
-use App\Http\Controllers\Admin\StoreManagementController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\StoreVerificationController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\WithdrawalController as AdminWithdrawalController;
+use App\Http\Controllers\Admin\UserManagementController;
 
 /*
 |--------------------------------------------------------------------------
-| Public Routes
+| Web Routes
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Public Routes
+Route::get('/', [HomeController::class, 'index']);
+Route::get('/about', [HomeController::class, 'about']);
+Route::get('/contact', [HomeController::class, 'contact']);
 
 // Products
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Routes (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
-
-require __DIR__.'/auth.php';
-
-/*
-|--------------------------------------------------------------------------
-| Authenticated User Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['auth'])->group(function () {
-    
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Checkout & Transactions
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-    
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-    Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
-    Route::post('/transactions/{transaction}/cancel', [TransactionController::class, 'cancel'])->name('transactions.cancel');
-    
-    // Reviews
-    Route::post('/products/{product}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegisterForm']);
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
-/*
-|--------------------------------------------------------------------------
-| Seller Routes
-|--------------------------------------------------------------------------
-*/
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
-Route::middleware(['auth'])->prefix('seller')->name('seller.')->group(function () {
+// Buyer Routes
+Route::middleware(['auth'])->group(function () {
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'index']);
+    Route::put('/profile', [ProfileController::class, 'update']);
     
-    // Store Registration (accessible to all authenticated users)
-    Route::get('/register', [SellerStoreController::class, 'create'])->name('register');
-    Route::post('/register', [SellerStoreController::class, 'store'])->name('register.store');
-    
-    // Seller Dashboard & Management (only for approved sellers)
-    Route::middleware(['seller'])->group(function () {
+    // Checkout (Buyer only)
+    Route::middleware('role:buyer')->group(function () {
+        Route::get('/checkout', [CheckoutController::class, 'index']);
+        Route::post('/checkout/process', [CheckoutController::class, 'process']);
         
-        // Dashboard
-        Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
-        
-        // Store Profile
-        Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
-        Route::put('/store', [SellerStoreController::class, 'update'])->name('store.update');
-        
-        // Product Management
-        Route::resource('products', SellerProductController::class);
-        
-        // Product Images
-        Route::post('/products/{product}/images', [ProductImageController::class, 'store'])->name('products.images.store');
-        Route::delete('/products/images/{image}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');
-        
-        // Order Management
-        Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{transaction}', [SellerOrderController::class, 'show'])->name('orders.show');
-        Route::put('/orders/{transaction}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.updateStatus');
-        
-        // Balance & Withdrawals
-        Route::get('/balance', [BalanceController::class, 'index'])->name('balance.index');
-        Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
-        Route::get('/withdrawals/create', [WithdrawalController::class, 'create'])->name('withdrawals.create');
-        Route::post('/withdrawals', [WithdrawalController::class, 'store'])->name('withdrawals.store');
+        // Transactions
+        Route::get('/transactions', [TransactionController::class, 'index']);
+        Route::get('/transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
+        Route::post('/transactions/{id}/review', [TransactionController::class, 'review']);
     });
 });
 
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    
+// Seller Routes
+Route::middleware(['auth', 'role:seller'])->prefix('seller')->group(function () {
     // Dashboard
-    Route::get('/dashboard', function () {
-        $totalUsers = \App\Models\User::count();
-        $totalStores = \App\Models\Store::where('status', 'approved')->count();
-        $totalProducts = \App\Models\Product::count();
-        $totalRevenue = \App\Models\Transaction::where('status', 'completed')->sum('total');
-        $recentUsers = \App\Models\User::latest()->take(5)->get();
-        $recentStores = \App\Models\Store::with('buyer')->latest()->take(5)->get();
-        
-        return view('admin.dashboard', compact(
-            'totalUsers',
-            'totalStores', 
-            'totalProducts',
-            'totalRevenue',
-            'recentUsers',
-            'recentStores'
-        ));
-    })->name('dashboard');
+    Route::get('/dashboard', [SellerDashboardController::class, 'index']);
     
-    // User Management
-    Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');
-    Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+    // Store Registration & Management
+    Route::get('/store/register', [StoreController::class, 'showRegisterForm']);
+    Route::post('/store/register', [StoreController::class, 'register']);
+    Route::get('/store/edit', [StoreController::class, 'edit']);
+    Route::put('/store', [StoreController::class, 'update']);
     
-    // Store Management
-    Route::get('/stores', [StoreManagementController::class, 'index'])->name('stores.index');
-    Route::get('/stores/{store}', [StoreManagementController::class, 'show'])->name('stores.show');
-    Route::put('/stores/{store}', [StoreManagementController::class, 'update'])->name('stores.update');
-    Route::delete('/stores/{store}', [StoreManagementController::class, 'destroy'])->name('stores.destroy');
-    
-    // Store Verification
-    Route::get('/stores/pending', [StoreVerificationController::class, 'index'])->name('stores.pending');
-    Route::get('/stores/{store}/verify', [StoreVerificationController::class, 'show'])->name('stores.verify');
-    Route::post('/stores/{store}/approve', [StoreVerificationController::class, 'approve'])->name('stores.approve');
-    Route::post('/stores/{store}/reject', [StoreVerificationController::class, 'reject'])->name('stores.reject');
+    // Product Management
+    Route::get('/products', [SellerProductController::class, 'index']);
+    Route::get('/products/create', [SellerProductController::class, 'create']);
+    Route::post('/products', [SellerProductController::class, 'store']);
+    Route::get('/products/{id}/edit', [SellerProductController::class, 'edit']);
+    Route::put('/products/{id}', [SellerProductController::class, 'update']);
+    Route::delete('/products/{id}', [SellerProductController::class, 'destroy']);
     
     // Category Management
-    Route::resource('categories', CategoryController::class);
+    Route::get('/categories', [SellerProductController::class, 'categories']);
+    Route::post('/categories', [SellerProductController::class, 'storeCategory']);
+    Route::put('/categories/{id}', [SellerProductController::class, 'updateCategory']);
+    Route::delete('/categories/{id}', [SellerProductController::class, 'destroyCategory']);
     
-    // Withdrawal Management
-    Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
-    Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
-    Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
+    // Order Management
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus']);
+    Route::post('/orders/{id}/shipping', [OrderController::class, 'updateShipping']);
+    
+    // Balance & Withdrawal
+    Route::get('/balance', [BalanceController::class, 'index']);
+    Route::get('/withdrawals', [WithdrawalController::class, 'index']);
+    Route::post('/withdrawals', [WithdrawalController::class, 'store']);
+    Route::put('/withdrawals/bank', [WithdrawalController::class, 'updateBank']);
+});
+
+// Admin Routes
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+    
+    // Store Verification
+    Route::get('/stores/verification', [StoreVerificationController::class, 'index']);
+    Route::post('/stores/{id}/verify', [StoreVerificationController::class, 'verify']);
+    Route::post('/stores/{id}/reject', [StoreVerificationController::class, 'reject']);
+    
+    // User & Store Management
+    Route::get('/users', [UserManagementController::class, 'users']);
+    Route::get('/stores', [UserManagementController::class, 'stores']);
+    Route::delete('/users/{id}', [UserManagementController::class, 'deleteUser']);
+    Route::delete('/stores/{id}', [UserManagementController::class, 'deleteStore']);
 });

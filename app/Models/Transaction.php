@@ -2,35 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'buyer_id',
-        'total',
-        'status',
-        'shipping_address',
-        'payment_method',
-        'notes',
-        'paid_at',
-    ];
-
-    protected $casts = [
-        'total' => 'decimal:2',
-        'paid_at' => 'datetime',
+        'code', 'buyer_id', 'store_id', 'address', 'city', 'postal_code',
+        'shipping', 'shipping_type', 'shipping_cost', 'tracking_number',
+        'tax', 'grand_total', 'payment_status'
     ];
 
     public function buyer()
     {
-        return $this->belongsTo(User::class, 'buyer_id');
+        return $this->belongsTo(Buyer::class);
     }
 
-    public function items()
+    public function store()
     {
-        return $this->hasMany(TransactionItem::class);
+        return $this->belongsTo(Store::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(TransactionDetail::class);
     }
 }

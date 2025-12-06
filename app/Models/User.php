@@ -1,77 +1,24 @@
 <?php
-// app/Models/User.php - ADD THIS RELATIONSHIP
-
+// app/Models/User.php
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'phone',
-        'role',
-    ];
+    use HasFactory;
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $fillable = ['name', 'email', 'password', 'role'];
+    protected $hidden = ['password', 'remember_token'];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    /**
-     * Get the store owned by the user
-     */
-    public function store(): HasOne
+    public function buyer()
     {
-        return $this->hasOne(Store::class, 'buyer_id');
+        return $this->hasOne(Buyer::class);
     }
 
-    /**
-     * Get user's transactions (as buyer)
-     */
-    public function transactions(): HasMany
+    public function store()
     {
-        return $this->hasMany(Transaction::class, 'buyer_id');
-    }
-
-    /**
-     * Get user's reviews
-     */
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(Review::class, 'user_id');
-    }
-
-    /**
-     * Check if user is admin
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    /**
-     * Check if user has a store
-     */
-    public function hasStore(): bool
-    {
-        return $this->store !== null;
-    }
-
-    /**
-     * Check if user has an approved store
-     */
-    public function hasApprovedStore(): bool
-    {
-        return $this->hasStore() && $this->store->isApproved();
+        return $this->hasOne(Store::class);
     }
 }

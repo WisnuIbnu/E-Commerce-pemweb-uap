@@ -1,388 +1,177 @@
-<x-app-layout>
-<x-slot name="title">Checkout - SORAÉ</x-slot>
+@extends('layouts.app')
 
-<style>
-.checkout-page {
-    padding: 60px 0;
-}
+@section('title', 'Checkout - SORAE')
 
-.checkout-header {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.checkout-header h1 {
-    font-size: 3rem;
-    color: var(--color-primary);
-    margin-bottom: 15px;
-}
-
-.checkout-steps {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin: 40px 0;
-}
-
-.step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.step-number {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--color-tertiary);
-    color: var(--color-white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
-
-.step.active .step-number {
-    background: var(--color-primary);
-}
-
-.step-label {
-    color: var(--color-tertiary);
-}
-
-.step.active .step-label {
-    color: var(--color-primary);
-    font-weight: 600;
-}
-
-.checkout-container {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.checkout-form {
-    background: var(--color-white);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(86, 28, 36, 0.1);
-}
-
-.form-section {
-    margin-bottom: 35px;
-}
-
-.section-title {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-light);
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.order-summary {
-    background: var(--color-white);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(86, 28, 36, 0.1);
-    height: fit-content;
-    position: sticky;
-    top: 100px;
-}
-
-.summary-title {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    margin-bottom: 25px;
-}
-
-.cart-items {
-    max-height: 400px;
-    overflow-y: auto;
-    margin-bottom: 25px;
-}
-
-.cart-item {
-    display: flex;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px solid var(--color-light);
-}
-
-.item-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    object-fit: cover;
-    background: var(--color-light);
-}
-
-.item-details {
-    flex: 1;
-}
-
-.item-name {
-    font-weight: 600;
-    color: var(--color-primary);
-    margin-bottom: 5px;
-}
-
-.item-quantity {
-    color: var(--color-tertiary);
-    font-size: 0.9rem;
-}
-
-.item-price {
-    font-weight: 600;
-    color: var(--color-secondary);
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    color: var(--color-secondary);
-}
-
-.summary-row.total {
-    border-top: 2px solid var(--color-light);
-    margin-top: 15px;
-    padding-top: 15px;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--color-primary);
-}
-
-.payment-methods {
-    display: grid;
-    gap: 15px;
-}
-
-.payment-option {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border: 2px solid var(--color-tertiary);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.payment-option:hover {
-    border-color: var(--color-primary);
-    background: var(--color-light);
-}
-
-.payment-option input[type="radio"] {
-    width: 20px;
-    height: 20px;
-}
-
-.payment-icon {
-    font-size: 2rem;
-}
-
-.payment-info {
-    flex: 1;
-}
-
-.payment-name {
-    font-weight: 600;
-    color: var(--color-primary);
-    margin-bottom: 3px;
-}
-
-.payment-desc {
-    font-size: 0.85rem;
-    color: var(--color-tertiary);
-}
-
-@media (max-width: 968px) {
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .order-summary {
-        position: static;
-    }
-    
-    .checkout-steps {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-</style>
-
-<div class="checkout-page">
-    <div class="container">
-        <div class="checkout-header">
-            <h1>Checkout</h1>
-            <div class="checkout-steps">
-                <div class="step active">
-                    <div class="step-number">1</div>
-                    <span class="step-label">Shipping</span>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <span class="step-label">Payment</span>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <span class="step-label">Confirmation</span>
-                </div>
+@section('content')
+<div class="row">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-shipping-fast"></i> Shipping Information</h4>
             </div>
-        </div>
-        
-        <div class="checkout-container">
-            <!-- Checkout Form -->
-            <div class="checkout-form">
-                <form method="POST" action="{{ route('checkout.store') }}">
+            <div class="card-body">
+                <form action="{{ url('/checkout/process') }}" method="POST" id="checkoutForm">
                     @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="hidden" name="quantity" value="{{ $quantity }}">
                     
-                    <!-- Shipping Information -->
-                    <div class="form-section">
-                        <h2 class="section-title">Shipping Information</h2>
-                        <div class="form-group">
-                            <label class="form-label required">Full Name</label>
-                            <input type="text" name="name" class="form-input" 
-                                   value="{{ auth()->user()->name }}" required>
+                    <div class="mb-3">
+                        <label class="form-label">Full Address</label>
+                        <textarea name="address" class="form-control" rows="3" required
+                                  placeholder="Enter your complete address"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" required
+                                   placeholder="City name">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label required">Phone Number</label>
-                            <input type="tel" name="phone" class="form-input" 
-                                   value="{{ auth()->user()->phone }}" required>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Postal Code</label>
+                            <input type="text" name="postal_code" class="form-control" required
+                                   placeholder="Postal code">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label required">Email</label>
-                            <input type="email" name="email" class="form-input" 
-                                   value="{{ auth()->user()->email }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label required">Shipping Address</label>
-                            <textarea name="address" class="form-textarea" rows="4" 
-                                      placeholder="Complete address with street, city, province, and postal code" required></textarea>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label required">City</label>
-                                <input type="text" name="city" class="form-input" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Shipping Method</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card shipping-option" onclick="selectShipping('regular')">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                                   name="shipping_type" value="regular" 
+                                                   id="shipping_regular" checked>
+                                            <label class="form-check-label w-100" for="shipping_regular">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <strong>Regular</strong>
+                                                        <p class="text-muted small mb-0">3-5 business days</p>
+                                                    </div>
+                                                    <div>
+                                                        <strong class="text-primary">Rp 20.000</strong>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label class="form-label required">Postal Code</label>
-                                <input type="text" name="postal_code" class="form-input" required>
+                            <div class="col-md-6">
+                                <div class="card shipping-option" onclick="selectShipping('express')">
+                                    <div class="card-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                                   name="shipping_type" value="express" 
+                                                   id="shipping_express">
+                                            <label class="form-check-label w-100" for="shipping_express">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <strong>Express</strong>
+                                                        <p class="text-muted small mb-0">1-2 business days</p>
+                                                    </div>
+                                                    <div>
+                                                        <strong class="text-primary">Rp 50.000</strong>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Payment Method -->
-                    <div class="form-section">
-                        <h2 class="section-title">Payment Method</h2>
-                        <div class="payment-methods">
-                            <label class="payment-option">
-                                <input type="radio" name="payment_method" value="bank_transfer" checked>
-                                <div class="payment-icon">🏦</div>
-                                <div class="payment-info">
-                                    <div class="payment-name">Bank Transfer</div>
-                                    <div class="payment-desc">Transfer to our bank account</div>
-                                </div>
-                            </label>
-                            
-                            <label class="payment-option">
-                                <input type="radio" name="payment_method" value="credit_card">
-                                <div class="payment-icon">💳</div>
-                                <div class="payment-info">
-                                    <div class="payment-name">Credit/Debit Card</div>
-                                    <div class="payment-desc">Visa, Mastercard, JCB</div>
-                                </div>
-                            </label>
-                            
-                            <label class="payment-option">
-                                <input type="radio" name="payment_method" value="e-wallet">
-                                <div class="payment-icon">📱</div>
-                                <div class="payment-info">
-                                    <div class="payment-name">E-Wallet</div>
-                                    <div class="payment-desc">GoPay, OVO, Dana, ShopeePay</div>
-                                </div>
-                            </label>
-                            
-                            <label class="payment-option">
-                                <input type="radio" name="payment_method" value="cod">
-                                <div class="payment-icon">💵</div>
-                                <div class="payment-info">
-                                    <div class="payment-name">Cash on Delivery</div>
-                                    <div class="payment-desc">Pay when you receive</div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <!-- Order Notes -->
-                    <div class="form-section">
-                        <h2 class="section-title">Order Notes (Optional)</h2>
-                        <div class="form-group">
-                            <textarea name="notes" class="form-textarea" rows="3" 
-                                      placeholder="Any special instructions for your order?"></textarea>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">
-                        Place Order →
-                    </button>
                 </form>
             </div>
-            
-            <!-- Order Summary -->
-            <div class="order-summary">
-                <h2 class="summary-title">Order Summary</h2>
-                
-                <div class="cart-items">
-                    <!-- Demo Cart Items -->
-                    <div class="cart-item">
-                        <img src="{{ asset('images/placeholder.jpg') }}" alt="Product" class="item-image">
-                        <div class="item-details">
-                            <div class="item-name">Premium Cotton T-Shirt</div>
-                            <div class="item-quantity">Qty: 2 × Rp 150,000</div>
-                        </div>
-                        <div class="item-price">Rp 300,000</div>
-                    </div>
-                    
-                    <div class="cart-item">
-                        <img src="{{ asset('images/placeholder.jpg') }}" alt="Product" class="item-image">
-                        <div class="item-details">
-                            <div class="item-name">Elegant Summer Dress</div>
-                            <div class="item-quantity">Qty: 1 × Rp 350,000</div>
-                        </div>
-                        <div class="item-price">Rp 350,000</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card position-sticky" style="top: 20px;">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-shopping-cart"></i> Order Summary</h4>
+            </div>
+            <div class="card-body">
+                <!-- Product Info -->
+                <div class="d-flex mb-3">
+                    <img src="{{ $product->images->first() ? asset('storage/' . $product->images->first()->image) : 'https://via.placeholder.com/80' }}" 
+                         alt="{{ $product->name }}" 
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px;">
+                    <div class="ms-3">
+                        <h6 class="mb-1">{{ $product->name }}</h6>
+                        <p class="text-muted small mb-1">Quantity: {{ $quantity }}</p>
+                        <p class="fw-bold mb-0">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                     </div>
                 </div>
                 
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span>Rp 650,000</span>
+                <hr>
+                
+                <!-- Price Details -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span id="subtotal">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span id="shipping">Rp 20.000</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax (10%)</span>
+                        <span id="tax">Rp {{ number_format($subtotal * 0.10, 0, ',', '.') }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong style="font-size: 1.2rem;">Total</strong>
+                        <strong style="font-size: 1.2rem; color: var(--primary-color);" id="grandTotal">
+                            Rp {{ number_format($subtotal + 20000 + ($subtotal * 0.10), 0, ',', '.') }}
+                        </strong>
+                    </div>
                 </div>
-                <div class="summary-row">
-                    <span>Shipping</span>
-                    <span>Rp 20,000</span>
-                </div>
-                <div class="summary-row">
-                    <span>Tax (11%)</span>
-                    <span>Rp 71,500</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Total</span>
-                    <span>Rp 741,500</span>
-                </div>
+                
+                <button type="submit" form="checkoutForm" class="btn btn-primary w-100 btn-lg">
+                    <i class="fas fa-check"></i> Place Order
+                </button>
             </div>
         </div>
     </div>
 </div>
-</x-app-layout>
+@endsection
+
+@section('scripts')
+<script>
+    const subtotal = {{ $subtotal }};
+    
+    function selectShipping(type) {
+        const shippingCost = type === 'express' ? 50000 : 20000;
+        const tax = subtotal * 0.10;
+        const grandTotal = subtotal + shippingCost + tax;
+        
+        document.getElementById('shipping').innerText = 'Rp ' + shippingCost.toLocaleString('id-ID');
+        document.getElementById('grandTotal').innerText = 'Rp ' + grandTotal.toLocaleString('id-ID');
+        
+        // Check the radio button
+        document.getElementById('shipping_' + type).checked = true;
+    }
+</script>
+
+<style>
+    .shipping-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+    
+    .shipping-option:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 15px rgba(86, 28, 36, 0.1);
+    }
+    
+    .shipping-option:has(input:checked) {
+        border-color: var(--primary-color);
+        background-color: rgba(86, 28, 36, 0.05);
+    }
+</style>
+@endsection
