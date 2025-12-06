@@ -71,3 +71,77 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/stores/{store}', [StoreManagementController::class, 'update'])->name('stores.update');
     Route::delete('/stores/{store}', [StoreManagementController::class, 'destroy'])->name('stores.destroy');
 });
+
+// Seller Routes
+Route::middleware(['auth'])->prefix('seller')->name('seller.')->group(function () {
+    // Store Registration
+    Route::get('/register', [App\Http\Controllers\Seller\StoreController::class, 'create'])
+        ->name('register');
+    Route::post('/register', [App\Http\Controllers\Seller\StoreController::class, 'store'])
+        ->name('register.store');
+    
+    // Seller Dashboard & Store Management (only for approved stores)
+    Route::middleware(['seller'])->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Seller\DashboardController::class, 'index'])
+            ->name('dashboard');
+        
+        // Store Profile
+        Route::get('/store/edit', [App\Http\Controllers\Seller\StoreController::class, 'edit'])
+            ->name('store.edit');
+        Route::put('/store', [App\Http\Controllers\Seller\StoreController::class, 'update'])
+            ->name('store.update');
+        
+        // Product Management
+        Route::resource('products', App\Http\Controllers\Seller\ProductController::class);
+        
+        // Product Images
+        Route::post('/products/{product}/images', [App\Http\Controllers\Seller\ProductImageController::class, 'store'])
+            ->name('products.images.store');
+        Route::delete('/products/images/{image}', [App\Http\Controllers\Seller\ProductImageController::class, 'destroy'])
+            ->name('products.images.destroy');
+        
+        // Order Management
+        Route::get('/orders', [App\Http\Controllers\Seller\OrderController::class, 'index'])
+            ->name('orders.index');
+        Route::get('/orders/{transaction}', [App\Http\Controllers\Seller\OrderController::class, 'show'])
+            ->name('orders.show');
+        Route::put('/orders/{transaction}/status', [App\Http\Controllers\Seller\OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+        
+        // Balance & Withdrawals
+        Route::get('/balance', [App\Http\Controllers\Seller\BalanceController::class, 'index'])
+            ->name('balance.index');
+        Route::get('/withdrawals', [App\Http\Controllers\Seller\WithdrawalController::class, 'index'])
+            ->name('withdrawals.index');
+        Route::get('/withdrawals/create', [App\Http\Controllers\Seller\WithdrawalController::class, 'create'])
+            ->name('withdrawals.create');
+        Route::post('/withdrawals', [App\Http\Controllers\Seller\WithdrawalController::class, 'store'])
+            ->name('withdrawals.store');
+    });
+});
+
+// Admin Store Verification Routes (ADD TO EXISTING ADMIN GROUP)
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // ... existing admin routes ...
+    
+    // Store Verification
+    Route::get('/stores/pending', [App\Http\Controllers\Admin\StoreVerificationController::class, 'index'])
+        ->name('stores.pending');
+    Route::get('/stores/{store}/verify', [App\Http\Controllers\Admin\StoreVerificationController::class, 'show'])
+        ->name('stores.verify');
+    Route::post('/stores/{store}/approve', [App\Http\Controllers\Admin\StoreVerificationController::class, 'approve'])
+        ->name('stores.approve');
+    Route::post('/stores/{store}/reject', [App\Http\Controllers\Admin\StoreVerificationController::class, 'reject'])
+        ->name('stores.reject');
+    
+    // Category Management
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+    
+    // Withdrawal Management
+    Route::get('/withdrawals', [App\Http\Controllers\Admin\WithdrawalController::class, 'index'])
+        ->name('withdrawals.index');
+    Route::post('/withdrawals/{withdrawal}/approve', [App\Http\Controllers\Admin\WithdrawalController::class, 'approve'])
+        ->name('withdrawals.approve');
+    Route::post('/withdrawals/{withdrawal}/reject', [App\Http\Controllers\Admin\WithdrawalController::class, 'reject'])
+        ->name('withdrawals.reject');
+});
