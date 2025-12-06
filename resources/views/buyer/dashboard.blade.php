@@ -1,137 +1,102 @@
 @extends('layouts.buyer')
 
-@section('title', 'Dashboard Buyer - ELSHOP')
+@section('title', 'Dashboard - Buyer')
 
 @section('styles')
     @vite(['resources/css/dashboard-buyer.css'])
 @endsection
 
 @section('content')
-<div class="container py-4">
-    <!-- Welcome Section -->
-    <div class="dashboard-header">
-        <div class="welcome-section">
-            <h2>Selamat Datang, {{ auth()->user()->name }}! 👋</h2>
-            <p>Temukan berbagai snack favorit Anda di ELSHOP</p>
-        </div>
+<div class="buyer-container">
+
+    <!-- Header -->
+    <div class="buyer-header">
+        <h3>Halo, {{ auth()->user()->name }} 👋</h3>
+        <p class="buyer-subtitle">Belanja snack favoritmu dengan mudah!</p>
     </div>
 
     <!-- Search & Filter -->
-    <div class="search-filter-card">
-        <form method="GET" action="{{ route('buyer.dashboard') }}">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" 
-                           name="search" 
-                           class="form-control search-input" 
-                           placeholder="🔍 Cari produk..." 
-                           value="{{ request('search') }}">
-                </div>
-                <div class="col-md-3">
-                    <select name="category" class="form-select category-select">
-                        <option value="">📦 Semua Kategori</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
-                                {{ $cat->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" 
-                           name="price_min" 
-                           class="form-control price-input" 
-                           placeholder="Harga Min" 
-                           value="{{ request('price_min') }}">
-                </div>
-                <div class="col-md-2">
-                    <input type="number" 
-                           name="price_max" 
-                           class="form-control price-input" 
-                           placeholder="Harga Max" 
-                           value="{{ request('price_max') }}">
-                </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-search">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
+    <form method="GET" action="{{ route('buyer.dashboard') }}" class="buyer-filter">
+        <input type="text" name="search" placeholder="Cari produk..." value="{{ request('search') }}">
 
-    <!-- Products Grid -->
+        <select name="category">
+            <option value="">Semua Kategori</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
+
+        <input type="number" name="price_min" placeholder="Harga Min" value="{{ request('price_min') }}">
+        <input type="number" name="price_max" placeholder="Harga Max" value="{{ request('price_max') }}">
+
+        <button type="submit">Cari</button>
+    </form>
+
+    <!-- Product List -->
     @if($products->count() > 0)
-        <div class="products-section">
-            <h4 class="section-title">📦 Produk Tersedia</h4>
-            <div class="row g-4">
-                @foreach($products as $product)
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product-card">
-                            <a href="{{ route('buyer.products.show', $product->id) }}" class="product-image-link">
-                                @if($product->images && $product->images->count() > 0)
-                                    <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" 
-                                         class="product-image" 
-                                         alt="{{ $product->name }}">
-                                @else
-                                    <div class="product-image-placeholder">
-                                        <i class="fas fa-image fa-3x"></i>
-                                        <p>No Image</p>
-                                    </div>
-                                @endif
-                            </a>
-                            
-                            <div class="product-info">
-                                <h6 class="product-title">
-                                    <a href="{{ route('buyer.products.show', $product->id) }}">
-                                        {{ Str::limit($product->name, 40) }}
-                                    </a>
-                                </h6>
-                                
-                                <div class="store-name">
-                                    <i class="fas fa-store"></i> 
-                                    {{ $product->store->name ?? 'Unknown' }}
-                                </div>
-                                
-                                <div class="product-meta">
-                                    <span class="product-price">
-                                        Rp {{ number_format($product->price, 0, ',', '.') }}
-                                    </span>
-                                    <span class="product-stock">
-                                        Stok: {{ $product->stock }}
-                                    </span>
-                                </div>
-                                
-                                <form action="{{ route('buyer.cart.add') }}" method="POST" class="add-to-cart-form">
-                                    @csrf
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="qty" value="1">
-                                    <button type="submit" class="btn-add-cart">
-                                        <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        <div class="buyer-product-title">Produk Untukmu</div>
 
-            <!-- Pagination -->
-            <div class="pagination-wrapper">
-                {{ $products->links() }}
-            </div>
+        <div class="buyer-product-grid">
+            @foreach($products as $product)
+                <div class="buyer-product-card">
+
+                    <!-- Image -->
+                    <a href="{{ route('buyer.products.show', $product->id) }}">
+                        @if($product->images->count() > 0)
+                            <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}">
+                        @else
+                            <div class="no-image">No Image</div>
+                        @endif
+                    </a>
+
+                    <!-- Info -->
+                    <div class="buyer-product-info">
+                        <a href="{{ route('buyer.products.show', $product->id) }}" class="buyer-product-name">
+                            {{ \Illuminate\Support\Str::limit($product->name, 40) }}
+                        </a>
+
+                        <div class="buyer-store-name">
+                            <i class="fas fa-store"></i> {{ $product->store->name ?? 'Unknown' }}
+                        </div>
+
+                        <div class="buyer-product-price">
+                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                        </div>
+
+                        <div class="buyer-product-stock">
+                            Stok: {{ $product->stock }}
+                        </div>
+
+                        <form action="{{ route('buyer.cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="qty" value="1">
+                            <button class="buyer-add-cart">
+                                <i class="fas fa-cart-plus"></i> Keranjang
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            @endforeach
         </div>
+
+        <!-- Pagination -->
+        <div class="buyer-pagination">
+            {{ $products->links() }}
+        </div>
+
     @else
-        <div class="empty-state">
-            <div class="empty-icon">
-                <i class="fas fa-box-open fa-4x"></i>
-            </div>
-            <h5>Produk tidak ditemukan</h5>
-            <p>Coba gunakan filter yang berbeda atau kata kunci lain.</p>
-            <a href="{{ route('buyer.dashboard') }}" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Kembali ke Semua Produk
+        <div class="buyer-empty">
+            <i class="fas fa-box-open"></i>
+            <h4>Produk tidak ditemukan</h4>
+            <a href="{{ route('buyer.dashboard') }}" class="buyer-empty-btn">
+                Kembali ke semua produk
             </a>
         </div>
     @endif
+
 </div>
 @endsection
