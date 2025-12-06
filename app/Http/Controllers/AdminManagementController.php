@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Store;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,21 +11,17 @@ class AdminManagementController extends Controller
 {
     /**
      * User & Store Management Page
+     * Akses dibatasi di route dengan middleware: auth + role:admin
      */
     public function index()
     {
-        // Extra safety (di luar middleware role:admin)
-        if (! Auth::user() || Auth::user()->role !== 'admin') {
-            abort(403, 'Hanya admin yang dapat mengakses halaman ini.');
-        }
-
         $users = User::with('store')
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15, ['*'], 'users_page');
 
         $stores = Store::with('user')
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15, ['*'], 'stores_page');
 
         return view('user_store_management', compact('users', 'stores'));
     }
@@ -36,11 +31,7 @@ class AdminManagementController extends Controller
      */
     public function destroyUser(User $user)
     {
-        $admin = Auth::user();
-
-        if (! $admin || $admin->role !== 'admin') {
-            abort(403, 'Hanya admin yang dapat menghapus user.');
-        }
+        $admin = Auth::user(); // sudah pasti admin karena lewat middleware
 
         // Jangan biarkan admin menghapus dirinya sendiri
         if ($admin->id === $user->id) {
@@ -73,11 +64,7 @@ class AdminManagementController extends Controller
      */
     public function destroyStore(Store $store)
     {
-        $admin = Auth::user();
-
-        if (! $admin || $admin->role !== 'admin') {
-            abort(403, 'Hanya admin yang dapat menghapus store.');
-        }
+        // Admin sudah dijamin oleh middleware
 
         // Hapus logo fisik jika ada
         if ($store->logo) {

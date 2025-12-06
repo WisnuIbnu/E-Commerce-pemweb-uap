@@ -10,18 +10,19 @@ class StoreVerificationController extends Controller
 {
     /**
      * Tampilkan daftar store untuk verifikasi.
+     * Akses dibatasi di routes dengan middleware: auth + role:admin
      */
     public function index()
     {
         $pendingStores = Store::with('user')
             ->where('is_verified', 0)
             ->latest()
-            ->paginate(10);
+            ->paginate(10, ['*'], 'pending_page');
 
         $verifiedStores = Store::with('user')
             ->where('is_verified', 1)
             ->latest()
-            ->paginate(10);
+            ->paginate(10, ['*'], 'verified_page');
 
         return view('store_verification', compact('pendingStores', 'verifiedStores'));
     }

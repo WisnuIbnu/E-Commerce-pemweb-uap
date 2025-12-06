@@ -13,16 +13,11 @@ use Illuminate\Support\Str;
 class SellerProductController extends Controller
 {
     /**
-     * List produk seller → pakai view store_dasboard.blade.php
+     * List produk seller → view store_dasboard.blade.php
      */
     public function index()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store; // sudah dijamin ada & verified oleh middleware
 
         $products = Product::with(['productCategory', 'productImages'])
             ->where('store_id', $store->id)
@@ -37,13 +32,7 @@ class SellerProductController extends Controller
      */
     public function create()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
-
+        $store      = Auth::user()->store;
         $categories = ProductCategory::all();
 
         return view('seller.products.create', compact('store', 'categories'));
@@ -54,17 +43,12 @@ class SellerProductController extends Controller
      */
     public function store(Request $request)
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store;
 
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
             'product_category_id' => ['required', 'exists:product_categories,id'],
-            'description'         => ['nullable', 'string'],
+            'description'         => ['required', 'string'],
             'condition'           => ['required', 'in:new,second'],
             'price'               => ['required', 'numeric', 'min:0'],
             'stock'               => ['required', 'integer', 'min:0'],
@@ -98,10 +82,10 @@ class SellerProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $product->store_id !== $store->id) {
+        // ownership check: produk harus milik store ini
+        if ($product->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak mengedit produk ini.');
         }
 
@@ -115,17 +99,16 @@ class SellerProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $product->store_id !== $store->id) {
+        if ($product->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak mengedit produk ini.');
         }
 
         $validated = $request->validate([
             'name'                => ['required', 'string', 'max:255'],
             'product_category_id' => ['required', 'exists:product_categories,id'],
-            'description'         => ['nullable', 'string'],
+            'description'         => ['required', 'string'],
             'condition'           => ['required', 'in:new,second'],
             'price'               => ['required', 'numeric', 'min:0'],
             'stock'               => ['required', 'integer', 'min:0'],
@@ -144,10 +127,9 @@ class SellerProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $product->store_id !== $store->id) {
+        if ($product->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak menghapus produk ini.');
         }
 
@@ -170,10 +152,9 @@ class SellerProductController extends Controller
      */
     public function images(Product $product)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $product->store_id !== $store->id) {
+        if ($product->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak mengelola gambar produk ini.');
         }
 
@@ -187,10 +168,9 @@ class SellerProductController extends Controller
      */
     public function storeImage(Request $request, Product $product)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $product->store_id !== $store->id) {
+        if ($product->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak menambah gambar untuk produk ini.');
         }
 
@@ -217,12 +197,9 @@ class SellerProductController extends Controller
      */
     public function destroyImage(Product $product, ProductImage $image)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
         if (
-            ! $store ||
-            ! $store->is_verified ||
             $product->store_id !== $store->id ||
             $image->product_id !== $product->id
         ) {

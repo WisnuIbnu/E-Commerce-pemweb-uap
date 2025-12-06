@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StoreBalance;
 use App\Models\StoreBalanceHistory;
-use App\Models\WithDrawal;
+use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +19,7 @@ class WithdrawalController extends Controller
      */
     public function index()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // Hanya untuk store yang sudah terverifikasi
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store; // sudah dijamin ada & verified oleh middleware
 
         // Ambil atau buat saldo toko
         $balance = StoreBalance::firstOrCreate(
@@ -34,12 +28,12 @@ class WithdrawalController extends Controller
         );
 
         // Riwayat withdrawal milik saldo toko ini
-        $withdrawals = WithDrawal::where('store_balance_id', $balance->id)
+        $withdrawals = Withdrawal::where('store_balance_id', $balance->id)
             ->latest()
             ->paginate(10);
 
         // Ambil data bank terakhir (kalau ada) untuk prefill form
-        $lastWithdrawal = WithDrawal::where('store_balance_id', $balance->id)
+        $lastWithdrawal = Withdrawal::where('store_balance_id', $balance->id)
             ->latest()
             ->first();
 
@@ -56,12 +50,7 @@ class WithdrawalController extends Controller
      */
     public function store(Request $request)
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store; // sudah dijamin oleh middleware
 
         $balance = StoreBalance::firstOrCreate(
             ['store_id' => $store->id],
@@ -86,7 +75,7 @@ class WithdrawalController extends Controller
 
         try {
             // Buat withdrawal dengan status pending
-            $withdrawal = WithDrawal::create([
+            $withdrawal = Withdrawal::create([
                 'store_balance_id'    => $balance->id,
                 'amount'              => $validated['amount'],
                 'bank_account_name'   => $validated['bank_account_name'],
@@ -105,7 +94,7 @@ class WithdrawalController extends Controller
                 'store_balance_id' => $balance->id,
                 'type'             => 'withdraw',
                 'reference_id'     => (string) $withdrawal->id,
-                'reference_type'   => WithDrawal::class,
+                'reference_type'   => Withdrawal::class,
                 'amount'           => $validated['amount'],
                 'remarks'          => 'Request withdrawal #' . $withdrawal->id,
             ]);

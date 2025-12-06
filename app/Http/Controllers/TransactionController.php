@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
@@ -13,18 +12,13 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $user  = Auth::user();
-        $buyer = $user->buyer; 
-
-        if (! $buyer) {
-            abort(403, 'Buyer tidak ditemukan untuk user ini.');
-        }
+        $buyer = Auth::user()->buyer; // dijamin ada oleh middleware
 
         $transactions = Transaction::with([
-                'store',                       // toko pemilik transaksi
-                'transactionDetails.product',  // produk per transaksi
+                'store',
+                'transactionDetails.product',
             ])
-            ->where('buyer_id', $buyer->id)
+            ->where('buyer_id', $buyer->id)  // ownership check
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -36,23 +30,16 @@ class TransactionController extends Controller
      */
     public function show(string $code)
     {
-        $user  = Auth::user();
-        $buyer = $user->buyer;
-
-        if (! $buyer) {
-            abort(403, 'Buyer tidak ditemukan untuk user ini.');
-        }
+        $buyer = Auth::user()->buyer;
 
         $transaction = Transaction::with([
                 'store',
                 'transactionDetails.product',
             ])
             ->where('code', $code)
-            ->where('buyer_id', $buyer->id)
+            ->where('buyer_id', $buyer->id) // ownership check
             ->firstOrFail();
 
         return view('riwayat_detail', compact('transaction'));
-        // kalau kamu hanya punya riwayat.blade.php, bisa sementara:
-        return view('riwayat', compact('transaction'));
     }
 }

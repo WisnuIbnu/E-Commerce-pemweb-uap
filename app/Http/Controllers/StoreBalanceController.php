@@ -16,13 +16,7 @@ class StoreBalanceController extends Controller
      */
     public function index(Request $request)
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // Hanya store yang sudah terverifikasi yang boleh akses
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store; // sudah dijamin ada & verified oleh middleware
 
         // Ambil atau buat record saldo untuk store ini
         $balance = StoreBalance::firstOrCreate(
