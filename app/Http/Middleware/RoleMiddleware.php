@@ -15,24 +15,33 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        // Check if user is authenticated
-        if (!auth()->check()) {
+        $user = auth()->user();
+
+        if (!$user) {
             return redirect()->route('login');
         }
 
-        // Check if user's role is in allowed roles
-        if (in_array(auth()->user()->role, $roles)) {
+        // Admin check
+        if (in_array('admin', $roles) && $user->role === 'admin') {
             return $next($request);
         }
 
-        // Redirect to appropriate dashboard based on role
-        $user = auth()->user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'seller') {
-            return redirect()->route('seller.dashboard');
-        } else {
-            return redirect()->route('buyer.dashboard');
+        // Seller check (member dengan toko verified)
+        if (in_array('seller', $roles)) {
+            $store = \App\Models\Store::where('user_id', $user->id)
+                ->where('is_verified', 1)
+                ->first();
+            
+            if ($store) {
+                return $next($request);
+            }
         }
+
+        // Member check
+        if (in_array('member', $roles) && $user->role === 'member') {
+            return $next($request);
+        }
+
+        abort(403, 'Unauthorized action.');
     }
 }
