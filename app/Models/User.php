@@ -1,77 +1,77 @@
 <?php
+// app/Models/User.php - ADD THIS RELATIONSHIP
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'phone',
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Get the store owned by the user
      */
-    protected function casts(): array
+    public function store(): HasOne
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasOne(Store::class, 'buyer_id');
     }
 
-    // Helper methods
-    public function isAdmin()
+    /**
+     * Get user's transactions (as buyer)
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'buyer_id');
+    }
+
+    /**
+     * Get user's reviews
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'user_id');
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
 
-    public function isMember()
+    /**
+     * Check if user has a store
+     */
+    public function hasStore(): bool
     {
-        return $this->role === 'member';
-    }
-    
-    // Cek apakah user adalah seller (punya store yang verified)
-    public function isSeller()
-    {
-        return $this->store()->exists() && $this->store->is_verified;
-    }
-    // relationships can hava one store 
-    public function store()
-    {
-        return $this->hasOne(Store::class);
+        return $this->store !== null;
     }
 
-    public function buyer()
+    /**
+     * Check if user has an approved store
+     */
+    public function hasApprovedStore(): bool
     {
-        return $this->hasOne(Buyer::class);
+        return $this->hasStore() && $this->store->isApproved();
     }
 }
