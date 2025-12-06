@@ -174,7 +174,10 @@
     <header class="main-header">
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">SORAE</a>
+                <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                    <img src="{{ asset('images/logo-sorae.png') }}" alt="SORAE Logo" style="height: 50px; margin-right: 15px;">
+                    <span>SORAE</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -269,7 +272,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <h3 class="footer-title">SORAE</h3>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="{{ asset('images/logo-sorae.png') }}" alt="SORAE Logo" style="height: 40px; margin-right: 10px;">
+                        <h3 class="footer-title mb-0">SORAE</h3>
+                    </div>
                     <p>Premium fashion import store bringing you the finest collections from around the world.</p>
                     <div class="social-icons mt-3">
                         <a href="#"><i class="fab fa-facebook"></i></a>

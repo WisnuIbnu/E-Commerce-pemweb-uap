@@ -2,10 +2,35 @@
 
 @section('title', 'Seller Dashboard - SORAE')
 
+@section('styles')
+<style>
+    .dashboard-hero {
+        background: linear-gradient(rgba(86, 28, 36, 0.8), rgba(86, 28, 36, 0.8)), 
+                    url('{{ asset('images/hero-fashion.png') }}') center/cover no-repeat;
+        color: white;
+        padding: 60px 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .dashboard-hero h2 {
+        color: white !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+</style>
+@endsection
+
 @section('content')
-<h2 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">
-    <i class="fas fa-store"></i> {{ $store->name }} Dashboard
-</h2>
+<!-- Dashboard Header with Hero Image -->
+<div class="dashboard-hero">
+    <h2 style="font-weight: 700; margin-bottom: 10px;">
+        <i class="fas fa-store"></i> {{ $store->name }}
+    </h2>
+    <p class="mb-0" style="font-size: 1.2rem; color: var(--secondary-color);">
+        Welcome to your seller dashboard
+    </p>
+</div>
 
 @if(!$store->is_verified)
 <div class="alert alert-warning">

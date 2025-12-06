@@ -5,11 +5,28 @@
 @section('styles')
 <style>
     .hero-section {
-        background: linear-gradient(135deg, #561C24 0%, #8B2E3B 100%);
+        background: linear-gradient(rgba(86, 28, 36, 0.7), rgba(86, 28, 36, 0.7)), 
+                    url('{{ asset('images/hero-fashion.png') }}') center/cover no-repeat;
         color: white;
-        padding: 100px 0;
+        padding: 150px 0;
         margin: -40px -15px 40px -15px;
         text-align: center;
+        position: relative;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(86, 28, 36, 0.3);
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
     }
     
     .hero-title {
@@ -147,7 +164,7 @@
 @section('content')
 <!-- Hero Section -->
 <div class="hero-section">
-    <div class="container">
+    <div class="container hero-content">
         <h1 class="hero-title">SORAE</h1>
         <p class="hero-subtitle">Discover Premium Fashion from Around the World</p>
         <a href="{{ url('/products') }}" class="btn btn-light btn-lg px-5 py-3">
