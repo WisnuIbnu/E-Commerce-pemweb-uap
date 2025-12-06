@@ -1,38 +1,28 @@
 <?php
-
 namespace App\Http\Controllers\Buyer;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class BuyerProfileController extends Controller
 {
     public function edit()
     {
         $user = auth()->user();
-        return view('buyer.profile', compact('user'));
+        return view('buyer.profile.edit', ['user' => $user]);
     }
 
     public function update(Request $request)
     {
-        $user = auth()->user();
-
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:8|confirmed',
+            'email' => 'required|email|unique:users,email,' . auth()->id(),
+            'phone' => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user = auth()->user();
+        $user->update($request->all());
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

@@ -8,16 +8,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        // Check if user is authenticated
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
-        if (auth()->user()->role !== $role) {
-            abort(403, 'Unauthorized');
+        // Check if user's role is in allowed roles
+        if (in_array(auth()->user()->role, $roles)) {
+            return $next($request);
         }
 
-        return $next($request);
+        // Redirect to appropriate dashboard based on role
+        $user = auth()->user();
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'seller') {
+            return redirect()->route('seller.dashboard');
+        } else {
+            return redirect()->route('buyer.dashboard');
+        }
     }
 }
