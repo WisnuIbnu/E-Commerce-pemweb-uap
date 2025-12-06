@@ -31,6 +31,7 @@ Route::view('/marketplace', 'pages.marketplace')->name('marketplace');
 Route::view('/how-it-works', 'pages.how')->name('how-it-works');
 Route::view('/pricing', 'pages.pricing')->name('pricing');
 Route::view('/sell', 'pages.sell')->name('sell');
+Route::view('/dashboard', 'pages.dashboard')->name('dashboard');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/support', 'pages.support')->name('support');
 Route::view('/guide', 'pages.guide')->name('guide');
@@ -60,7 +61,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'customer'])->group(function () {
-    
+
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
