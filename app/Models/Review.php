@@ -1,26 +1,31 @@
 <?php
-// app/Models/Review.php - ADD IF NOT EXISTS
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Review extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'product_id',
         'rating',
-        'comment'
+        'comment',
     ];
 
-    public function user(): BelongsTo
+    protected $casts = [
+        'rating' => 'integer',
+    ];
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function product(): BelongsTo
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }

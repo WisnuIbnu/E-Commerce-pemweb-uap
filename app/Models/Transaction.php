@@ -1,35 +1,36 @@
 <?php
 
-// app/Models/Transaction.php - ADD IF NOT EXISTS
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'buyer_id',
         'total',
         'status',
         'shipping_address',
-        'payment_method'
+        'payment_method',
+        'notes',
+        'paid_at',
     ];
 
     protected $casts = [
-        'total' => 'decimal:2'
+        'total' => 'decimal:2',
+        'paid_at' => 'datetime',
     ];
 
-    public function buyer(): BelongsTo
+    public function buyer()
     {
         return $this->belongsTo(User::class, 'buyer_id');
     }
 
-    public function items(): HasMany
+    public function items()
     {
         return $this->hasMany(TransactionItem::class);
     }
 }
-
