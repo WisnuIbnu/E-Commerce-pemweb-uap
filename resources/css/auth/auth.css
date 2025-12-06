@@ -59,7 +59,7 @@ body {
 
 /* Brand Text - Puffy Baby */
 .w-full.sm\:max-w-md::after {
-    content: 'Puffy Baby';
+    content: 'PuffyBaby';
     position: absolute;
     top: 20px;
     left: 50%;
