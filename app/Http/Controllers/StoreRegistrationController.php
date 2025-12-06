@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class StoreRegistrationController extends Controller
@@ -48,7 +47,7 @@ class StoreRegistrationController extends Controller
             'city'        => ['required', 'string', 'max:255'],
             'address'     => ['required', 'string'],
             'postal_code' => ['required', 'string', 'max:255'],
-            'logo'        => ['required', 'image', 'max:2048'], // logo wajib, bisa diubah kalau mau opsional
+            'logo'        => ['required', 'image', 'max:2048'],
         ]);
 
         // Simpan logo ke storage
@@ -66,11 +65,11 @@ class StoreRegistrationController extends Controller
             'city'        => $validated['city'],
             'address'     => $validated['address'],
             'postal_code' => $validated['postal_code'],
-            'is_verified' => 0, // default: menunggu verifikasi admin
+            'is_verified' => 0,
         ]);
 
         return redirect()
-            ->route('dashboard') // bisa nanti diganti ke route store dashboard
+            ->route('dashboard')
             ->with('success', 'Pendaftaran toko berhasil, menunggu verifikasi admin.');
     }
 }

@@ -14,19 +14,13 @@ class SellerOrderController extends Controller
      */
     public function index()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // hanya seller terverifikasi yang boleh mengakses
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store; // sudah dijamin ada & verified
 
         $orders = Transaction::with([
                 'buyer',
                 'transactionDetails.product',
             ])
-            ->where('store_id', $store->id)
+            ->where('store_id', $store->id) // ownership: hanya pesanan ke toko ini
             ->latest()
             ->paginate(10);
 
@@ -35,14 +29,14 @@ class SellerOrderController extends Controller
 
     /**
      * Menampilkan detail pesanan lengkap.
-     * View opsional: order_detail.blade.php
+     * View: order_detail.blade.php
      */
     public function show(Transaction $transaction)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $transaction->store_id !== $store->id) {
+        // ownership check
+        if ($transaction->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak melihat pesanan ini.');
         }
 
@@ -52,26 +46,32 @@ class SellerOrderController extends Controller
     }
 
     /**
-     * Update status pesanan (pending → processed → shipped → completed)
+     * Update status pembayaran pesanan (unpaid → paid).
+     * Di DB: kolom payment_status enum('unpaid','paid')
      */
-    public function updateStatus(Request $request, Transaction $transaction)
+    public function updateStatus(Transaction $transaction)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $transaction->store_id !== $store->id) {
+        if ($transaction->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak mengubah status pesanan ini.');
         }
 
-        $validated = $request->validate([
-            'status' => ['required', 'in:pending,processed,shipped,completed,cancelled'],
-        ]);
+        // Kalau sudah paid, tidak perlu diubah lagi
+        if ($transaction->payment_status === 'paid') {
+            return redirect()
+                ->route('seller.orders.index')
+                ->with('info', 'Transaksi ini sudah ditandai sebagai paid.');
+        }
 
-        $transaction->update(['status' => $validated['status']]);
+        // Tandai sebagai sudah dibayar
+        $transaction->update([
+            'payment_status' => 'paid',
+        ]);
 
         return redirect()
             ->route('seller.orders.index')
-            ->with('success', 'Status pesanan berhasil diperbarui.');
+            ->with('success', 'Status pembayaran berhasil diperbarui menjadi paid.');
     }
 
     /**
@@ -79,10 +79,9 @@ class SellerOrderController extends Controller
      */
     public function updateTracking(Request $request, Transaction $transaction)
     {
-        $user  = Auth::user();
-        $store = $user->store;
+        $store = Auth::user()->store;
 
-        if (! $store || ! $store->is_verified || $transaction->store_id !== $store->id) {
+        if ($transaction->store_id !== $store->id) {
             abort(403, 'Anda tidak berhak mengubah nomor resi.');
         }
 

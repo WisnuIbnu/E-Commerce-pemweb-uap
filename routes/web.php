@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BuyerProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StoreRegistrationController;
@@ -15,140 +16,204 @@ use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\StoreVerificationController;
 
-// -------------------------------
-// PUBLIC ROUTES (Tidak perlu login)
-// -------------------------------
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES (tanpa login)
+|--------------------------------------------------------------------------
+*/
+
+// Bisa pakai landing page biasa
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
-// -------------------------------
-// PROFILE ROUTES (Bawaan Breeze)
-// -------------------------------
+
+/*
+|--------------------------------------------------------------------------
+| AUTH ROUTES (bawaan Breeze / Jetstream)
+|--------------------------------------------------------------------------
+*/
+require __DIR__.'/auth.php';
+
+
+/*
+|--------------------------------------------------------------------------
+| PROFILE ROUTES (bisa untuk semua user yang login: admin/member)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 });
 
-// -------------------------------
-// MEMBER ROUTES (harus login & role:member)
-// -------------------------------
+
+/*
+|--------------------------------------------------------------------------
+| MEMBER ROUTES (user role: member)
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth', 'role:member'])->group(function () {
 
-    // Dashboard (list produk customer)
+    // Dashboard member → list produk
     Route::get('/dashboard', [ProductController::class, 'index'])
         ->name('dashboard');
-
-    // Product Detail Page (customer)
+    
+    // Detail produk
     Route::get('/products/{slug}', [ProductController::class, 'show'])
         ->name('products.show');
 
-    // Checkout
-    Route::get('/checkout/{product}', [CheckoutController::class, 'create'])
-        ->name('checkout.show');
+    /*
+    |--------------------------------------------------------------------------
+    | STORE REGISTRATION (member yang mau jadi seller)
+    |--------------------------------------------------------------------------
+    */
 
-    Route::post('/checkout/{product}', [CheckoutController::class, 'store'])
-        ->name('checkout.store');
-
-    // Riwayat transaksi (list)
-    Route::get('/transactions', [TransactionController::class, 'index'])
-        ->name('transactions.index');
-
-    // Detail transaksi
-    Route::get('/transactions/{code}', [TransactionController::class, 'show'])
-        ->name('transactions.show');
-
-    // Store Registration Page
+    // Halaman pendaftaran store
     Route::get('/store/registration', [StoreRegistrationController::class, 'create'])
-        ->name('store.registration');
-
+        ->name('store.registration.create');
     Route::post('/store/registration', [StoreRegistrationController::class, 'store'])
         ->name('store.registration.store');
 
-    // ---------------------------------
-    // SELLER ROUTES (toko milik member)
-    // ---------------------------------
-    Route::prefix('seller')->name('seller.')->group(function () {
+    // Buyer Profile Creation (member yang mau beli)
+    Route::get('/buyer/profile/create', [BuyerProfileController::class, 'create'])
+        ->name('buyer.profile.create');
+    Route::post('/buyer/profile', [BuyerProfileController::class, 'store'])
+        ->name('buyer.profile.store');
 
-        // Seller Product CRUD (pakai SellerProductController)
-        Route::resource('products', SellerProductController::class)
-            ->except(['show']);
+    /*
+    |--------------------------------------------------------------------------
+    | BUYER AREA (harus punya Buyer profile) 
+    | middleware tambahan: buyer.profile
+    |--------------------------------------------------------------------------
+    */
 
-        // Manage Product Images
-        Route::get('/products/{product}/images', [SellerProductController::class, 'images'])
-            ->name('products.images');
+    Route::middleware('buyer.profile')->group(function () {
 
-        Route::post('/products/{product}/images', [SellerProductController::class, 'storeImage'])
-            ->name('products.images.store');
+        // Riwayat transaksi buyer
+        Route::get('/transactions', [TransactionController::class, 'index'])
+            ->name('transactions.index');
 
-        Route::delete('/products/{product}/images/{image}', [SellerProductController::class, 'destroyImage'])
-            ->name('products.images.destroy');
+        Route::get('/transactions/{code}', [TransactionController::class, 'show'])
+            ->name('transactions.show');
 
-        // Store Profile (update/delete profil toko)
-        Route::get('/store/profile', [StoreProfileController::class, 'edit'])
+        // Checkout (1 produk)
+        Route::get('/products/{product}/checkout', [CheckoutController::class, 'create'])
+            ->name('checkout.create');
+
+        Route::post('/products/{product}/checkout', [CheckoutController::class, 'store'])
+            ->name('checkout.store');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | SELLER AREA (harus punya store & terverifikasi)
+    | middleware tambahan: seller.verified
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('seller.verified')->group(function () {
+
+        // Dashboard toko (list produk milik seller)
+        Route::get('/seller/products', [SellerProductController::class, 'index'])
+            ->name('seller.products.index');
+
+        // Profil toko
+        Route::get('/seller/store/profile', [StoreProfileController::class, 'edit'])
             ->name('store.profile.edit');
 
-        Route::put('/store/profile', [StoreProfileController::class, 'update'])
+        Route::put('/seller/store/profile', [StoreProfileController::class, 'update'])
             ->name('store.profile.update');
 
-        Route::delete('/store/profile', [StoreProfileController::class, 'destroy'])
+        Route::delete('/seller/store/profile', [StoreProfileController::class, 'destroy'])
             ->name('store.profile.destroy');
 
-        // Order Management (pesanan masuk ke toko)
-        Route::get('/orders', [SellerOrderController::class, 'index'])
-            ->name('orders.index');
+        // Tambah produk
+        Route::get('/seller/products/create', [SellerProductController::class, 'create'])
+            ->name('seller.products.create');
 
-        Route::get('/orders/{transaction}', [SellerOrderController::class, 'show'])
-            ->name('orders.show');
+        Route::post('/seller/products', [SellerProductController::class, 'store'])
+            ->name('seller.products.store');
 
-        Route::put('/orders/{transaction}/status', [SellerOrderController::class, 'updateStatus'])
-            ->name('orders.status.update');
+        // Edit produk
+        Route::get('/seller/products/{product}/edit', [SellerProductController::class, 'edit'])
+            ->name('seller.products.edit');
 
-        Route::put('/orders/{transaction}/tracking', [SellerOrderController::class, 'updateTracking'])
-            ->name('orders.tracking.update');
+        Route::put('/seller/products/{product}', [SellerProductController::class, 'update'])
+            ->name('seller.products.update');
 
-        // Store Balance (lihat saldo + riwayat saldo)
-        Route::get('/balance', [StoreBalanceController::class, 'index'])
-            ->name('balance.index');
+        // Hapus produk
+        Route::delete('/seller/products/{product}', [SellerProductController::class, 'destroy'])
+            ->name('seller.products.destroy');
 
-        // Withdrawals (ajukan penarikan saldo)
-        Route::get('/withdrawals', [WithdrawalController::class, 'index'])
-            ->name('withdrawals.index');
+        // Kelola gambar produk
+        Route::get('/seller/products/{product}/images', [SellerProductController::class, 'images'])
+            ->name('seller.products.images');
 
-        Route::post('/withdrawals', [WithdrawalController::class, 'store'])
-            ->name('withdrawals.store');
+        Route::post('/seller/products/{product}/images', [SellerProductController::class, 'storeImage'])
+            ->name('seller.products.images.store');
+
+        Route::delete('/seller/products/{product}/images/{image}', [SellerProductController::class, 'destroyImage'])
+            ->name('seller.products.images.destroy');
+
+        // Manajemen pesanan (order management)
+        Route::get('/seller/orders', [SellerOrderController::class, 'index'])
+            ->name('seller.orders.index');
+
+        Route::get('/seller/orders/{transaction}', [SellerOrderController::class, 'show'])
+            ->name('seller.orders.show');
+
+        Route::patch('/seller/orders/{transaction}/status', [SellerOrderController::class, 'updateStatus'])
+            ->name('seller.orders.updateStatus');
+
+        Route::patch('/seller/orders/{transaction}/tracking', [SellerOrderController::class, 'updateTracking'])
+            ->name('seller.orders.updateTracking');
+
+        // Saldo toko (store balance)
+        Route::get('/seller/balance', [StoreBalanceController::class, 'index'])
+            ->name('store.balance.index');
+
+        // Penarikan saldo (withdrawal)
+        Route::get('/seller/withdrawals', [WithdrawalController::class, 'index'])
+            ->name('seller.withdrawals.index');
+
+        Route::post('/seller/withdrawals', [WithdrawalController::class, 'store'])
+            ->name('seller.withdrawals.store');
     });
 });
 
-// -------------------------------
-// ADMIN ROUTES (Owner of e-commerce)
-// -------------------------------
-Route::middleware(['auth', 'role:admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
 
-        // Store Verification Page
-        Route::get('/stores/verifications', [StoreVerificationController::class, 'index'])
-            ->name('stores.verifications.index');
+/*
+|--------------------------------------------------------------------------
+| ADMIN AREA (pakai role:admin)
+|--------------------------------------------------------------------------
+*/
 
-        Route::put('/stores/{store}/verify', [StoreVerificationController::class, 'verify'])
-            ->name('stores.verify');
+Route::middleware(['auth', 'role:admin'])->group(function () {
 
-        Route::delete('/stores/{store}/reject', [StoreVerificationController::class, 'reject'])
-            ->name('stores.reject');
+    // Store Verification Page
+    Route::get('/admin/stores/verifications', [StoreVerificationController::class, 'index'])
+        ->name('admin.stores.verifications.index');
 
-        // User & Store Management Page
-        Route::get('/users-stores', [AdminManagementController::class, 'index'])
-            ->name('users-stores.index');
+    Route::patch('/admin/stores/{store}/verify', [StoreVerificationController::class, 'verify'])
+        ->name('admin.stores.verifications.verify');
 
-        Route::delete('/users/{user}', [AdminManagementController::class, 'destroyUser'])
-            ->name('users.destroy');
+    Route::delete('/admin/stores/{store}/reject', [StoreVerificationController::class, 'reject'])
+        ->name('admin.stores.verifications.reject');
 
-        Route::delete('/stores/{store}', [AdminManagementController::class, 'destroyStore'])
-            ->name('stores.destroy');
-    });
+    // User & Store Management Page
+    Route::get('/admin/users-stores', [AdminManagementController::class, 'index'])
+        ->name('admin.users-stores.index');
 
+    Route::delete('/admin/users/{user}', [AdminManagementController::class, 'destroyUser'])
+        ->name('admin.users.destroy');
 
-require __DIR__.'/auth.php';
+    Route::delete('/admin/stores/{store}', [AdminManagementController::class, 'destroyStore'])
+        ->name('admin.stores.destroy');
+});

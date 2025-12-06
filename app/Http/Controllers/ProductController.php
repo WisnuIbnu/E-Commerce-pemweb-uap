@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -19,13 +21,14 @@ class ProductController extends Controller
             $query->where('product_category_id', $request->category);
         }
 
+        // Search berdasarkan nama
         if ($request->filled('q')) {
             $query->where('name', 'like', '%'.$request->q.'%');
         }
 
+        // Sorting
         if ($request->filled('sort')) {
             switch ($request->sort) {
-
                 case 'price_asc':
                     $query->orderBy('price', 'asc');
                     break;
@@ -44,11 +47,11 @@ class ProductController extends Controller
             $query->orderBy('created_at', 'desc');
         }
 
-        $products = $query->latest()->paginate(12);
+        // JANGAN latest() lagi, supaya sort di atas tetap kepakai
+        $products   = $query->paginate(12);
+        $categories = ProductCategory::all();
 
-        $categories = \App\Models\ProductCategory::all();
-        
-        return view('dashboard', compact('products'));
+        return view('dashboard', compact('products', 'categories'));
     }
 
     public function show(string $slug)

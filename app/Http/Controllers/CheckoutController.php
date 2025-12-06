@@ -17,9 +17,7 @@ class CheckoutController extends Controller
      */
     public function create(Product $product)
     {
-        // Untuk sekarang anggap quantity default = 1
         $quantity = 1;
-
         $subtotal = $product->price * $quantity;
 
         return view('checkout', [
@@ -36,50 +34,60 @@ class CheckoutController extends Controller
     {
         $request->validate([
             'address'        => ['required', 'string', 'max:255'],
-            'shipping_type'  => ['required', 'string', 'max:100'],
+            'city'           => ['required', 'string', 'max:255'],
+            'postal_code'    => ['required', 'string', 'max:255'],
+            'shipping'       => ['required', 'string', 'max:255'],   // nama kurir
+            'shipping_type'  => ['required', 'string', 'max:100'],   // jenis layanan
             'shipping_cost'  => ['nullable', 'numeric', 'min:0'],
             'quantity'       => ['required', 'integer', 'min:1'],
         ]);
 
         $user  = Auth::user();
-        $buyer = $user->buyer; // asumsi relasi buyer() sudah ada di model User
+        $buyer = $user->buyer; // sudah dijamin ada oleh middleware buyer.profile
 
-        if (! $buyer) {
-            // fallback kalau entah kenapa belum ada buyer record
-            abort(403, 'Buyer tidak ditemukan untuk user ini.');
+        $quantity     = (int) $request->quantity;
+        $shippingCost = (float) ($request->shipping_cost ?? 0);
+        $productPrice = (float) $product->price;
+        $subtotal     = $productPrice * $quantity;
+        $tax          = 0; // sementara
+        $grandTotal   = $subtotal + $shippingCost + $tax;
+
+        // Cek stok (ownership tidak relevan di sini, tapi stok wajib dicek)
+        if ($product->stock < $quantity) {
+            return back()
+                ->withErrors('Stok produk tidak mencukupi.')
+                ->withInput();
         }
-
-        $quantity      = (int) $request->quantity;
-        $shippingCost  = (float) ($request->shipping_cost ?? 0);
-        $productPrice  = (float) $product->price;
-        $subtotal      = $productPrice * $quantity;
-        $totalPrice    = $subtotal + $shippingCost;
 
         DB::beginTransaction();
 
         try {
             // Buat transaksi (header)
             $transaction = Transaction::create([
-                'buyer_id'          => $buyer->id,
-                'store_id'          => $product->store_id,
-                'transaction_code'  => 'TRX-' . Str::upper(Str::random(8)),
-                'address'           => $request->address,
-                'shipping_type'     => $request->shipping_type,
-                'shipping_cost'     => $shippingCost,
-                'total_price'       => $totalPrice,
-                'status'            => 'pending', // sesuaikan dengan enum/status di DB kalau berbeda
+                'code'          => 'TRX-' . Str::upper(Str::random(8)),
+                'buyer_id'      => $buyer->id,
+                'store_id'      => $product->store_id,
+                'address'       => $request->address,
+                'address_id'    => 'ADDR-' . Str::upper(Str::random(8)),
+                'city'          => $request->city,
+                'postal_code'   => $request->postal_code,
+                'shipping'      => $request->shipping,
+                'shipping_type' => $request->shipping_type,
+                'shipping_cost' => $shippingCost,
+                'tax'           => $tax,
+                'grand_total'   => $grandTotal,
+                // payment_status pakai default 'unpaid' dari DB
             ]);
 
-            // Buat detail transaksi
+            // Buat detail transaksi (schema pakai kolom qty)
             TransactionDetail::create([
                 'transaction_id' => $transaction->id,
                 'product_id'     => $product->id,
-                'quantity'       => $quantity,
-                'price'          => $productPrice,
+                'qty'            => $quantity,
                 'subtotal'       => $subtotal,
             ]);
 
-            // kurangi stok produk
+            // Kurangi stok produk
             $product->decrement('stock', $quantity);
 
             DB::commit();
@@ -90,7 +98,6 @@ class CheckoutController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
 
-            // Untuk development, boleh dd($e->getMessage());
             return back()->withErrors('Terjadi kesalahan saat memproses checkout.');
         }
     }

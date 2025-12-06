@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -14,13 +13,8 @@ class StoreProfileController extends Controller
      */
     public function edit()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // Hanya bisa diakses jika toko sudah diverifikasi
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        // Dengan middleware seller.verified, kita bisa percaya store pasti ada & verified
+        $store = Auth::user()->store;
 
         return view('store_profile', compact('store'));
     }
@@ -30,13 +24,7 @@ class StoreProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // Hanya bisa diakses jika toko sudah diverifikasi
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store;
 
         $validated = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
@@ -48,7 +36,7 @@ class StoreProfileController extends Controller
             'logo'        => ['nullable', 'image', 'max:2048'],
         ]);
 
-        // Update data profil toko
+        // Update data profil toko (kecuali logo & is_verified)
         $store->update([
             'name'        => $validated['name'],
             'about'       => $validated['about'],
@@ -56,12 +44,11 @@ class StoreProfileController extends Controller
             'city'        => $validated['city'],
             'address'     => $validated['address'],
             'postal_code' => $validated['postal_code'],
-            // is_verified tetap tidak boleh disentuh oleh seller
         ]);
 
         // Jika ada upload logo baru
         if ($request->hasFile('logo')) {
-            // Hapus logo lama
+            // Hapus logo lama kalau ada
             if ($store->logo) {
                 Storage::disk('public')->delete($store->logo);
             }
@@ -83,13 +70,7 @@ class StoreProfileController extends Controller
      */
     public function destroy()
     {
-        $user  = Auth::user();
-        $store = $user->store;
-
-        // Hanya bisa diakses jika toko sudah diverifikasi
-        if (! $store || ! $store->is_verified) {
-            abort(403, 'Toko Anda belum terverifikasi.');
-        }
+        $store = Auth::user()->store;
 
         // Hapus logo fisik jika ada
         if ($store->logo) {
