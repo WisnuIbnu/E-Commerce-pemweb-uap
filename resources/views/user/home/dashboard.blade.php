@@ -14,15 +14,18 @@
     <header class="w-full px-12 py-6 flex items-center justify-between">
 
         {{-- Left --}}
-        <div class="font-medium tracking-wide text-sm text-gray-500">
-            HOMEPAGE
+        <div class="flex items-center">
+            <img src="{{ asset('icons/iconmpruy-removebg-preview.png') }}"
+                class="w-20 h-20 object-contain"
+                alt="Logo">
         </div>
+
 
         {{-- Center Menu --}}
         <nav class="flex gap-12 text-gray-700 text-base">
             <a href="#" class="hover:text-black">Home</a>
-            <a href="#" class="hover:text-black">Collections</a>
-            <a href="#" class="hover:text-black">New</a>
+            <a href="{{ route('products') }}" class="hover:text-black">Product</a>
+            <a href="#" class="hover:text-black">History</a>
         </nav>
 
         {{-- Right Icons --}}
@@ -41,7 +44,7 @@
     </header>
 
     {{-- SEARCH --}}
-    <div class="w-full flex justify-center mt-2 mb-10">
+    <!-- <div class="w-full flex justify-center mt-2 mb-10">
         <div class="flex items-center bg-gray-200 rounded-md px-4 py-3 w-1/2 max-w-lg">
             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
@@ -52,7 +55,7 @@
             <input type="text" placeholder="Search"
                 class="ml-3 w-full bg-transparent text-sm text-gray-600 focus:outline-none" />
         </div>
-    </div>
+    </div> -->
 
     {{-- MAIN CONTENT --}}
     <section class="px-16 mt-6 grid grid-cols-1 md:grid-cols-3 gap-10">
