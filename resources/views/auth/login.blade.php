@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
-@vite(['resources/css/login.css'])
+@vite(['resources/css/auth.css'])
 
 @section('content')
 <div class="login-wrapper">

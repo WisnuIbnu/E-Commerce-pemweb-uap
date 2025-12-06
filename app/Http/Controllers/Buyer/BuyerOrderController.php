@@ -1,21 +1,28 @@
 <?php
 namespace App\Http\Controllers\Buyer;
+
 use App\Http\Controllers\Controller;
-use App\Models\Order;
+use App\Models\Transaction;
+use Illuminate\Http\Request;
 
 class BuyerOrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('user_id', auth()->id())
+        $orders = Transaction::where('user_id', auth()->id())
+            ->with('details.product.images')
             ->latest()
             ->paginate(10);
-        return view('buyer.orders.index', ['orders' => $orders]);
+
+        return view('buyer.orders.index', compact('orders'));
     }
 
     public function show($id)
     {
-        $order = Order::findOrFail($id);
-        return view('buyer.orders.show', ['order' => $order]);
+        $order = Transaction::where('user_id', auth()->id())
+            ->with('details.product.images')
+            ->findOrFail($id);
+
+        return view('buyer.orders.show', compact('order'));
     }
 }

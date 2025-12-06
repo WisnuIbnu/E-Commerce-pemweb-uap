@@ -1,3 +1,6 @@
+/* ===========================
+   GLOBAL RESET & BASE STYLE
+=========================== */
 * {
     margin: 0;
     padding: 0;
@@ -10,6 +13,11 @@ body {
     min-height: 100vh;
 }
 
+/* ===========================
+   WRAPPERS (LOGIN / REGISTER / AUTH)
+=========================== */
+.register-wrapper,
+.login-wrapper,
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
@@ -18,6 +26,11 @@ body {
     padding: 20px;
 }
 
+/* ===========================
+   CARD STYLES
+=========================== */
+.register-card,
+.login-card,
 .auth-card {
     background: white;
     width: 100%;
@@ -27,14 +40,17 @@ body {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
 }
 
+.register-card h2,
+.login-card h2,
 .auth-card h2 {
     font-size: 28px;
     color: #304674;
-    margin-bottom: 16px;
     text-align: center;
     font-weight: 600;
+    margin-bottom: 24px;
 }
 
+/* Subjudul khusus auth card */
 .auth-subtitle {
     text-align: center;
     color: #666;
@@ -43,6 +59,9 @@ body {
     line-height: 1.5;
 }
 
+/* ===========================
+   FORM ELEMENTS
+=========================== */
 .form-group {
     margin-bottom: 16px;
 }
@@ -76,6 +95,9 @@ body {
     margin-top: 4px;
 }
 
+/* ===========================
+   BUTTONS
+=========================== */
 .btn-submit {
     width: 100%;
     padding: 12px;
@@ -100,6 +122,42 @@ body {
     transform: translateY(0);
 }
 
+.form-inline {
+    display: flex;
+    gap: 10px;
+}
+
+.form-inline .btn-submit {
+    margin-top: 0;
+}
+
+/* ===========================
+   LINK SECTIONS
+=========================== */
+.form-footer {
+    text-align: center;
+    margin-top: 16px;
+}
+
+.form-footer a,
+.form-divider a,
+.link-logout {
+    color: #304674;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.form-footer a:hover,
+.form-divider a:hover,
+.link-logout:hover {
+    color: #98bad5;
+}
+
+/* Divider */
 .form-divider {
     text-align: center;
     margin-top: 24px;
@@ -112,22 +170,9 @@ body {
     font-size: 14px;
 }
 
-.form-divider a,
-.link-logout {
-    color: #304674;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.form-divider a:hover,
-.link-logout:hover {
-    color: #98bad5;
-}
-
+/* ===========================
+   ALERTS
+=========================== */
 .alert {
     padding: 12px 14px;
     border-radius: 8px;
@@ -141,23 +186,21 @@ body {
     border: 1px solid #86efac;
 }
 
-.form-inline {
-    display: flex;
-    gap: 10px;
-}
-
-.form-inline .btn-submit {
-    margin-top: 0;
-}
-
+/* ===========================
+   RESPONSIVE
+=========================== */
 @media (max-width: 480px) {
+    .register-card,
+    .login-card,
     .auth-card {
         padding: 30px 20px;
     }
 
+    .register-card h2,
+    .login-card h2,
     .auth-card h2 {
         font-size: 24px;
-        margin-bottom: 12px;
+        margin-bottom: 20px;
     }
 
     .auth-subtitle {

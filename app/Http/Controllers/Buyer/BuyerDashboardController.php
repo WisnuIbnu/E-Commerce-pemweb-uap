@@ -14,24 +14,24 @@ class BuyerDashboardController extends Controller
         $query = Product::with(['store', 'images'])
             ->where('stock', '>', 0);
 
+        // Search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
         // Filter by category
         if ($request->filled('category')) {
-            $query->whereHas('categories', function ($q) use ($request) {
+            $query->whereHas('categories', function($q) use ($request) {
                 $q->where('product_categories.id', $request->category);
             });
         }
 
-        // Filter by price range
+        // Filter by price
         if ($request->filled('price_min')) {
             $query->where('price', '>=', $request->price_min);
         }
         if ($request->filled('price_max')) {
             $query->where('price', '<=', $request->price_max);
-        }
-
-        // Search by name
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
         }
 
         $products = $query->latest()->paginate(12);

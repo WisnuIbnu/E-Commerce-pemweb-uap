@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Buyer;
+
 use App\Http\Controllers\Controller;
 use App\Models\Store;
 use Illuminate\Http\Request;
@@ -8,33 +9,52 @@ class BuyerStoreController extends Controller
 {
     public function create()
     {
-        return view('buyer.store.create');
+        $existingStore = Store::where('user_id', auth()->id())->first();
+        
+        if ($existingStore) {
+            return redirect()->route('buyer.store.status');
+        }
+
+        return view('buyer.store.dashboard');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:stores,name',
-            'phone' => 'required|string',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'address' => 'required|string',
-            'city' => 'required|string',
+            'phone' => 'required|string',
         ]);
+
+        $existingStore = Store::where('user_id', auth()->id())->first();
+        
+        if ($existingStore) {
+            return redirect()->route('buyer.store.status')
+                ->with('error', 'Anda sudah memiliki pengajuan toko!');
+        }
 
         Store::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
-            'phone' => $request->phone,
+            'description' => $request->description,
             'address' => $request->address,
-            'city' => $request->city,
-            'is_verified' => 0,
+            'phone' => $request->phone,
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('buyer.store.status')->with('success', 'Aplikasi toko berhasil dibuat! Menunggu verifikasi admin.');
+        return redirect()->route('buyer.store.status')
+            ->with('success', 'Pengajuan toko berhasil dikirim!');
     }
 
     public function status()
     {
         $store = Store::where('user_id', auth()->id())->first();
-        return view('buyer.store.status', ['store' => $store]);
+        
+        if (!$store) {
+            return redirect()->route('buyer.store.apply');
+        }
+
+        return view('buyer.store.status', compact('store'));
     }
 }

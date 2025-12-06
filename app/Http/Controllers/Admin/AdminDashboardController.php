@@ -1,4 +1,8 @@
 <?php
+// ============================================
+// FILE 4: app/Http/Controllers/Admin/AdminDashboardController.php
+// BUAT BARU - Dashboard Admin
+// ============================================
 
 namespace App\Http\Controllers\Admin;
 
@@ -11,81 +15,28 @@ use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
-    /**
-     * Dashboard Admin - Tampilkan statistik
-     */
-    public function dashboard()
+    public function index()
     {
-        // Hitung data statistik
-        $totalUsers = User::count();
-        $totalStores = Store::count();
-        $totalProducts = Product::count();
-        $totalTransactions = Transaction::count();
-        
-        $pendingStores = Store::where('is_verified', false)->count();
-        $verifiedStores = Store::where('is_verified', true)->count();
-        
-        $adminCount = User::where('role', 'admin')->count();
-        $memberCount = User::where('role', 'member')->count();
+        $stats = [
+            'total_users' => User::where('role', 'member')->count(),
+            'total_stores' => Store::where('status', 'approved')->count(),
+            'pending_stores' => Store::where('status', 'pending')->count(),
+            'total_products' => Product::count(),
+            'total_transactions' => Transaction::count(),
+            'total_revenue' => Transaction::where('status', 'completed')->sum('total_amount'),
+        ];
 
-        // Toko pending (butuh verifikasi)
-        $pendingStoresList = Store::with('user')
-            ->where('is_verified', false)
+        $recentStores = Store::where('status', 'pending')
+            ->with('user')
             ->latest()
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact(
-            'totalUsers',
-            'totalStores', 
-            'totalProducts',
-            'totalTransactions',
-            'pendingStores',
-            'verifiedStores',
-            'adminCount',
-            'memberCount',
-            'pendingStoresList'
-        ));
-    }
-
-    /**
-     * Kelola Users - Tampilkan semua user
-     */
-    public function manageUsers()
-    {
-        $users = User::with('store')
+        $recentTransactions = Transaction::with('user')
             ->latest()
-            ->paginate(20);
+            ->take(10)
+            ->get();
 
-        return view('admin.manage-users', compact('users'));
-    }
-
-    /**
-     * Update role user
-     */
-    public function updateUserRole(Request $request, User $user)
-    {
-        $request->validate([
-            'role' => 'required|in:admin,member',
-        ]);
-
-        $user->update(['role' => $request->role]);
-
-        return back()->with('success', 'Role user berhasil diubah!');
-    }
-
-    /**
-     * Hapus user
-     */
-    public function deleteUser(User $user)
-    {
-        // Jangan bisa hapus diri sendiri
-        if ($user->id === auth()->id()) {
-            return back()->with('error', 'Tidak bisa menghapus akun sendiri!');
-        }
-
-        $user->delete();
-
-        return back()->with('success', 'User berhasil dihapus!');
+        return view('admin.dashboard', compact('stats', 'recentStores', 'recentTransactions'));
     }
 }

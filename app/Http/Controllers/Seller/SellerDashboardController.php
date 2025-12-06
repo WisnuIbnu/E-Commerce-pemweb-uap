@@ -12,7 +12,7 @@ class SellerDashboardController extends Controller
     public function index()
     {
         $store = getSellerStore();
-        
+
         $stats = [
             'total_products' => Product::where('store_id', $store->id)->count(),
             'total_orders' => Transaction::whereHas('details', function($q) use ($store) {
@@ -33,13 +33,13 @@ class SellerDashboardController extends Controller
                     });
                 })->sum('total_amount'),
         ];
-        
+
         $recentOrders = Transaction::whereHas('details', function($q) use ($store) {
             $q->whereHas('product', function($q2) use ($store) {
                 $q2->where('store_id', $store->id);
             });
         })->latest()->take(5)->get();
-        
+
         return view('seller.dashboard', compact('stats', 'recentOrders', 'store'));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class BuyerProductController extends Controller
@@ -23,9 +24,9 @@ class BuyerProductController extends Controller
         }
 
         $products = $query->paginate(12);
-        $categories = \App\Models\ProductCategory::all();
+        $categories = ProductCategory::all();
         
-        return view('buyer.products', compact('products', 'categories'));
+        return view('buyer.products.index', compact('products', 'categories'));
     }
 
     public function show($id)
@@ -33,13 +34,12 @@ class BuyerProductController extends Controller
         $product = Product::with(['store', 'categories', 'images', 'reviews.user'])
             ->findOrFail($id);
         
-        // Related products
         $relatedProducts = Product::where('store_id', $product->store_id)
             ->where('id', '!=', $product->id)
             ->with('images')
             ->take(4)
             ->get();
         
-        return view('buyer.product-detail', compact('product', 'relatedProducts'));
+        return view('buyer.products.show', compact('product', 'relatedProducts'));
     }
 }

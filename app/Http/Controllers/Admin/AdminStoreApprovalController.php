@@ -2,36 +2,45 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Store;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class AdminStoreApprovalController extends Controller
 {
-    // Menampilkan toko yang diajukan untuk disetujui
     public function index()
     {
-        $stores = Store::where('status', 'pending')->get();
+        $stores = Store::with('user')
+            ->latest()
+            ->paginate(10);
+
         return view('admin.stores.index', compact('stores'));
     }
 
-    // Menyetujui toko
+    public function show($id)
+    {
+        $store = Store::with('user')->findOrFail($id);
+        return view('admin.stores.show', compact('store'));
+    }
+
     public function approve($id)
     {
         $store = Store::findOrFail($id);
-        $store->status = 'approved'; // Menyetujuinya
+        $store->status = 'approved';
         $store->save();
 
-        return redirect()->route('admin.stores.index');
+        return redirect()->route('admin.stores.index')
+            ->with('success', 'Toko berhasil disetujui!');
     }
 
-    // Menolak toko
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         $store = Store::findOrFail($id);
-        $store->status = 'rejected'; // Menolaknya
+        $store->status = 'rejected';
+        $store->rejection_reason = $request->reason;
         $store->save();
 
-        return redirect()->route('admin.stores.index');
+        return redirect()->route('admin.stores.index')
+            ->with('success', 'Toko ditolak!');
     }
 }
