@@ -1,64 +1,55 @@
 <?php
 
-// app/Http/Controllers/Seller/DashboardController.php
-
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Store;
+use App\Models\Product;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
+        
+        if (!$store) {
+            return redirect('/seller/store/register')
+                ->with('error', 'Please register your store first');
+        }
         
         // Statistics
-        $totalProducts = $store->products()->count();
-        $totalOrders = Transaction::whereHas('items', function($query) use ($store) {
-            $query->whereHas('product', function($q) use ($store) {
-                $q->where('store_id', $store->id);
-            });
-        })->count();
+        $totalProducts = Product::where('store_id', $store->id)->count();
+        $totalOrders = Transaction::where('store_id', $store->id)->count();
+        $pendingOrders = Transaction::where('store_id', $store->id)
+            ->where('payment_status', 'pending')
+            ->count();
         
-        $totalRevenue = Transaction::whereHas('items', function($query) use ($store) {
-            $query->whereHas('product', function($q) use ($store) {
-                $q->where('store_id', $store->id);
-            });
-        })->where('status', 'completed')->sum('total');
+        $balance = $store->balance ? $store->balance->balance : 0;
         
-        $pendingOrders = Transaction::whereHas('items', function($query) use ($store) {
-            $query->whereHas('product', function($q) use ($store) {
-                $q->where('store_id', $store->id);
-            });
-        })->where('status', 'pending')->count();
-
         // Recent orders
-        $recentOrders = Transaction::with(['buyer', 'items.product'])
-            ->whereHas('items', function($query) use ($store) {
-                $query->whereHas('product', function($q) use ($store) {
-                    $q->where('store_id', $store->id);
-                });
-            })
+        $recentOrders = Transaction::with(['buyer.user', 'details.product'])
+            ->where('store_id', $store->id)
             ->latest()
-            ->take(5)
+            ->limit(5)
             ->get();
-
-        // Low stock products
-        $lowStockProducts = $store->products()
-            ->where('stock', '<', 10)
-            ->orderBy('stock')
-            ->take(5)
+        
+        // Top products
+        $topProducts = Product::where('store_id', $store->id)
+            ->withCount('transactionDetails')
+            ->orderBy('transaction_details_count', 'desc')
+            ->limit(5)
             ->get();
-
+        
         return view('seller.dashboard', compact(
-            'store',
-            'totalProducts',
-            'totalOrders',
-            'totalRevenue',
-            'pendingOrders',
+            'store', 
+            'totalProducts', 
+            'totalOrders', 
+            'pendingOrders', 
+            'balance', 
             'recentOrders',
-            'lowStockProducts'
+            'topProducts'
         ));
     }
 }

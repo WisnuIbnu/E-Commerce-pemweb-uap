@@ -1,98 +1,92 @@
 <?php
-//app/Http/Controllers/Seller/StoreController.php
 
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Store;
+use App\Models\StoreBalance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
-    public function create()
+    public function showRegisterForm()
     {
-        return view('seller.register');
+        if (Auth::user()->store) {
+            return redirect('/seller/dashboard')
+                ->with('info', 'You already have a store');
+        }
+        
+        return view('seller.store.register');
     }
-
-    public function store(Request $request)
+    
+    public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'logo' => 'nullable|image|max:2048',
-            'banner' => 'nullable|image|max:2048',
+            'name' => 'required|string|max:255|unique:stores,name',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'about' => 'required|string',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
             'address' => 'required|string',
-            'terms' => 'required|accepted'
+            'city' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
         ]);
-
-        // Handle file uploads
+        
+        $validated['user_id'] = Auth::id();
+        $validated['is_verified'] = false;
+        
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('stores/logos', 'public');
         }
-
-        if ($request->hasFile('banner')) {
-            $validated['banner'] = $request->file('banner')->store('stores/banners', 'public');
-        }
-
-        $validated['buyer_id'] = auth()->id();
-        $validated['status'] = 'pending';
-
-        Store::create($validated);
-
-        return redirect()->route('seller.register')
-            ->with('success', 'Store registration submitted successfully! Please wait for admin approval.');
+        
+        $store = Store::create($validated);
+        
+        // Create store balance
+        StoreBalance::create([
+            'store_id' => $store->id,
+            'balance' => 0,
+        ]);
+        
+        return redirect('/seller/dashboard')
+            ->with('success', 'Store registered! Waiting for admin verification.');
     }
-
+    
     public function edit()
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
         
-        if (!$store || !$store->isApproved()) {
-            abort(403);
+        if (!$store) {
+            return redirect('/seller/store/register');
         }
-
+        
         return view('seller.store.edit', compact('store'));
     }
-
+    
     public function update(Request $request)
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
         
-        if (!$store || !$store->isApproved()) {
-            abort(403);
-        }
-
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'logo' => 'nullable|image|max:2048',
-            'banner' => 'nullable|image|max:2048',
+            'name' => 'required|string|max:255|unique:stores,name,' . $store->id,
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'about' => 'required|string',
             'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'address' => 'required|string'
+            'address' => 'required|string',
+            'city' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
         ]);
-
-        // Handle file uploads
+        
         if ($request->hasFile('logo')) {
+            // Delete old logo
             if ($store->logo) {
                 Storage::disk('public')->delete($store->logo);
             }
             $validated['logo'] = $request->file('logo')->store('stores/logos', 'public');
         }
-
-        if ($request->hasFile('banner')) {
-            if ($store->banner) {
-                Storage::disk('public')->delete($store->banner);
-            }
-            $validated['banner'] = $request->file('banner')->store('stores/banners', 'public');
-        }
-
+        
         $store->update($validated);
-
-        return redirect()->route('seller.store.edit')
-            ->with('success', 'Store updated successfully!');
+        
+        return back()->with('success', 'Store updated successfully!');
     }
 }

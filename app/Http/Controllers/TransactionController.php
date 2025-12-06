@@ -3,47 +3,81 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
-    public function index(Request $request)
+    public function __construct()
     {
-        $query = Transaction::with(['items.product.images'])
-            ->where('buyer_id', auth()->id());
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        $this->middleware('auth');
+        $this->middleware('role:buyer');
+    }
+    
+    public function index()
+    {
+        $buyer = Auth::user()->buyer;
+        
+        if (!$buyer) {
+            return redirect('/')->with('error', 'Buyer profile not found');
         }
-
-        $transactions = $query->latest()->paginate(10);
-
+        
+        $transactions = Transaction::with(['store', 'details.product.images'])
+            ->where('buyer_id', $buyer->id)
+            ->latest()
+            ->paginate(10);
+        
         return view('transactions.index', compact('transactions'));
     }
-
-    public function show(Transaction $transaction)
+    
+    public function show($id)
     {
-        if ($transaction->buyer_id !== auth()->id()) {
-            abort(403, 'Unauthorized access');
-        }
-
-        $transaction->load(['items.product.images', 'items.product.store']);
-
+        $buyer = Auth::user()->buyer;
+        
+        $transaction = Transaction::with([
+            'store',
+            'details.product.images',
+            'details.product.reviews' => function($query) use ($id) {
+                $query->where('transaction_id', $id);
+            }
+        ])
+        ->where('buyer_id', $buyer->id)
+        ->findOrFail($id);
+        
         return view('transactions.show', compact('transaction'));
     }
-
-    public function cancel(Transaction $transaction)
+    
+    public function review(Request $request, $id)
     {
-        if ($transaction->buyer_id !== auth()->id()) {
-            abort(403, 'Unauthorized access');
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string|max:1000',
+        ]);
+        
+        $buyer = Auth::user()->buyer;
+        
+        $transaction = Transaction::where('buyer_id', $buyer->id)
+            ->where('id', $id)
+            ->firstOrFail();
+        
+        // Check if already reviewed
+        $existingReview = ProductReview::where('transaction_id', $id)
+            ->where('product_id', $validated['product_id'])
+            ->first();
+        
+        if ($existingReview) {
+            return back()->with('error', 'You have already reviewed this product');
         }
-
-        if ($transaction->status !== 'pending') {
-            return back()->with('error', 'Only pending orders can be cancelled.');
-        }
-
-        $transaction->update(['status' => 'cancelled']);
-
-        return back()->with('success', 'Order cancelled successfully.');
+        
+        ProductReview::create([
+            'transaction_id' => $id,
+            'product_id' => $validated['product_id'],
+            'rating' => $validated['rating'],
+            'review' => $validated['review'],
+        ]);
+        
+        return back()->with('success', 'Review submitted successfully!');
     }
 }
