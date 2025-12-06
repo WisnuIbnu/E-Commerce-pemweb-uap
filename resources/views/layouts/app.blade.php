@@ -1,3 +1,5 @@
+{{-- File: resources/views/layouts/app.blade.php --}}
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -22,12 +24,15 @@
             'resources/css/auth/auth.css',
             'resources/css/header.css',
             'resources/css/footer.css',
+            'resources/css/customer/banner.css',
+            'resources/css/dashboard.css',
             'resources/js/app.js',
             'resources/js/header.js',
             'resources/js/footer.js'
         ])
     </head>
     <body class="font-sans antialiased">
+        
         <!-- Header -->
         @include('layouts.header')
 

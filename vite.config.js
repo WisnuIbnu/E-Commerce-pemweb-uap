@@ -7,9 +7,9 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/auth/auth.css',
-                'resources/css/footer.css',      // ← TAMBAHKAN
+                'resources/css/footer.css',
                 'resources/js/app.js',
-                'resources/js/footer.js'         // ← TAMBAHKAN
+                'resources/js/footer.js'
             ],
             refresh: true,
         }),
