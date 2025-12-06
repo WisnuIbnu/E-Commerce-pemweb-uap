@@ -17,6 +17,6 @@ Route::get('/dashboard', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-//anucak
+//anucak coba ngepull
 
 require __DIR__.'/auth.php';
