@@ -6,27 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('withdrawals', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->foreignId('store_balance_id')->constrained()->cascadeOnDelete();
-            $table->decimal('amount', 26, 2);
-            $table->string('bank_account_name');
-            $table->string('bank_account_number');
+            $table->id();
+            $table->foreignId('store_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount', 15, 2);
             $table->string('bank_name');
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('account_number');
+            $table->string('account_name');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
+            $table->text('notes')->nullable();
+            $table->timestamp('processed_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('withdrawals');
     }
