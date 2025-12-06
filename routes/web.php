@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
+ 
 // USER PAGES
 Route::get('/home', function () {
     return view('user.home.dashboard');
@@ -33,3 +33,14 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Paksa GET /login dan /register pakai view figma-auth
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.figma-auth');
+    })->name('login');
+
+    Route::get('/register', function () {
+        return view('auth.figma-auth');
+    })->name('register');
+});

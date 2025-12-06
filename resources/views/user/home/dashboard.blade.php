@@ -7,7 +7,7 @@
     <title>Homepage</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-
+ 
 <body class="bg-noise text-gray-700 antialiased">
 
     {{-- NAVBAR --}}
