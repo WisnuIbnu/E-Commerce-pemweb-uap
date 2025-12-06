@@ -20,7 +20,7 @@
     }
     
     .btn-secondary {
-        @apply bg-tumbloo-white hover:bg-tumbloo-off-white text-tumbloo-black border-2 border-tumbloo-black font-semibold py-3 px-6 rounded-lg transition-all duration-300;
+        @apply bg-tumbloo-white hover:bg-tumbloo-offwhite text-tumbloo-black border-2 border-tumbloo-black font-semibold py-3 px-6 rounded-lg transition-all duration-300;
     }
     
     .btn-outline {
@@ -104,7 +104,7 @@
     }
     
     .table tbody tr:hover {
-        @apply bg-tumbloo-off-white;
+        @apply bg-tumbloo-offwhite;
     }
     
     .alert {
@@ -112,11 +112,11 @@
     }
     
     .alert-success {
-        @apply bg-tumbloo-off-white border-tumbloo-black text-tumbloo-black;
+        @apply bg-tumbloo-offwhite border-tumbloo-black text-tumbloo-black;
     }
     
     .alert-error {
-        @apply bg-tumbloo-off-white border-tumbloo-darker text-tumbloo-darker;
+        @apply bg-tumbloo-offwhite border-tumbloo-darker text-tumbloo-darker;
     }
     
     .alert-warning {

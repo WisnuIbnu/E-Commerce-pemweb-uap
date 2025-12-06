@@ -27,6 +27,23 @@ use App\Http\Controllers\Admin\StoreManagementController;
 
 // Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/', 'pages.index')->name('home');
+Route::view('/marketplace', 'pages.marketplace')->name('marketplace');
+Route::view('/how-it-works', 'pages.how')->name('how-it-works');
+Route::view('/pricing', 'pages.pricing')->name('pricing');
+Route::view('/sell', 'pages.sell')->name('sell');
+Route::view('/faq', 'pages.faq')->name('faq');
+Route::view('/support', 'pages.support')->name('support');
+Route::view('/guide', 'pages.guide')->name('guide');
+Route::view('/sellerguide', 'pages.sellerguide')->name('sellerguide');
+Route::view('/safety', 'pages.safety')->name('safety');
+Route::view('/contact', 'pages.contact')->name('contact');
+Route::view('/terms', 'pages.terms')->name('terms');
+Route::view('/privacy', 'pages.privacy')->name('privacy');
+Route::view('/refund', 'pages.refund')->name('refund');
+Route::view('/cookies', 'pages.cookies')->name('cookies');
+Route::view('/sitemap', 'pages.sitemap')->name('sitemap');
+
+
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::get('/categories', [HomeController::class, 'categories'])->name('categories');
 Route::get('/category/{slug}', [HomeController::class, 'category'])->name('category.show');
