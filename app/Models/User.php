@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role', // buyer, seller, admin
-        'phone',
-        'address',
+        'role',
+        'is_verified',
     ];
 
     protected $hidden = [
@@ -24,53 +22,82 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    // Relationships
+    // ============================================
+    // RELATIONSHIPS
+    // ============================================
+
+    /**
+     * User bisa punya 1 Store (untuk seller)
+     */
     public function store()
     {
-        return $this->hasOne(Store::class, 'owner_id');
+        return $this->hasOne(Store::class, 'user_id');
     }
 
-    public function buyerTransactions()
+    /**
+     * User bisa punya 1 Buyer profile
+     */
+    public function buyer()
     {
-        return $this->hasMany(Transaction::class, 'buyer_id');
+        return $this->hasOne(Buyer::class, 'user_id');
     }
 
-    public function productReviews()
+    /**
+     * User bisa punya banyak Orders
+     */
+    public function orders()
     {
-        return $this->hasMany(ProductReview::class, 'buyer_id');
+        return $this->hasMany(Order::class, 'user_id');
     }
 
-    // Helper Methods
-    public function isBuyer()
+    /**
+     * User punya banyak Transactions (melalui Buyer)
+     */
+    public function transactions()
     {
-        return $this->role === 'buyer';
+        return $this->hasManyThrough(
+            Transaction::class,
+            Buyer::class,
+            'user_id',      // Foreign key on buyers table
+            'buyer_id',     // Foreign key on transactions table
+            'id',           // Local key on users table
+            'id'            // Local key on buyers table
+        );
     }
 
-    public function isSeller()
-    {
-        return $this->role === 'seller';
-    }
+    // ============================================
+    // ACCESSORS (untuk helper attributes)
+    // ============================================
 
-    public function isAdmin()
+    /**
+     * Cek apakah user adalah admin
+     */
+    public function getIsAdminAttribute()
     {
         return $this->role === 'admin';
     }
 
-    public function hasStore()
+    /**
+     * Cek apakah user punya store (seller)
+     */
+    public function getIsSellerAttribute()
     {
         return $this->store()->exists();
     }
 
-    public function hasVerifiedStore()
+    /**
+     * Get cart items count (untuk badge di header)
+     * Nanti sesuaikan kalau sudah buat Cart model
+     */
+    public function getCartItemsCountAttribute()
     {
-        return $this->store()->where('is_verified', true)->exists();
+        // Sementara return 0, nanti ganti dengan:
+        // return $this->cartItems()->count();
+        return 0;
     }
 }

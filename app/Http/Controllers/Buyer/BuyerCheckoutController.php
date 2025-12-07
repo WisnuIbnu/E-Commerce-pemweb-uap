@@ -1,51 +1,30 @@
 <?php
+
 namespace App\Http\Controllers\Buyer;
+
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use Illuminate\Http\Request;
 
 class BuyerCheckoutController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
-        if (empty($cart)) {
-            return redirect()->route('buyer.cart.index')->with('error', 'Keranjang Anda kosong!');
-        }
-        return view('buyer.checkout.index', ['cart' => $cart]);
+        // Ambil cart items yang dipilih
+        $items = auth()->user()->cartItems ?? collect();
+        $subtotal = $items->sum(function($item) {
+            return $item->product->price * $item->quantity;
+        });
+        
+        // Ambil addresses
+        $addresses = auth()->user()->addresses ?? collect();
+        
+        return view('buyer.checkout.index', compact('items', 'subtotal', 'addresses'));
     }
-
-    public function store(Request $request)
+    
+    public function placeOrder(Request $request)
     {
-        $request->validate([
-            'address' => 'required|string',
-            'city' => 'required|string',
-            'postal_code' => 'required|string',
-            'phone' => 'required|string',
-        ]);
-
-        $cart = session()->get('cart', []);
-        if (empty($cart)) {
-            return redirect()->route('buyer.cart.index')->with('error', 'Keranjang Anda kosong!');
-        }
-
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-
-        // Create order
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'address' => $request->address,
-            'city' => $request->city,
-            'postal_code' => $request->postal_code,
-            'phone' => $request->phone,
-            'total_price' => $total,
-            'status' => 'pending',
-        ]);
-
-        session()->forget('cart');
-        return redirect()->route('buyer.orders.show', $order->id)->with('success', 'Pesanan berhasil dibuat!');
+        // Logic untuk create order
+        
+        return response()->json(['success' => true, 'order_id' => 1]);
     }
 }

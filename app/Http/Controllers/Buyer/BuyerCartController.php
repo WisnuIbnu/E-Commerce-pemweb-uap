@@ -4,66 +4,36 @@ namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
 
 class BuyerCartController extends Controller
 {
     public function index()
     {
-        // Logika untuk menampilkan produk di keranjang (contoh: menggunakan session)
-        $cart = session()->get('cart', []);
+        // Ambil cart items dari database
+        $cartItems = auth()->user()->cartItems ?? collect();
         
-        return view('buyer.cart.index', compact('cart'));
+        return view('buyer.cart.index', compact('cartItems'));
     }
-
+    
     public function add(Request $request)
     {
-        // Menambahkan produk ke keranjang
-        $product = Product::findOrFail($request->product_id);
-        $cart = session()->get('cart', []);
+        // Logic untuk add to cart
+        // Nanti disesuaikan dengan model Cart
         
-        // Jika produk sudah ada di keranjang
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
-        } else {
-            $cart[$product->id] = [
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1,
-            ];
-        }
-        
-        // Simpan ke session
-        session()->put('cart', $cart);
-
-        return back()->with('success', 'Produk berhasil ditambahkan ke keranjang');
+        return response()->json(['success' => true]);
     }
-
-    public function update(Request $request, $id)
+    
+    public function update($id, Request $request)
     {
-        // Update jumlah produk dalam keranjang
-        $cart = session()->get('cart', []);
+        // Logic untuk update quantity
         
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] = $request->qty;
-            session()->put('cart', $cart);
-            return back()->with('success', 'Keranjang berhasil diupdate');
-        }
-
-        return back()->with('error', 'Produk tidak ditemukan di keranjang');
+        return response()->json(['success' => true]);
     }
-
-    public function destroy($id)
+    
+    public function delete($id)
     {
-        // Hapus produk dari keranjang
-        $cart = session()->get('cart', []);
+        // Logic untuk delete cart item
         
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
-            return back()->with('success', 'Produk berhasil dihapus dari keranjang');
-        }
-
-        return back()->with('error', 'Produk tidak ditemukan di keranjang');
+        return response()->json(['success' => true]);
     }
 }

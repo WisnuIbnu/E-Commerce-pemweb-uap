@@ -9,32 +9,18 @@ use Illuminate\Http\Request;
 
 class BuyerDashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Product::with(['store', 'images'])
-            ->where('stock', '>', 0);
-
-        // Search
-        if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        // Filter by category
-        if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
-        }
-
-        // Filter by price
-        if ($request->filled('price_min')) {
-            $query->where('price', '>=', $request->price_min);
-        }
-        if ($request->filled('price_max')) {
-            $query->where('price', '<=', $request->price_max);
-        }
-
-        $products = $query->latest()->paginate(12);
+        // Ambil semua kategori
         $categories = ProductCategory::all();
-
-        return view('buyer.dashboard', compact('products', 'categories'));
+        
+        // Ambil produk terbaru yang ada stock (limit 8 untuk homepage)
+        $products = Product::with(['store', 'images', 'category'])
+            ->where('stock', '>', 0)
+            ->latest()
+            ->take(8)
+            ->get();
+        
+        return view('buyer.dashboard', compact('categories', 'products'));
     }
 }

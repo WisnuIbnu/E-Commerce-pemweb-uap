@@ -1,83 +1,92 @@
 /**
- * Buyer JavaScript - Global Scripts
+ * Buyer JavaScript - Complete
  * File: resources/js/buyer.js
- * 
- * Contains:
- * - Profile Dropdown functionality
- * - Other buyer-related scripts
  */
 
-// Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ===== PROFILE DROPDOWN =====
+    // Profile Dropdown
     initProfileDropdown();
     
-    // ===== AUTO DISMISS ALERTS =====
+    // Auto Hide Alerts
     autoHideAlerts();
     
 });
 
 /**
- * Initialize Profile Dropdown
+ * Profile Dropdown Functionality
  */
 function initProfileDropdown() {
-    const profileDropdown = document.getElementById('profileDropdown');
-    const dropdownOverlay = document.getElementById('dropdownOverlay');
+    const dropdown = document.getElementById('profileDropdown');
+    const overlay = document.getElementById('dropdownOverlay');
     
-    if (!profileDropdown) return; // Exit if not found
+    if (!dropdown) return;
     
-    const trigger = profileDropdown.querySelector('.profile-trigger');
+    const trigger = dropdown.querySelector('.profile-trigger');
     
-    // Toggle dropdown when clicking trigger
+    // Toggle dropdown
     trigger.addEventListener('click', function(e) {
         e.stopPropagation();
-        toggleDropdown();
+        dropdown.classList.toggle('active');
+        overlay.classList.toggle('active');
     });
     
-    // Close dropdown when clicking overlay
-    dropdownOverlay.addEventListener('click', function() {
-        closeDropdown();
+    // Close on overlay click
+    overlay.addEventListener('click', function() {
+        dropdown.classList.remove('active');
+        overlay.classList.remove('active');
     });
     
-    // Close dropdown when clicking outside
+    // Close on outside click
     document.addEventListener('click', function(e) {
-        if (!profileDropdown.contains(e.target)) {
-            closeDropdown();
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+            overlay.classList.remove('active');
         }
     });
     
-    // Close dropdown when pressing ESC key
+    // Close on ESC key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            closeDropdown();
+            dropdown.classList.remove('active');
+            overlay.classList.remove('active');
         }
     });
-    
-    // Helper functions
-    function toggleDropdown() {
-        profileDropdown.classList.toggle('active');
-        dropdownOverlay.classList.toggle('active');
-    }
-    
-    function closeDropdown() {
-        profileDropdown.classList.remove('active');
-        dropdownOverlay.classList.remove('active');
-    }
 }
 
 /**
- * Auto hide alerts after 5 seconds
+ * Auto Hide Alerts after 5 seconds
  */
 function autoHideAlerts() {
     const alerts = document.querySelectorAll('.alert');
     
     alerts.forEach(function(alert) {
-        // Auto dismiss after 5 seconds
         setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-20px)';
+            
+            setTimeout(function() {
+                alert.remove();
+            }, 300);
         }, 5000);
     });
 }
 
+/**
+ * Smooth Scroll for Anchor Links
+ */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    });
+});

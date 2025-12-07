@@ -16,20 +16,42 @@ class Store extends Model
         'city',
         'address',
         'postal_code',
-        'is_verified'
+        'is_verified',
     ];
 
     protected $casts = [
-        'is_verified' => 'boolean'
+        'is_verified' => 'boolean',
     ];
 
+    /**
+     * Store belongs to User
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Store has many Products
+     */
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Store has one Balance
+     */
+    public function balance()
+    {
+        return $this->hasOne(StoreBalance::class);
+    }
+
+    /**
+     * Store has many Transactions
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

@@ -11,6 +11,22 @@ class Order extends Model
         'product_id',
         'quantity',
         'total_price',
-        'status'
+        'status',
     ];
+
+    /**
+     * Order belongs to User
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Order belongs to Product
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
