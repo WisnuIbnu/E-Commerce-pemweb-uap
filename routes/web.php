@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Seller\SellerController;
 use Illuminate\Support\Facades\Route;
 
 // PUBLIC ROUTES (guest & semua user)
@@ -22,7 +23,7 @@ Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product
 // DASHBOARD BUYER
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index'])
-        ->middleware('role:buyer')
+        ->middleware('role:buyer, seller')
         ->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -61,5 +62,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('transactions', AdminTransactionController::class)->only(['index','show']);
         Route::resource('withdrawals', AdminWithdrawalController::class)->only(['index','show','update']);
 });
+
+// ROUTES SELLER
+Route::middleware(['auth', 'role:seller'])
+    ->prefix('seller')
+    ->name('seller.')
+    ->group(function () {
+        Route::get('/form', [SellerController::class, 'create'])->name('form');
+        Route::post('/form', [SellerController::class, 'store'])->name('store');
+        Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
+    });
 
 require __DIR__.'/auth.php';

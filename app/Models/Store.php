@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-    protected $fillable = [
+     protected $fillable = [
         'user_id',
         'name',
-        'logo',
+        'logo',        
         'about',
         'phone',
         'address_id',
