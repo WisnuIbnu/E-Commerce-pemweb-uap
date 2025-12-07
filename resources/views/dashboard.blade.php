@@ -3,6 +3,7 @@
 <x-app-layout>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/customer/category.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/customer/card-product.css') }}">
     @endpush
 
     <div class="py-12">
@@ -15,4 +16,7 @@
 
     {{-- Categories Section --}}
     @include('customer.categories', ['categories' => $categories])
+
+    {{-- Products Section --}}
+    @include('customer.card-product', ['products' => $products])
 </x-app-layout>

@@ -1,0 +1,97 @@
+/* Product Card Custom Styles with Color Palette */
+
+/* Color Palette Variables */
+:root {
+    --burnt-sienna: #984216;
+    --ivory-sand: #E4D6C5;
+    --stormy-sky: #78898F;
+    --sage-green: #8D957E;
+}
+
+/* Product Card Base Styles */
+.product-card-wrapper {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth Hover Effect */
+.product-card-wrapper:hover {
+    transform: translateY(-4px);
+}
+
+/* Image Hover Scale */
+.product-card-wrapper img {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card-wrapper:hover img {
+    transform: scale(1.1);
+}
+
+/* Badge Styles */
+.product-badge {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Price Highlight */
+.product-price {
+    color: var(--burnt-sienna);
+    font-weight: 700;
+}
+
+/* Category Badge */
+.category-badge {
+    background-color: var(--ivory-sand);
+    color: var(--burnt-sienna);
+}
+
+/* Stock Badge Colors */
+.stock-badge-available {
+    background-color: var(--sage-green);
+}
+
+.stock-badge-out {
+    background-color: var(--burnt-sienna);
+}
+
+/* Responsive Grid Gap */
+@media (max-width: 768px) {
+    .products-grid {
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .products-grid {
+        gap: 1.5rem;
+    }
+}
+
+/* Card Shadow on Hover */
+.product-card-wrapper .bg-white {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.product-card-wrapper:hover .bg-white {
+    box-shadow: 0 20px 25px -5px rgba(152, 66, 22, 0.1), 
+                0 10px 10px -5px rgba(152, 66, 22, 0.04);
+}
+
+/* Rating Stars */
+.rating-star {
+    color: #FCD34D;
+}
+
+/* Overlay gradient */
+.overlay-gradient {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+}
+
+/* Smooth animations */
+@media (prefers-reduced-motion: reduce) {
+    .product-card-wrapper,
+    .product-card-wrapper img {
+        transition: none;
+    }
+}
