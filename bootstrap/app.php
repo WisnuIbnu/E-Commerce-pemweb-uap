@@ -10,7 +10,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
+        // Register middleware aliases
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
             'verified.store' => \App\Http\Middleware\VerifiedStore::class,
