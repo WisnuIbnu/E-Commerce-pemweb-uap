@@ -17,8 +17,11 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
         
-        // Tambahkan data produk dengan relasi kategori, ambil 12 terbaru
-        $products = Product::with('productCategory')->latest()->take(12)->get();
+        // Tambahkan data produk dengan relasi kategori dan images, ambil 12 terbaru
+        $products = Product::with(['productCategory', 'productImages'])
+            ->latest()
+            ->take(12)
+            ->get();
         
         return view('dashboard', compact('categories', 'products'));
     }

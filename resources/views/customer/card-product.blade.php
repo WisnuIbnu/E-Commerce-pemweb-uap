@@ -13,14 +13,25 @@
                     <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                         <!-- Product Image -->
                         <div class="relative overflow-hidden aspect-square bg-gray-100">
-                            @if($product->productImages && $product->productImages->isNotEmpty())
-                                <img src="{{ asset('images/products/' . $product->productImages->first()->image_path) }}" 
+                            @php
+                                // Ambil gambar thumbnail (is_thumbnail = true)
+                                $productImage = $product->productImages->where('is_thumbnail', true)->first() 
+                                             ?? $product->productImages->first();
+                                $imagePath = $productImage ? $productImage->image : null;
+                                
+                                // Cek apakah file exists
+                                $imageExists = $imagePath && file_exists(public_path($imagePath));
+                            @endphp
+                            
+                            @if($imageExists)
+                                <img src="{{ asset($imagePath) }}" 
                                      alt="{{ $product->name }}" 
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             @else
-                                <img src="{{ asset('images/products/default.jpg') }}" 
-                                     alt="Default Product" 
-                                     class="w-full h-full object-cover opacity-50">
+                                {{-- Gunakan placeholder jika file belum ada --}}
+                                <img src="https://placehold.co/400x400/E4D6C5/984216?text={{ urlencode(Str::limit($product->name, 15)) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             @endif
                             
                             <!-- Stock Badge -->

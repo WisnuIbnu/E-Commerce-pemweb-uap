@@ -27,14 +27,14 @@ class ProductImageSeeder extends Seeder
         foreach ($productIds as $pid) {
             $images[] = [
                 'product_id' => $pid,
-                'image' => "images/products/{$pid}-1.jpg",
+                'image' => "images/products/{$pid}-1.jpeg",  // ✅ GANTI DISINI
                 'is_thumbnail' => true,
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
             $images[] = [
                 'product_id' => $pid,
-                'image' => "images/products/{$pid}-2.jpg",
+                'image' => "images/products/{$pid}-2.jpeg",  // ✅ GANTI DISINI
                 'is_thumbnail' => false,
                 'created_at' => $now,
                 'updated_at' => $now,
