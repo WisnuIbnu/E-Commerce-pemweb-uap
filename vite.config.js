@@ -7,9 +7,15 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/auth/auth.css',
+                'resources/css/header.css',
                 'resources/css/footer.css',
+                'resources/css/customer/banner.css',
+                'resources/css/customer/category.css',
+                'resources/css/dashboard.css',
                 'resources/js/app.js',
+                'resources/js/header.js',
                 'resources/js/footer.js'
+                // ← HAPUS 'resources/js/dashboard.js' kalau tidak ada
             ],
             refresh: true,
         }),

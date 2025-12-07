@@ -20,12 +20,12 @@ class ProductCategorySeeder extends Seeder
         $now = Carbon::now();
 
         $categories = [
-            ['image'=>'images/categories/baby-wear.png','name'=>'Baby Wear','slug'=>Str::slug('Baby Wear'),'tagline'=>'Cute & comfy','description'=>'Clothing for newborns and toddlers','created_at'=>$now,'updated_at'=>$now],
-            ['image'=>'images/categories/toys.png','name'=>'Toys','slug'=>Str::slug('Toys'),'tagline'=>'Play & Learn','description'=>'Safe toys for babies','created_at'=>$now,'updated_at'=>$now],
-            ['image'=>'images/categories/accessories.png','name'=>'Accessories','slug'=>Str::slug('Accessories'),'tagline'=>'Finishing touches','description'=>'Hats, socks and more','created_at'=>$now,'updated_at'=>$now],
-            ['image'=>'images/categories/care.png','name'=>'Care & Bath','slug'=>Str::slug('Care & Bath'),'tagline'=>'Gentle care','description'=>'Bath and skincare products for babies','created_at'=>$now,'updated_at'=>$now],
-            ['image'=>'images/categories/shoes.png','name'=>'Shoes','slug'=>Str::slug('Shoes'),'tagline'=>'Tiny steps','description'=>'Soft shoes for baby first steps','created_at'=>$now,'updated_at'=>$now],
-            ['image'=>'images/categories/bags.png','name'=>'Bags','slug'=>Str::slug('Bags'),'tagline'=>'Carry with style','description'=>'Diaper bags & small carriers','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/babywear.jpeg','name'=>'Baby Wear','slug'=>Str::slug('Baby Wear'),'tagline'=>'Cute & comfy','description'=>'Clothing for newborns and toddlers','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/toys.jpeg','name'=>'Toys','slug'=>Str::slug('Toys'),'tagline'=>'Play & Learn','description'=>'Safe toys for babies','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/accessories.jpeg','name'=>'Accessories','slug'=>Str::slug('Accessories'),'tagline'=>'Finishing touches','description'=>'Hats, socks and more','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/bath&care.jpeg','name'=>'Care & Bath','slug'=>Str::slug('Care & Bath'),'tagline'=>'Gentle care','description'=>'Bath and skincare products for babies','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/shoes.jpeg','name'=>'Shoes','slug'=>Str::slug('Shoes'),'tagline'=>'Tiny steps','description'=>'Soft shoes for baby first steps','created_at'=>$now,'updated_at'=>$now],
+            ['image'=>'images/categories/bag.jpeg','name'=>'Bags','slug'=>Str::slug('Bags'),'tagline'=>'Carry with style','description'=>'Diaper bags & small carriers','created_at'=>$now,'updated_at'=>$now],
         ];
 
         DB::table('product_categories')->insert($categories);

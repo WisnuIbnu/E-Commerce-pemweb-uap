@@ -21,6 +21,7 @@
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
+    cursor: default;
     transition: all 0.3s ease;
 }
 
