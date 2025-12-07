@@ -34,8 +34,11 @@ class AdminStoreController extends Controller
             'status' => 'required|in:pending,approved,rejected'
         ]);
 
+        $status = $request->status;
+
         $store->update([
-            'status' => $request->status
+            'status'      => $status,
+            'is_verified' => $status === 'approved' ? 1 : 0,
         ]);
 
         return redirect()->route('admin.stores.index')
@@ -45,16 +48,25 @@ class AdminStoreController extends Controller
     // Tombol verifikasi cepat
     public function verify(Store $store)
     {
-        $store->update(['status' => 'approved']);
-        return back()->with('success', 'Store verified.');
+    $store->update([
+        'status'      => 'approved',
+        'is_verified' => 1,
+    ]);
+
+    return back()->with('success', 'Store verified.');
     }
 
     // Tombol tolak cepat
     public function reject(Store $store)
     {
-        $store->update(['status' => 'rejected']);
+        $store->update([
+            'status'      => 'rejected',
+            'is_verified' => 0,
+        ]);
+
         return back()->with('success', 'Store rejected.');
     }
+
 
     public function destroy(Store $store)
     {

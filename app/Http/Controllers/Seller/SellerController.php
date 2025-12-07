@@ -13,9 +13,15 @@ class SellerController extends Controller
      * Tampilkan form pendaftaran toko.
      */
     public function create()
-    {
-        return view('seller.form');
+{
+    // kalau seller sudah punya toko, langsung lempar ke dashboard
+    $store = Store::where('user_id', Auth::id())->first();
+    if ($store) {
+        return redirect()->route('seller.dashboard');
     }
+
+    return view('seller.form');
+}
 
     /**
      * Simpan data pendaftaran toko.

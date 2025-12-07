@@ -1,5 +1,5 @@
 <x-seller-layout>
-@if (session('success'))
+    @if (session('success'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 Swal.fire({
@@ -30,8 +30,8 @@
                 </a>
             </div>
 
-        {{-- 2. SUDAH PUNYA TOKO TAPI BELUM DIVERIFIKASI --}}
-        @elseif (!$store->is_verified || $store->status === 'pending')
+        {{-- 2. STATUS PENDING --}}
+        @elseif ($store->status === 'pending')
             <div class="rounded-xl bg-yellow-50 border border-yellow-200 px-4 py-4 mb-6">
                 <p class="font-semibold text-yellow-800">
                     Toko Anda sedang menunggu verifikasi admin.
@@ -54,7 +54,30 @@
                 </p>
             </div>
 
-        {{-- 3. SUDAH DIVERIFIKASI --}}
+        {{-- 3. STATUS REJECTED --}}
+        @elseif ($store->status === 'rejected')
+            <div class="rounded-xl bg-red-50 border border-red-200 px-4 py-4 mb-6">
+                <p class="font-semibold text-red-800">
+                    Toko Anda ditolak oleh admin.
+                </p>
+                <p class="text-red-700 text-sm mt-1">
+                    Silakan periksa kembali data toko Anda atau hubungi admin untuk informasi lebih lanjut.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <h2 class="font-semibold text-lg mb-4">Informasi Toko</h2>
+                <p><span class="font-medium">Nama Toko:</span> {{ $store->name }}</p>
+                <p><span class="font-medium">Kota:</span> {{ $store->city }}</p>
+                <p><span class="font-medium">Alamat:</span> {{ $store->address }}</p>
+                <p><span class="font-medium">Status:</span> 
+                    <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-800">
+                        Ditolak
+                    </span>
+                </p>
+            </div>
+
+        {{-- 4. STATUS APPROVED / VERIFIED --}}
         @else
             <div class="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-4 mb-6">
                 <p class="font-semibold text-emerald-800">
