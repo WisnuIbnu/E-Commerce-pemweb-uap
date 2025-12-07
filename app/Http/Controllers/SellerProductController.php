@@ -39,7 +39,7 @@ class SellerProductController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('store_dasboard', compact('store', 'products'));
+        return view('store_product', compact('store', 'products'));
     }
 
     /**

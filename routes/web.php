@@ -15,6 +15,8 @@ use App\Http\Controllers\StoreBalanceController;
 use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\AdminManagementController;
 use App\Http\Controllers\StoreVerificationController;
+use App\Http\Controllers\ProductCategoryController;
+
 
 
 /*
@@ -95,10 +97,6 @@ Route::middleware(['auth', 'role:member'])->group(function () {
     Route::patch('/buyer/profile', [BuyerProfileController::class, 'update'])
         ->name('buyer.profile.update');
     
-    // Delete buyer profile picture
-    Route::delete('/buyer/profile/picture', [BuyerProfileController::class, 'deleteProfilePicture'])
-        ->name('buyer.profile.picture.delete');
-    
     /*
     |--------------------------------------------------------------------------
     | BUYER AREA (harus punya Buyer profile) 
@@ -131,6 +129,24 @@ Route::middleware(['auth', 'role:member'])->group(function () {
     */
 
     Route::middleware('seller.verified')->group(function () {
+        // Product Categories Management
+        Route::get('/seller/categories', [ProductCategoryController::class, 'index'])
+            ->name('seller.categories.index');
+
+        Route::get('/seller/categories/create', [ProductCategoryController::class, 'create'])
+            ->name('seller.categories.create');
+
+        Route::post('/seller/categories', [ProductCategoryController::class, 'store'])
+            ->name('seller.categories.store');
+
+        Route::get('/seller/categories/{category}/edit', [ProductCategoryController::class, 'edit'])
+            ->name('seller.categories.edit');
+
+        Route::put('/seller/categories/{category}', [ProductCategoryController::class, 'update'])
+            ->name('seller.categories.update');
+
+        Route::delete('/seller/categories/{category}', [ProductCategoryController::class, 'destroy'])
+            ->name('seller.categories.destroy');
 
         // Profil toko
         Route::get('/seller/store/profile', [StoreProfileController::class, 'edit'])

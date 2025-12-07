@@ -9,6 +9,9 @@
     </header>
 
     @if($user->buyer)
+        <!-- ========================= -->
+        <!-- Buyer Sudah Punya Profil -->
+        <!-- ========================= -->
         <form method="post" action="{{ route('buyer.profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
             @csrf
             @method('patch')
@@ -23,16 +26,6 @@
                             alt="Profile Picture"
                             class="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
                         >
-                        <div>
-                            <p class="text-sm text-gray-600 mb-2">{{ __('Hapus foto profil saat ini') }}</p>
-                            <form method="POST" action="{{ route('buyer.profile.picture.delete') }}" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <x-danger-button type="submit" onclick="return confirm('Yakin ingin menghapus foto profil?')">
-                                    {{ __('Hapus Foto') }}
-                                </x-danger-button>
-                            </form>
-                        </div>
                     @else
                         <div class="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
                             <span class="text-xs text-gray-500 text-center px-2">Belum ada foto profil</span>
@@ -80,28 +73,30 @@
                 <x-primary-button>{{ __('Simpan') }}</x-primary-button>
 
                 @if (session('status') === 'buyer-profile-updated')
-                    <p
-                        x-data="{ show: true }"
-                        x-show="show"
-                        x-transition
-                        x-init="setTimeout(() => show = false, 2000)"
-                        class="text-sm text-gray-600"
-                    >{{ __('Tersimpan.') }}</p>
+                    <p x-data="{ show: true }"
+                       x-show="show"
+                       x-transition
+                       x-init="setTimeout(() => show = false, 2000)"
+                       class="text-sm text-gray-600">
+                       {{ __('Tersimpan.') }}
+                    </p>
                 @endif
 
                 @if (session('status') === 'profile-picture-deleted')
-                    <p
-                        x-data="{ show: true }"
-                        x-show="show"
-                        x-transition
-                        x-init="setTimeout(() => show = false, 2000)"
-                        class="text-sm text-gray-600"
-                    >{{ __('Foto profil dihapus.') }}</p>
+                    <p x-data="{ show: true }"
+                       x-show="show"
+                       x-transition
+                       x-init="setTimeout(() => show = false, 2000)"
+                       class="text-sm text-gray-600">
+                       {{ __('Foto profil dihapus.') }}
+                    </p>
                 @endif
             </div>
         </form>
     @else
         <div class="mt-6">
+            <!-- Tombol Lengkapi Informasi -->
+            <!-- Alert -->
             <div class="rounded-md bg-yellow-50 p-4">
                 <div class="flex">
                     <div class="flex-shrink-0">
@@ -116,17 +111,17 @@
                         <div class="mt-2 text-sm text-yellow-700">
                             <p>{{ __('Anda belum melengkapi profil pembeli. Silakan lengkapi profil untuk dapat berbelanja.') }}</p>
                         </div>
-                        <div class="mt-4">
-                            <a 
-                                href="{{ route('buyer.profile.create') }}" 
-                                class="inline-flex items-center px-4 py-2 bg-yellow-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-700 focus:bg-yellow-700 active:bg-yellow-900 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                            >
-                                {{ __('Lengkapi Profil Pembeli') }}
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
+            <div class="mt-4">
+            <a 
+                href="{{ route('buyer.profile.create') }}"
+                class="inline-flex items-center px-3 py-2 bg-gray-800 text-white font-semibold 
+                    rounded-md shadow hover:bg-gray-900 transition"
+            >
+                Lengkapi Informasi
+            </a>
         </div>
     @endif
 </section>

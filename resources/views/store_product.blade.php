@@ -4,8 +4,28 @@
     @endpush
 
     <div class="container">
+        <!-- Navigation Tabs -->
+        <div class="seller-tabs">
+            <a href="{{ route('seller.products.index') }}" class="tab-item active">
+                Produk Saya
+            </a>
+            <a href="{{ route('seller.categories.index') }}" class="tab-item">
+                Kategori Produk
+            </a>
+            <a href="{{ route('seller.orders.index') }}" class="tab-item">
+                Pesanan
+            </a>
+            <a href="{{ route('store.balance.index') }}" class="tab-item">
+                Saldo Toko
+            </a>
+            <a href="{{ route('seller.withdrawals.index') }}" class="tab-item">
+                Penarikan Dana
+            </a>
+        </div>
+
         <!-- Store Header -->
         <div class="store-header">
+            
             <div class="store-header-content">
                 @if($store->logo)
                     <img 
@@ -69,22 +89,6 @@
                     <div class="stat-label">Stok Menipis</div>
                 </div>
             </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="seller-tabs">
-            <a href="{{ route('seller.products.index') }}" class="tab-item active">
-                Produk Saya
-            </a>
-            <a href="{{ route('seller.orders.index') }}" class="tab-item">
-                Pesanan
-            </a>
-            <a href="{{ route('store.balance.index') }}" class="tab-item">
-                Saldo Toko
-            </a>
-            <a href="{{ route('seller.withdrawals.index') }}" class="tab-item">
-                Penarikan Dana
-            </a>
         </div>
 
         <!-- Products Section -->

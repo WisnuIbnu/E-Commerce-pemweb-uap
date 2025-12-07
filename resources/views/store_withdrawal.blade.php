@@ -4,11 +4,6 @@
     @endpush
 
     <div class="container">
-        <div class="page-header">
-            <h1>Penarikan Dana</h1>
-            <p>Ajukan penarikan saldo toko Anda</p>
-        </div>
-
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -29,6 +24,9 @@
         <div class="seller-tabs">
             <a href="{{ route('seller.products.index') }}" class="tab-item">
                 Produk Saya
+            </a>
+            <a href="{{ route('seller.categories.index') }}" class="tab-item">
+                Kategori Produk
             </a>
             <a href="{{ route('seller.orders.index') }}" class="tab-item">
                 Pesanan
