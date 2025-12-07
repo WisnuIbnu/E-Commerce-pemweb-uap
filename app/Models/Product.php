@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -12,61 +13,104 @@ class Product extends Model
         'name',
         'slug',
         'description',
-        'condition',
+        'condition', // new or second (sesuai DB)
         'price',
-        'weight',
+        'weight', // gram
         'stock',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'price' => 'decimal:2', // Sesuai DB decimal(26,2)
+        'weight' => 'integer',
+        'stock' => 'integer',
     ];
 
-    /**
-     * Product belongs to Store
-     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name);
+            }
+            
+            // Default condition untuk snack adalah 'new'
+            if (empty($product->condition)) {
+                $product->condition = 'new';
+            }
+        });
+    }
+
+    // Relationships
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    /**
-     * Product belongs to Category
-     */
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    /**
-     * Product has many Images
-     */
     public function images()
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    /**
-     * Product has many Reviews
-     */
     public function reviews()
     {
         return $this->hasMany(ProductReview::class);
     }
 
-    /**
-     * Get thumbnail image
-     */
-    public function getThumbnailAttribute()
+    public function transactionDetails()
     {
-        return $this->images()->where('is_thumbnail', true)->first();
+        return $this->hasMany(TransactionDetail::class);
     }
 
-    /**
-     * Get average rating
-     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    // Accessors
+    public function getThumbnailAttribute()
+    {
+        $thumbnail = $this->images()->where('is_thumbnail', true)->first();
+        
+        if ($thumbnail) {
+            return $thumbnail->image_url;
+        }
+        
+        $firstImage = $this->images()->first();
+        if ($firstImage) {
+            return $firstImage->image_url;
+        }
+        
+        return 'https://via.placeholder.com/300x300/98bad5/ffffff?text=Snack';
+    }
+
     public function getAverageRatingAttribute()
     {
-        return $this->reviews()->avg('rating') ?? 0;
+        return round($this->reviews()->avg('rating') ?? 4.5, 1);
+    }
+
+    public function getTotalReviewsAttribute()
+    {
+        return $this->reviews()->count();
+    }
+
+    public function getFormattedPriceAttribute()
+    {
+        return 'Rp ' . number_format($this->price, 0, ',', '.');
+    }
+
+    public function getIsAvailableAttribute()
+    {
+        return $this->stock > 0;
+    }
+
+    public function getConditionTextAttribute()
+    {
+        return $this->condition === 'new' ? 'Baru' : 'Bekas';
     }
 }

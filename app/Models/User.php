@@ -13,8 +13,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
-        'is_verified',
+        'role', // 'admin' or 'member'
+        'phone',
+        'city',
+        'province',
+        'address',
+        'postal_code',
     ];
 
     protected $hidden = [
@@ -32,7 +36,7 @@ class User extends Authenticatable
     // ============================================
 
     /**
-     * User bisa punya 1 Store (untuk seller)
+     * User bisa punya 1 Store (untuk jadi seller)
      */
     public function store()
     {
@@ -48,7 +52,22 @@ class User extends Authenticatable
     }
 
     /**
-     * User bisa punya banyak Orders
+     * User punya banyak Transactions
+     */
+    public function transactions()
+    {
+        return $this->hasManyThrough(
+            Transaction::class,
+            Buyer::class,
+            'user_id',
+            'buyer_id',
+            'id',
+            'id'
+        );
+    }
+
+    /**
+     * User punya banyak Orders (direct)
      */
     public function orders()
     {
@@ -56,22 +75,15 @@ class User extends Authenticatable
     }
 
     /**
-     * User punya banyak Transactions (melalui Buyer)
+     * User punya Wishlist
      */
-    public function transactions()
+    public function wishlists()
     {
-        return $this->hasManyThrough(
-            Transaction::class,
-            Buyer::class,
-            'user_id',      // Foreign key on buyers table
-            'buyer_id',     // Foreign key on transactions table
-            'id',           // Local key on users table
-            'id'            // Local key on buyers table
-        );
+        return $this->hasMany(Wishlist::class);
     }
 
     // ============================================
-    // ACCESSORS (untuk helper attributes)
+    // ACCESSORS & HELPERS
     // ============================================
 
     /**
@@ -83,21 +95,35 @@ class User extends Authenticatable
     }
 
     /**
-     * Cek apakah user punya store (seller)
+     * Cek apakah user punya store verified (adalah seller)
      */
     public function getIsSellerAttribute()
     {
-        return $this->store()->exists();
+        return $this->store()->where('is_verified', 1)->exists();
+    }
+
+    /**
+     * Cek apakah user punya pending store application
+     */
+    public function getHasPendingStoreAttribute()
+    {
+        return $this->store()->where('is_verified', 0)->exists();
+    }
+
+    /**
+     * Get verified store
+     */
+    public function getVerifiedStoreAttribute()
+    {
+        return $this->store()->where('is_verified', 1)->first();
     }
 
     /**
      * Get cart items count (untuk badge di header)
-     * Nanti sesuaikan kalau sudah buat Cart model
      */
     public function getCartItemsCountAttribute()
     {
-        // Sementara return 0, nanti ganti dengan:
-        // return $this->cartItems()->count();
+        // TODO: Implement cart system
         return 0;
     }
 }

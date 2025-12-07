@@ -10,48 +10,66 @@ class Store extends Model
         'user_id',
         'name',
         'logo',
-        'about',
+        'about', // Sesuai DB (bukan description)
         'phone',
-        'address_id',
+        'address_id', // Sesuai DB
         'city',
         'address',
         'postal_code',
-        'is_verified',
+        'is_verified', // 0 = pending, 1 = approved
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
     ];
 
-    /**
-     * Store belongs to User
-     */
+    // Relationships
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Store has many Products
-     */
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
-
-    /**
-     * Store has one Balance
-     */
     public function balance()
     {
         return $this->hasOne(StoreBalance::class);
     }
 
-    /**
-     * Store has many Transactions
-     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    // Accessors
+    public function getIsApprovedAttribute()
+    {
+        return $this->is_verified == 1;
+    }
+
+    public function getIsPendingAttribute()
+    {
+        return $this->is_verified == 0;
+    }
+
+    public function getStatusTextAttribute()
+    {
+        return $this->is_verified ? 'Approved' : 'Pending';
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        if (!$this->logo) {
+            return asset('images/default-store.png');
+        }
+        
+        if (str_starts_with($this->logo, ['http://', 'https://'])) {
+            return $this->logo;
+        }
+        
+        return asset('storage/' . $this->logo);
     }
 }
