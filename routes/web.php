@@ -36,8 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Harus member
-    Route::middleware(['auth:sanctum', 'role:member'])->group(function () {
+    // MEMBER
+    Route::middleware('role:member')->group(function () {
 
         Route::post('/checkout', [CheckoutController::class, 'checkout']);
 
@@ -45,8 +45,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/transactions/{id}', [TransactionController::class, 'show']);
     });
 
-    // harus seller
-    Route::middleware(['auth:sanctum', 'role:seller'])->group(function () {
+
+    // SELLER (HARUS PAKAI middleware seller)
+    Route::middleware('seller')->group(function () {
 
         Route::get('/store/profile', [StoreController::class, 'profile']);
         Route::put('/store/profile', [StoreController::class, 'update']);
@@ -66,17 +67,18 @@ Route::middleware('auth')->group(function () {
         Route::put('/store/orders/{id}/ship', [TransactionController::class, 'shipOrder']);
     });
 
-    // harus admin
-    Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
-        Route::post('/admin/store/approve/{userId}', [AdminSellerApprovalController::class, 'approve']);
-        Route::post('/admin/store/reject/{userId}', [AdminSellerApprovalController::class, 'reject']);
+    // ADMIN
+    Route::middleware('role:admin')->group(function () {
+
+        Route::get('/admin/stores', [AdminSellerApprovalController::class, 'listStores']);
+
+        Route::post('/admin/store/approve/{storeId}', [AdminSellerApprovalController::class, 'approve']);
+        Route::post('/admin/store/reject/{storeId}', [AdminSellerApprovalController::class, 'reject']);
 
         Route::get('/admin/users', [AdminUserController::class, 'index']);
         Route::get('/admin/users/{id}', [AdminUserController::class, 'show']);
         Route::delete('/admin/users/{id}', [AdminUserController::class, 'destroy']);
-
-        Route::get('/admin/stores', [AdminSellerApprovalController::class, 'listStores']);
     });
 
 });

@@ -2,63 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminSellerApprovalController extends Controller
 {
-    /**
-     * Show list of users requesting seller approval
-     */
-    public function index()
+    // TAMPILKAN DAFTAR STORE UNTUK ADMIN
+    public function listStores()
     {
-        $pending = User::where('store_request_status', 'pending')->get();
+        $stores = Store::with('user')->get();
 
-        return view('admin.seller-requests.index', [
-            'requests' => $pending
-        ]);
+        // jika sudah ada view pakai ini:
+        // return view('admin.stores.index', compact('stores'));
+        // jika belum ada view, ubah jadi:
+        return response()->json($stores);
     }
 
-    /**
-     * Approve seller request
-     */
-    public function approve($userId)
+    // SETUJUI SELLER
+    public function approve($id)
     {
-        $user = User::findOrFail($userId);
+        $store = Store::findOrFail($id);
 
-        // Ubah status pengajuan
-        $user->update([
-            'store_request_status' => 'approved'
-        ]);
-
-        // Verifikasi store EXISTING (jangan buat baru)
-        if ($user->store) {
-            $user->store->update([
-                'is_verified' => true
-            ]);
+        // Validasi agar tidak approve ulang
+        if ($store->is_verified) {
+            return back()->with('error', 'Store sudah diverifikasi.');
         }
 
-        return redirect()->back()->with('success', 'Seller berhasil disetujui.');
+        $store->update([
+            'is_verified' => true
+        ]);
+
+        return back()->with('success', 'Seller berhasil disetujui.');
     }
 
-    /**
-     * Reject seller request
-     */
-    public function reject($userId)
+    // TOLAK SELLER
+    public function reject(Request $request, $id)
     {
-        $user = User::findOrFail($userId);
-
-        // Update status pengajuan
-        $user->update([
-            'store_request_status' => 'rejected'
+        $request->validate([
+            'reason' => 'required|min:5'
         ]);
 
-        // Jika mau, hapus store yang belum diverifikasi
-        if ($user->store && $user->store->is_verified === false) {
-            $user->store->delete();
-        }
+        $store = Store::findOrFail($id);
 
-        return redirect()->back()->with('error', 'Seller ditolak.');
+        $store->update([
+            'is_verified' => false
+        ]);
+
+        return back()->with('success', 'Seller ditolak.');
     }
 }

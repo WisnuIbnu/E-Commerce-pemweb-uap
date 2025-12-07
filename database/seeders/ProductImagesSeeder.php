@@ -25,23 +25,21 @@ class ProductImagesSeeder extends Seeder
             // Thumbnail
             ProductImage::create([
                 'product_id' => $product->id,
-                'image' => 'products/' . $product->id . '_thumb.png',
+                'image' => 'product_assets/' . $product->id . '_thumb.png',
                 'is_thumbnail' => true,
             ]);
 
-            // Gambar tambahan
             ProductImage::create([
                 'product_id' => $product->id,
-                'image' => 'products/' . $product->id . '_1.png',
+                'image' => 'product_assets/' . $product->id . '_1.png',
                 'is_thumbnail' => false,
             ]);
 
             ProductImage::create([
                 'product_id' => $product->id,
-                'image' => 'products/' . $product->id . '_2.png',
+                'image' => 'product_assets/' . $product->id . '_2.png',
                 'is_thumbnail' => false,
             ]);
-
             echo "Seeded images for product: {$product->name}\n";
         }
     }
