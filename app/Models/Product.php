@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'store_id',
@@ -13,36 +15,33 @@ class Product extends Model
         'name',
         'slug',
         'description',
+        'features',
         'condition',
         'price',
         'weight',
         'stock',
+        'image',
     ];
 
     protected $casts = [
+        'features' => 'array',
         'price' => 'decimal:2',
+        'weight' => 'integer',
+        'stock' => 'integer',
     ];
 
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
+
     public function productCategory()
     {
         return $this->belongsTo(ProductCategory::class);
     }
 
-    public function productImages()
+    public function orderItems()
     {
-        return $this->hasMany(ProductImage::class);
-    }
-
-    public function transactionDetails()
-    {
-        return $this->hasMany(TransactionDetail::class);
-    }
-    public function productReviews()
-    {
-        return $this->hasMany(ProductReview::class);
+        return $this->hasMany(OrderItem::class);
     }
 }
