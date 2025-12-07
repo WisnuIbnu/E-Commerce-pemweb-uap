@@ -11,35 +11,7 @@
 <body class="bg-noise text-gray-700 antialiased">
 
     {{-- NAVBAR --}}
-    <header class="w-full px-12 py-6 flex items-center justify-between">
-
-        {{-- Left --}}
-        <div class="font-medium tracking-wide text-sm text-gray-500">
-            <a href="/">HOME</a> / PRODUCTS
-        </div>
-
-        {{-- Center Menu --}}
-        <nav class="flex gap-12 text-gray-700 text-base">
-            <a href="{{ route('home') }}" class="hover:text-black">Home</a>
-            <a href="{{ route('products') }}" class="hover:text-black">Products</a>
-            <a href="{{ route('history') }}" class="hover:text-black">History</a>
-        </nav>
-
-
-        {{-- Right Icons --}}
-        <div class="flex items-center gap-6">
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/love.jpg') }}" class="w-5 h-5">
-            </button>
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/bag.png') }}" class="w-5 h-5">
-            </button>
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/profile.png') }}" class="w-5 h-5">
-            </button>
-        </div>
-
-    </header>
+     @include('layouts.store-navbar')
 
     {{-- PAGE WRAPPER --}}
     <div class="px-16 py-8 grid grid-cols-12 gap-10">

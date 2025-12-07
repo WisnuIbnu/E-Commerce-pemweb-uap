@@ -11,37 +11,9 @@
 <body class="bg-noise text-gray-700 antialiased">
 
     {{-- NAVBAR --}}
-    <header class="w-full px-12 py-6 flex items-center justify-between">
+   {{-- NAVBAR --}}
+@include('layouts.store-navbar')
 
-        {{-- Left --}}
-        <div class="flex items-center">
-            <img src="{{ asset('icons/iconmpruy-removebg-preview.png') }}"
-                class="w-20 h-20 object-contain"
-                alt="Logo">
-        </div>
-
-
-        {{-- Center Menu --}}
-        <nav class="flex gap-12 text-gray-700 text-base">
-            <a href="#" class="hover:text-black">Home</a>
-            <a href="{{ route('products') }}" class="hover:text-black">Product</a>
-            <a href="#" class="hover:text-black">History</a>
-        </nav>
-
-        {{-- Right Icons --}}
-        <div class="flex items-center gap-6">
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/love.jpg') }}" class="w-5 h-5" alt="love">
-            </button>
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/bag.png') }}" class="w-5 h-5" alt="bag">
-            </button>
-            <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                <img src="{{ asset('icons/profile.png') }}" class="w-5 h-5" alt="profile">
-            </button>
-        </div>
-
-    </header>
 
     {{-- SEARCH --}}
     <!-- <div class="w-full flex justify-center mt-2 mb-10">
