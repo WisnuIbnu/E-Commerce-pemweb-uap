@@ -13,6 +13,7 @@
             font-family: 'Poppins', sans-serif;
             background: #f8f8f8;
             display: flex;
+            min-height: 100vh;      /* <- wajib, biar minimal setinggi layar */
         }
 
         /* SIDEBAR */
@@ -20,8 +21,8 @@
             width: 260px;
             background: #FF7A00;
             color: white;
-            height: 100vh;
             padding: 25px 20px;
+            min-height: 100vh;
             box-sizing: border-box;
             flex-shrink: 0;
             transition: 0.3s;
@@ -56,6 +57,8 @@
             border-radius: 8px;
             font-weight: 500;
             transition: 0.2s;
+            width: 100%;              /* <-- tambah ini */
+            box-sizing: border-box;
         }
 
         .sidebar a:hover {
@@ -90,7 +93,8 @@
         }
 
         .sidebar.collapsed a {
-            justify-content: center;
+            justify-content: center;   /* ikon ke tengah horizontal */
+            padding: 10px 0;           /* hilangkan padding kiri/kanan */
         }
 
         /* CONTENT */
@@ -148,7 +152,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M15 19.128a9.004 9.004 0 006.75-8.628V9a3 3 0 00-3-3h-1.5M12 3v1.5m0 15V21M3 15a6 6 0 016-6h6a6 6 0 016 6" />
             </svg>
-            <span class="menu-text">Users</span>
+            <span class="menu-text">User</span>
         </a>
 
         {{-- Stores --}}
@@ -159,18 +163,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M3 9.75L4.5 3h15L21 9.75M3 9.75H21M4.5 21h15V9.75M9 21v-6h6v6" />
             </svg>
-            <span class="menu-text">Stores</span>
-        </a>
-
-        {{-- Categories --}}
-        <a href="{{ route('admin.categories.index') }}"
-           class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-            <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
-                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M7 7h10M7 12h10M7 17h10" />
-            </svg>
-            <span class="menu-text">Categories</span>
+            <span class="menu-text">Toko</span>
         </a>
 
         {{-- Products --}}
@@ -181,7 +174,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M21 7.5V16.5L12 21 3 16.5V7.5L12 3l9 4.5zM3 12l9 4.5 9-4.5" />
             </svg>
-            <span class="menu-text">Products</span>
+            <span class="menu-text">Produk</span>
         </a>
 
         {{-- Transactions --}}
@@ -192,7 +185,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M3 8.25V6a3 3 0 013-3h12a3 3 0 013 3v2.25M3 8.25A2.25 2.25 0 015.25 6h13.5A2.25 2.25 0 0121 8.25v9A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25v-9zM15 12h.008v.008H15V12z"/>
             </svg>
-            <span class="menu-text">Transactions</span>
+            <span class="menu-text">Transaksi</span>
         </a>
 
         {{-- Withdrawals --}}
