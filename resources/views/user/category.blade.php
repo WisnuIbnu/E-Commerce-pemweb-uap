@@ -49,7 +49,7 @@
                             <!-- Product Image -->
                             <div class="relative aspect-square overflow-hidden bg-tumbloo-dark">
                                 @if($product->images->isNotEmpty())
-                                    <img src="{{ asset('storage/' . $product->images->first()->image) }}" 
+                                    <img src="{{ asset($product->images->first()->image) }}" 
                                          alt="{{ $product->name }}"
                                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                 @else

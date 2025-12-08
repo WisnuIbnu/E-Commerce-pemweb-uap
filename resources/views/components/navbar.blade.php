@@ -13,19 +13,15 @@
                 <div class="hidden md:ml-10 md:flex md:space-x-8">
                     <a href="{{ route('home') }}"
                         class="text-tumbloo-white hover:text-tumbloo-gray-light px-3 py-2 text-sm font-medium transition">
-                        Beranda
+                        Hot Product
                     </a>
                     <a href="{{ route('marketplace') }}"
                         class="text-tumbloo-gray hover:text-tumbloo-white px-3 py-2 text-sm font-medium transition">
                         Marketplace
                     </a>
-                    <a href="{{ route('how-it-works') }}"
+                    <a href="{{ route('transaction.index') }}"
                         class="text-tumbloo-gray hover:text-tumbloo-white px-3 py-2 text-sm font-medium transition">
-                        Cara Kerja
-                    </a>
-                    <a href="{{ route('pricing') }}"
-                        class="text-tumbloo-gray hover:text-tumbloo-white px-3 py-2 text-sm font-medium transition">
-                        Harga
+                        Riwayat Pembelian
                     </a>
                 </div>
             </div>
@@ -42,14 +38,98 @@
                         Daftar Sekarang
                     </a>
                 @else
-                    <a href="{{ route('sell') }}"
-                        class="text-tumbloo-gray hover:text-tumbloo-white px-4 py-2 text-sm font-medium transition">
-                        Jual Blog
-                    </a>
-                    <a href="{{ route('dashboard') }}"
-                        class="bg-tumbloo-accent-light hover:bg-tumbloo-accent text-tumbloo-white px-5 py-2 rounded-lg text-sm font-semibold transition">
-                        Dashboard
-                    </a>
+                    {{-- ========================================
+                         🔥 PERUBAHAN 1: SMART LINK "JUAL BLOG"
+                         ======================================== --}}
+                    @php
+                        $userStore = \App\Models\Store::where('user_id', auth()->id())->first();
+                    @endphp
+
+                    @if($userStore)
+                        @if($userStore->is_verified)
+                            {{-- Toko sudah terverifikasi → Ke Dashboard Toko --}}
+                            <a href="{{ route('store.dashboard') }}"
+                                class="flex items-center space-x-2 text-blue-300 hover:text-blue-600 px-4 py-2 text-sm font-medium transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                <span>Dashboard Toko</span>
+                            </a>
+                        @else
+                            {{-- Toko belum terverifikasi → Ke Status Pending --}}
+                            <a href="{{ route('store.pending') }}"
+                                class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 px-4 py-2 text-sm font-medium transition">
+                                <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Status Toko</span>
+                            </a>
+                        @endif
+                    @else
+                        {{-- Belum punya toko → Ke Registrasi --}}
+                        <a href="{{ route('store.register') }}"
+                            class="flex items-center space-x-2 text-tumbloo-gray hover:text-tumbloo-white px-4 py-2 text-sm font-medium transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Jual Blog</span>
+                        </a>
+                    @endif
+                    {{-- ======================================== --}}
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.away="open = false"
+                            class="flex items-center space-x-2 text-tumbloo-white hover:text-tumbloo-gray-light focus:outline-none transition">
+                            <!-- Avatar dengan Inisial -->
+                            <div class="h-9 w-9 rounded-full bg-tumbloo-accent flex items-center justify-center text-sm font-semibold">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                            <span class="text-sm font-medium hidden lg:block">{{ Auth::user()->name }}</span>
+                            <svg class="h-4 w-4" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div x-show="open"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-2 w-48 bg-tumbloo-dark rounded-lg shadow-xl border border-tumbloo-accent py-2 z-50">
+                            
+                            <div class="px-4 py-2 border-b border-tumbloo-accent">
+                                <p class="text-sm font-medium text-tumbloo-white">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-tumbloo-gray">{{ Auth::user()->email }}</p>
+                            </div>
+
+                            <a href="{{ route('profile') }}"
+                                class="block px-4 py-2 text-sm text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white transition">
+                                <i class="fas fa-user mr-2"></i> Profil Saya
+                            </a>
+                            <a href="{{ route('dashboard') }}"
+                                class="block px-4 py-2 text-sm text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white transition">
+                                <i class="fas fa-th-large mr-2"></i> Dashboard
+                            </a>
+                            <a href="{{ route('settings') }}"
+                                class="block px-4 py-2 text-sm text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white transition">
+                                <i class="fas fa-cog mr-2"></i> Pengaturan
+                            </a>
+
+                            <div class="border-t border-tumbloo-accent mt-2"></div>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-tumbloo-accent hover:text-red-300 transition">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 @endguest
             </div>
 
@@ -70,19 +150,15 @@
         <div class="px-2 pt-2 pb-3 space-y-1">
             <a href="{{ route('home') }}"
                 class="block text-tumbloo-white hover:bg-tumbloo-accent px-3 py-2 rounded-md text-base font-medium transition">
-                Beranda
+                Hot Product
             </a>
             <a href="{{ route('marketplace') }}"
                 class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
                 Marketplace
             </a>
-            <a href="{{ route('how-it-works') }}"
+            <a href="{{ route('transaction.index') }}"
                 class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
-                Cara Kerja
-            </a>
-            <a href="{{ route('pricing') }}"
-                class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
-                Harga
+                Riwayat Pembelian
             </a>
 
             @guest
@@ -98,14 +174,78 @@
                 </div>
             @else
                 <div class="pt-2 border-t border-tumbloo-accent">
-                    <a href="{{ route('sell') }}"
+                    <!-- Profile Section Mobile -->
+                    <div class="px-3 py-2 mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 rounded-full bg-tumbloo-accent flex items-center justify-center text-sm font-semibold text-tumbloo-white">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-tumbloo-white">{{ Auth::user()->name }}</p>
+                                <p class="text-xs text-tumbloo-gray">{{ Auth::user()->email }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ========================================
+                         🔥 PERUBAHAN 2: SMART LINK MOBILE
+                         ======================================== --}}
+                    @php
+                        $userStore = \App\Models\Store::where('user_id', auth()->id())->first();
+                    @endphp
+
+                    @if($userStore)
+                        @if($userStore->is_verified)
+                            {{-- Toko sudah terverifikasi → Dashboard Toko --}}
+                            <a href="{{ route('store.dashboard') }}"
+                                class="flex items-center space-x-2 text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                <span>Dashboard Toko</span>
+                            </a>
+                        @else
+                            {{-- Toko belum terverifikasi → Status Pending --}}
+                            <a href="{{ route('store.pending') }}"
+                                class="flex items-center space-x-2 text-yellow-400 hover:bg-tumbloo-accent hover:text-yellow-300 px-3 py-2 rounded-md text-base font-medium transition">
+                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Status Toko</span>
+                            </a>
+                        @endif
+                    @else
+                        {{-- Belum punya toko → Registrasi --}}
+                        <a href="{{ route('store.register') }}"
+                            class="flex items-center space-x-2 text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            <span>Jual Blog</span>
+                        </a>
+                    @endif
+                    {{-- ======================================== --}}
+
+                    <a href="{{ route('profile') }}"
                         class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
-                        Jual Blog
+                        Profil Saya
                     </a>
                     <a href="{{ route('dashboard') }}"
-                        class="block bg-tumbloo-accent-light text-tumbloo-white px-3 py-2 rounded-md text-base font-semibold mt-2">
+                        class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
                         Dashboard
                     </a>
+                    <a href="{{ route('settings') }}"
+                        class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
+                        Pengaturan
+                    </a>
+                    
+                    <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                        @csrf
+                        <button type="submit"
+                            class="w-full text-left block text-red-400 hover:bg-tumbloo-accent hover:text-red-300 px-3 py-2 rounded-md text-base font-medium transition">
+                            Keluar
+                        </button>
+                    </form>
                 </div>
             @endguest
         </div>

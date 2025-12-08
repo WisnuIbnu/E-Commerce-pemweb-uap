@@ -90,7 +90,7 @@
                             <!-- Product Image -->
                             <div class="relative aspect-square overflow-hidden bg-tumbloo-dark">
                                 @if($product->images->isNotEmpty())
-                                    <img src="{{ asset('storage/' . $product->images->first()->image) }}" 
+                                    <img src="{{ asset($product->images->first()->image) }}" 
                                          alt="{{ $product->name }}"
                                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                 @else
@@ -118,7 +118,7 @@
                                 
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <div class="text-tumbloo-accent font-bold text-lg">
+                                        <div class="text-blue-900 font-bold text-lg">
                                             Rp {{ number_format($product->price, 0, ',', '.') }}
                                         </div>
                                         <div class="text-xs text-tumbloo-gray">Stok: {{ $product->stock }}</div>
