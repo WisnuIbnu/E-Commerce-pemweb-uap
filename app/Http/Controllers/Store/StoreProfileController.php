@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class StoreProfileController extends Controller
 {
@@ -18,30 +18,72 @@ class StoreProfileController extends Controller
     {
         $store = auth()->user()->store;
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stores,name,' . $store->id,
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'about' => 'required|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'about' => 'required|string|min:50', // TAMBAHKAN min:50
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
-            'city' => 'required|string',
+            'city' => 'required|string|max:100',
             'postal_code' => 'required|string|max:10',
+        ], [
+            'name.required' => 'Nama toko harus diisi.',
+            'name.unique' => 'Nama toko sudah digunakan.',
+            'logo.image' => 'File harus berupa gambar.',
+            'logo.mimes' => 'Logo harus berformat: jpeg, png, jpg, gif.',
+            'logo.max' => 'Ukuran logo maksimal 2MB.',
+            'about.required' => 'Deskripsi toko harus diisi.',
+            'about.min' => 'Deskripsi toko minimal 50 karakter.',
         ]);
 
-        $data = $request->except('logo');
+        DB::beginTransaction();
 
-        if ($request->hasFile('logo')) {
-            // Delete old logo
-            if ($store->logo) {
-                Storage::disk('public')->delete($store->logo);
+        try {
+            $data = $request->except('logo');
+            $logoPath = $store->logo; // Keep old logo
+
+            // Handle logo upload ke public/images/stores
+            if ($request->hasFile('logo')) {
+                $uploadPath = public_path('images/stores');
+                
+                // Buat folder jika belum ada
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+
+                // Hapus logo lama jika ada
+                if ($store->logo && file_exists(public_path($store->logo))) {
+                    unlink(public_path($store->logo));
+                }
+
+                // Upload logo baru
+                $logo = $request->file('logo');
+                $logoName = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
+                $logo->move($uploadPath, $logoName);
+                $logoPath = 'images/stores/' . $logoName;
+                
+                $data['logo'] = $logoPath;
             }
-            $data['logo'] = $request->file('logo')->store('stores/logos', 'public');
+
+            $store->update($data);
+
+            DB::commit();
+
+            return redirect()->route('store.profile.edit')
+                ->with('success', 'Profil toko berhasil diupdate!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Hapus logo baru jika upload berhasil tapi ada error
+            if (isset($logoPath) && $logoPath !== $store->logo && file_exists(public_path($logoPath))) {
+                unlink(public_path($logoPath));
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $store->update($data);
-
-        return redirect()->route('store.profile.edit')
-            ->with('success', 'Store profile updated successfully');
     }
 
     public function destroy()
@@ -54,20 +96,32 @@ class StoreProfileController extends Controller
             ->exists();
 
         if ($hasPendingOrders) {
-            return back()->with('error', 'Cannot delete store with pending orders');
+            return back()->with('error', 'Tidak dapat menghapus toko dengan pesanan yang masih pending');
         }
 
-        // Delete logo
-        if ($store->logo) {
-            Storage::disk('public')->delete($store->logo);
+        DB::beginTransaction();
+
+        try {
+            // Delete logo dari public/images/stores
+            if ($store->logo && file_exists(public_path($store->logo))) {
+                unlink(public_path($store->logo));
+            }
+
+            $store->delete();
+
+            // Update user role back to customer
+            auth()->user()->update(['role' => 'customer']);
+
+            DB::commit();
+
+            return redirect()->route('home')
+                ->with('success', 'Toko berhasil dihapus');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $store->delete();
-
-        // Update user role back to customer
-        auth()->user()->update(['role' => 'customer']);
-
-        return redirect()->route('home')
-            ->with('success', 'Store deleted successfully');
     }
 }

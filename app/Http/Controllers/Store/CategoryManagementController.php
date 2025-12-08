@@ -28,6 +28,32 @@ class CategoryManagementController extends Controller
 
     public function store(Request $request)
     {
+        // Check if this is an AJAX request (from the modal in product create form)
+        if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
+            $request->validate([
+                'name' => 'required|string|max:255|unique:product_categories,name',
+                'tagline' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+            ]);
+
+            $category = ProductCategory::create([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'tagline' => $request->tagline,
+                'description' => $request->description,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category created successfully',
+                'category' => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ]
+            ]);
+        }
+
+        // Regular form submission
         $request->validate([
             'name' => 'required|string|max:255|unique:product_categories,name',
             'parent_id' => 'nullable|exists:product_categories,id',
@@ -45,7 +71,9 @@ class CategoryManagementController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $data['image'] = $image->storeAs('images/stores', $imageName, 'public');
         }
 
         ProductCategory::create($data);
@@ -88,7 +116,10 @@ class CategoryManagementController extends Controller
             if ($category->image) {
                 Storage::disk('public')->delete($category->image);
             }
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $data['image'] = $image->storeAs('images/stores', $imageName, 'public');
         }
 
         $category->update($data);
