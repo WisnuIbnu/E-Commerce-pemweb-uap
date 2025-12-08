@@ -17,10 +17,13 @@ class Product extends Model
         'price',
         'weight',
         'stock',
+        'material',
+        'sizes',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'sizes' => 'array',
     ];
 
     public function store()
@@ -31,10 +34,25 @@ class Product extends Model
     {
         return $this->belongsTo(ProductCategory::class);
     }
+    
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
 
     public function productImages()
     {
         return $this->hasMany(ProductImage::class);
+    }
+    
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+    
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class, 'product_id');
     }
 
     public function transactionDetails()

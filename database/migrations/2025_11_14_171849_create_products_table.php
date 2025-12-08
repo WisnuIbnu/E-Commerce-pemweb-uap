@@ -22,6 +22,9 @@ return new class extends Migration
             $table->decimal('price', 26, 2);
             $table->integer('weight');
             $table->integer('stock');
+            // Support for Shoe Store
+            $table->string('material')->nullable();
+            $table->json('sizes')->nullable(); // Stores ["39", "40", "41"]
             $table->timestamps();
         });
     }

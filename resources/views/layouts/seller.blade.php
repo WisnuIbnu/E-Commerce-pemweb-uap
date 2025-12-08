@@ -77,7 +77,7 @@
     <div class="sidebar">
         <h4 class="mb-4">Seller Panel</h4>
 
-        {{-- <a href="{{ route('seller.dashboard') }}" class="{{ request()->routeIs('seller.dashboard') ? 'active' : '' }}">
+        <a href="{{ route('seller.dashboard') }}" class="{{ request()->routeIs('seller.dashboard') ? 'active' : '' }}">
             Dashboard
         </a>
         <a href="{{ route('seller.products.index') }}" class="{{ request()->routeIs('seller.products.*') ? 'active' : '' }}">
@@ -91,7 +91,7 @@
         </a>
         <a href="{{ route('seller.withdrawals.index') }}" class="{{ request()->routeIs('seller.withdrawals.*') ? 'active' : '' }}">
             Penarikan Dana
-        </a> --}}
+        </a>
         <a href="{{ route('profile.edit') }}">
             Pengaturan Akun
         </a>

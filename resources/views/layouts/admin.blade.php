@@ -80,12 +80,12 @@
         <a href="{{ route('admin.stores.index') }}" class="{{ request()->routeIs('admin.stores.*') ? 'active' : '' }}">
             Toko
         </a>
-        {{-- <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.users.index') }}" class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             Pengguna
         </a>
         <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
             Pesanan
-        </a> --}}
+        </a>
         <a href="{{ route('profile.edit') }}">
             Pengaturan Akun
         </a>
