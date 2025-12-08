@@ -19,7 +19,7 @@
                 Platform marketplace terpercaya untuk membeli dan menjual Tumbler terbaik di seluruh dunia.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/categories" class="bg-tumbloo-black hover:bg-tumbloo-dark text-tumbloo-white px-8 py-4 rounded-lg font-semibold transition">
+                <a href="/marketplace" class="bg-tumbloo-black hover:bg-tumbloo-dark text-tumbloo-white px-8 py-4 rounded-lg font-semibold transition">
                     Jelajahi Marketplace
                 </a>
                 <a href="/seller-guide" class="bg-tumbloo-white hover:bg-tumbloo-offwhite text-tumbloo-black border-2 border-tumbloo-gray-light px-8 py-4 rounded-lg font-semibold transition">

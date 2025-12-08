@@ -1,72 +1,63 @@
 @extends('layouts.app')
 
-@section('title', 'Marketplace - Tumbloo')
+@section('title', $category->name . ' - Tumbloo')
 
 @section('content')
 <!-- Hero Section -->
-<div class="relative border-b border-tumbloo-accent w-full">
-    
-    <!-- Background (punya opacity sendiri) -->
-    <div 
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
-        style="background-image: url('{{ asset('images/background.png') }}');">
-    </div>
+<div class="relative border-b border-tumbloo-accent w-full bg-tumbloo-black">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Breadcrumb -->
+        <nav class="mb-6">
+            <ol class="flex items-center gap-2 text-sm text-tumbloo-gray">
+                <li><a href="{{ route('dashboard') }}" class="hover:text-tumbloo-accent">Home</a></li>
+                <li>/</li>
+                <li><a href="{{ route('marketplace') }}" class="hover:text-tumbloo-accent">Marketplace</a></li>
+                <li>/</li>
+                <li class="text-tumbloo-white">{{ $category->name }}</li>
+            </ol>
+        </nav>
 
-    <!-- Overlay isi (tidak transparan) -->
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-tumbloo-black mb-4">
-                Temukan Tumbler Berkualitas
-            </h1>
-            <p class="text-lg text-tumbloo-gray font-semibold mb-8 max-w-2xl mx-auto">
-                Marketplace terpercaya untuk membeli dan menjual tumbler terbaik
-            </p>
-
-            <!-- Search Bar -->
-            <form action="{{ route('search') }}" method="GET" class="max-w-2xl mx-auto">
-                <div class="flex gap-2">
-                    <input 
-                        type="text" 
-                        name="q" 
-                        value="{{ request('q') }}"
-                        placeholder="Cari tumbler..." 
-                        class="flex-1 px-6 py-4 bg-tumbloo-dark border border-tumbloo-accent 
-                               rounded-lg text-tumbloo-white placeholder-tumbloo-gray 
-                               focus:outline-none focus:ring-2 focus:ring-tumbloo-accent-light">
-                    
-                    <button type="submit" 
-                        class="px-8 py-4 bg-tumbloo-accent hover:bg-tumbloo-accent-light 
-                               text-white font-semibold rounded-lg transition">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" 
-                                  stroke-width="2" 
-                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </button>
+        <div class="flex items-center gap-6">
+            <!-- Category Image -->
+            @if($category->image)
+                <div class="w-24 h-24 rounded-xl overflow-hidden bg-tumbloo-dark border-2 border-tumbloo-accent flex-shrink-0">
+                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                 </div>
-            </form>
+            @endif
+
+            <div class="flex-1">
+                <h1 class="text-4xl font-bold text-tumbloo-white mb-2">{{ $category->name }}</h1>
+                @if($category->tagline)
+                    <p class="text-tumbloo-accent font-semibold mb-2">{{ $category->tagline }}</p>
+                @endif
+                @if($category->description)
+                    <p class="text-tumbloo-gray">{{ $category->description }}</p>
+                @endif
+            </div>
+
+            <div class="text-right">
+                <div class="text-3xl font-bold text-tumbloo-offwhite">{{ $products->total() }}</div>
+                <div class="text-sm text-tumbloo-gray">Produk Tersedia</div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Categories Filter -->
+<!-- Category Filter -->
 <div class="bg-tumbloo-dark border-b border-tumbloo-accent">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('dashboard') }}" 
-               class="px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap {{ !request('category') ? 'bg-tumbloo-accent text-white' : 'bg-tumbloo-black text-tumbloo-gray hover:text-tumbloo-white' }}">
-                Semua Kategori
+        <div class="flex items-center gap-4 overflow-x-auto">
+            <a href="{{ route('marketplace') }}" 
+               class="px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap bg-tumbloo-black text-tumbloo-gray hover:text-tumbloo-white">
+                ← Semua Brand
             </a>
-            @foreach($categories as $category)
-                <a href="{{ route('dashboard', ['category' => $category->id]) }}" 
-                   class="px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap {{ request('category') == $category->id ? 'bg-tumbloo-accent text-white' : 'bg-tumbloo-black text-tumbloo-gray hover:text-tumbloo-white' }}">
-                    {{ $category->name }}
+            @foreach($allCategories as $cat)
+                <a href="{{ route('category.show', $cat->slug) }}" 
+                   class="px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap {{ $cat->id == $category->id ? 'bg-tumbloo-accent text-white' : 'bg-tumbloo-black text-tumbloo-gray hover:text-tumbloo-white' }}">
+                    {{ $cat->name }}
                 </a>
             @endforeach
-            <a href="{{ route('categories') }}" 
-               class="px-4 py-2 rounded-lg text-sm font-medium bg-tumbloo-black text-tumbloo-offwhite hover:text-tumbloo-accent-light transition whitespace-nowrap">
-                Lihat Semua →
-            </a>
         </div>
     </div>
 </div>
@@ -80,7 +71,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                 </svg>
                 <h3 class="text-xl font-semibold text-tumbloo-white mb-2">Produk Tidak Ditemukan</h3>
-                <p class="text-tumbloo-gray">Coba kata kunci atau kategori lain</p>
+                <p class="text-tumbloo-gray mb-6">Belum ada produk di kategori ini</p>
+                <a href="{{ route('marketplace') }}" 
+                   class="inline-block px-6 py-3 bg-tumbloo-accent hover:bg-tumbloo-accent-light text-white font-semibold rounded-lg transition">
+                    Lihat Brand Lain
+                </a>
             </div>
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -107,6 +102,11 @@
                                         Stok Terbatas
                                     </div>
                                 @endif
+
+                                <!-- Condition Badge -->
+                                <div class="absolute top-2 right-2 px-2 py-1 rounded text-xs font-semibold {{ $product->condition == 'new' ? 'bg-green-500 text-white' : 'bg-yellow-500 text-white' }}">
+                                    {{ $product->condition == 'new' ? 'Baru' : 'Bekas' }}
+                                </div>
                             </div>
 
                             <!-- Product Info -->
