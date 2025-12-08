@@ -27,14 +27,14 @@
     <div class="flex items-center gap-6">
         {{-- Icon Bag --}}
         <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-            <img src="{{ asset('icons/bag.png') }}" class="w-5 h-5" alt="bag">
+            <img src="{{ asset('icons/checkout.png') }}" class="w-5 h-5" alt="bag">
         </button>
 
         @auth
             {{-- If user is a seller, show the Seller Dashboard link --}}
             @if(Auth::user()->role === 'seller')
                 <a href="{{ route('seller.dashboard') }}" class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-                    <img src="{{ asset('icons/seller_dashboard.png') }}" class="w-5 h-5" alt="seller dashboard">
+                    <img src="{{ asset('icons/store.png') }}" class="w-5 h-5" alt="seller dashboard">
                 </a>
             @endif
 
