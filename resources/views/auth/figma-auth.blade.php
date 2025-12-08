@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +46,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,.08) 1px, transparent 0);
+            background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, .08) 1px, transparent 0);
             background-size: 6px 6px;
             opacity: .25;
             pointer-events: none;
@@ -114,7 +115,9 @@
             cursor: pointer;
         }
 
-        .text-center { text-align: center; }
+        .text-center {
+            text-align: center;
+        }
 
         .label-small {
             font-size: 11px;
@@ -125,169 +128,184 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="auth-wrapper">
+    <div class="auth-wrapper">
 
-    {{-- ========== SIGN IN PAGE ========== --}}
-    <div id="page-signin" class="auth-grid">
+        {{-- ========== SIGN IN PAGE ========== --}}
+        <div id="page-signin" class="auth-grid">
 
-        {{-- LEFT SIGN IN --}}
-        <div class="auth-card">
-            <div class="auth-card-inner">
-                <h1 class="auth-title">Sign In</h1>
-                <p class="auth-subtitle">
-                    Already have an account?<br>
-                    Sign In down here.
-                </p>
+            {{-- LEFT SIGN IN --}}
+            <div class="auth-card">
+                <div class="auth-card-inner">
+                    <h1 class="auth-title">Sign In</h1>
+                    <p class="auth-subtitle">
+                        Already have an account?<br>
+                        Sign In down here.
+                    </p>
 
-                <form method="POST" action="{{ route('login') }}" class="auth-form">
-                    @csrf
+                    <form method="POST" action="{{ route('login') }}" class="auth-form">
+                        @csrf
 
-                    <input
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="johndoe@gmail.com"
-                        required
-                        class="auth-input"
-                    >
-
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Johndoe123"
-                        required
-                        class="auth-input"
-                    >
-
-                    <button type="submit" class="btn-main">
-                        Sign In
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        {{-- RIGHT HI THERE --}}
-        <div class="auth-card">
-            <div class="auth-card-inner text-center">
-                <h2 class="auth-title">Hi, There</h2>
-                <p class="auth-subtitle">
-                    Did not have an account yet?<br>
-                    Sign Up down here.
-                </p>
-
-                <button type="button" id="btn-go-signup" class="btn-ghost">
-                    Sign Up
-                </button>
-            </div>
-        </div>
-
-    </div>
-
-    {{-- ========== SIGN UP PAGE ========== --}}
-    <div id="page-signup" class="auth-grid" style="display:none;">
-
-        {{-- LEFT WELCOME --}}
-        <div class="auth-card">
-            <div class="auth-card-inner text-center">
-                <h2 class="auth-title">Welcome</h2>
-                <p class="auth-subtitle">
-                    Already have an account? Sign In down here.
-                </p>
-
-                <button type="button" id="btn-go-signin" class="btn-ghost">
-                    Sign In
-                </button>
-            </div>
-        </div>
-
-        {{-- RIGHT SIGN UP FORM --}}
-        <div class="auth-card">
-            <div class="auth-card-inner">
-                <h2 class="auth-title">Sign Up</h2>
-                <p class="auth-subtitle">
-                    Please fill your data down here.
-                </p>
-
-                <form method="POST" action="{{ route('register') }}" class="auth-form">
-                    @csrf
-
-                    <div>
-                        <div class="label-small">Username</div>
-                        <input
-                            type="text"
-                            name="name"
-                            value="{{ old('name') }}"
-                            placeholder="John Doe"
-                            required
-                            class="auth-input"
-                        >
-                    </div>
-
-                    <div>
-                        <div class="label-small">Email</div>
                         <input
                             type="email"
                             name="email"
                             value="{{ old('email') }}"
                             placeholder="johndoe@gmail.com"
                             required
-                            class="auth-input"
-                        >
-                    </div>
+                            class="auth-input">
 
-                    <div>
-                        <div class="label-small">Password</div>
+                        <!-- Error Message for Email -->
+                        @error('email')
+                        <div class="text-red-600 text-sm mt-2">{{ $message }}</div>
+                        @enderror
+
+                        <!-- Password Field -->
                         <input
                             type="password"
                             name="password"
                             placeholder="Johndoe123"
                             required
-                            class="auth-input"
-                        >
-                    </div>
+                            class="auth-input">
+                        <!-- Error Message for Password -->
+                        @error('password')
+                        <div class="text-red-600 text-sm mt-2">{{ $message }}</div>
+                        @enderror
 
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        placeholder="Confirm password"
-                        required
-                        class="auth-input"
-                    >
+                        <!-- General Login Error -->
+                        @if(session('error'))
+                        <div class="text-red-600 text-sm mt-2">{{ session('error') }}</div>
+                        @endif
 
-                    <button type="submit" class="btn-main">
+                        <button type="submit" class="btn-main">
+                            Sign In
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- RIGHT HI THERE --}}
+            <div class="auth-card">
+                <div class="auth-card-inner text-center">
+                    <h2 class="auth-title">Hi, There</h2>
+                    <p class="auth-subtitle">
+                        Did not have an account yet?<br>
+                        Sign Up down here.
+                    </p>
+
+                    <button type="button" id="btn-go-signup" class="btn-ghost">
                         Sign Up
                     </button>
-                </form>
+                </div>
             </div>
+
         </div>
 
+        {{-- ========== SIGN UP PAGE ========== --}}
+        <div id="page-signup" class="auth-grid" style="display:none;">
+
+            {{-- LEFT WELCOME --}}
+            <div class="auth-card">
+                <div class="auth-card-inner text-center">
+                    <h2 class="auth-title">Welcome</h2>
+                    <p class="auth-subtitle">
+                        Already have an account? Sign In down here.
+                    </p>
+
+                    <button type="button" id="btn-go-signin" class="btn-ghost">
+                        Sign In
+                    </button>
+                </div>
+            </div>
+
+            {{-- RIGHT SIGN UP FORM --}}
+            <div class="auth-card">
+                <div class="auth-card-inner">
+                    <h2 class="auth-title">Sign Up</h2>
+                    <p class="auth-subtitle">
+                        Please fill your data down here.
+                    </p>
+
+                    <form method="POST" action="{{ route('register') }}" class="auth-form">
+                        @csrf
+
+                        <div>
+                            <div class="label-small">Username</div>
+                            <input
+                                type="text"
+                                name="name"
+                                value="{{ old('name') }}"
+                                placeholder="John Doe"
+                                required
+                                class="auth-input">
+                        </div>
+
+                        <div>
+                            <div class="label-small">Email</div>
+                            <input
+                                type="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                placeholder="johndoe@gmail.com"
+                                required
+                                class="auth-input">
+                        </div>
+
+                        <div>
+                            <div class="label-small">Password</div>
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Johndoe123"
+                                required
+                                class="auth-input">
+                        </div>
+
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            placeholder="Confirm password"
+                            required
+                            class="auth-input">
+
+                        <button type="submit" class="btn-main">
+                            Sign Up
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
 
-<script>
-    const pageSignin = document.getElementById('page-signin');
-    const pageSignup = document.getElementById('page-signup');
-    const btnGoSignup = document.getElementById('btn-go-signup');
-    const btnGoSignin = document.getElementById('btn-go-signin');
+    <script>
+        const pageSignin = document.getElementById('page-signin');
+        const pageSignup = document.getElementById('page-signup');
+        const btnGoSignup = document.getElementById('btn-go-signup');
+        const btnGoSignin = document.getElementById('btn-go-signin');
 
-    if (btnGoSignup) {
-        btnGoSignup.addEventListener('click', () => {
-            pageSignin.style.display = 'none';
-            pageSignup.style.display = 'grid';
-            window.scrollTo({ top: 0 });
-        });
-    }
+        if (btnGoSignup) {
+            btnGoSignup.addEventListener('click', () => {
+                pageSignin.style.display = 'none';
+                pageSignup.style.display = 'grid';
+                window.scrollTo({
+                    top: 0
+                });
+            });
+        }
 
-    if (btnGoSignin) {
-        btnGoSignin.addEventListener('click', () => {
-            pageSignup.style.display = 'none';
-            pageSignin.style.display = 'grid';
-            window.scrollTo({ top: 0 });
-        });
-    }
-</script>
+        if (btnGoSignin) {
+            btnGoSignin.addEventListener('click', () => {
+                pageSignup.style.display = 'none';
+                pageSignin.style.display = 'grid';
+                window.scrollTo({
+                    top: 0
+                });
+            });
+        }
+    </script>
 
 </body>
+
 </html>
