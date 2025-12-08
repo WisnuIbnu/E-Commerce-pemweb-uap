@@ -12,17 +12,21 @@
         <div class="product-grid">
             <div class="product-images">
                 <div class="main-image" id="mainImage">
-                    @if(count($product['images']) > 0)
-                        <img src="{{ $product['images'][0] }}" style="width:100%; height:100%; object-fit:cover; border-radius:15px;">
+                    @if($product->productImages->isNotEmpty())
+                        @php $mainImg = $product->productImages->first()->image; @endphp
+                        <img src="{{ Str::startsWith($mainImg, ['http', 'https']) ? $mainImg : asset('storage/' . $mainImg) }}" style="width:100%; height:100%; object-fit:cover; border-radius:15px;">
                     @else
-                        🏅
+                        <div style="width:100%; height:100%; background:#333; display:flex; align-items:center; justify-content:center; border-radius:15px; color:#666;">
+                            NO IMAGE
+                        </div>
                     @endif
                 </div>
                 
-                @if(count($product['images']) > 1)
+                @if($product->productImages->count() > 1)
                 <div class="thumbnails">
-                    @foreach($product['images'] as $img)
-                    <img src="{{ $img }}" class="thumbnail {{ $loop->first ? 'active' : '' }}" onclick="changeImage('{{ $img }}')">
+                    @foreach($product->productImages as $imgObj)
+                    @php $img = $imgObj->image; $src = Str::startsWith($img, ['http', 'https']) ? $img : asset('storage/' . $img); @endphp
+                    <img src="{{ $src }}" class="thumbnail {{ $loop->first ? 'active' : '' }}" onclick="changeImage('{{ $src }}')">
                     @endforeach
                 </div>
                 @endif
@@ -30,78 +34,80 @@
             
             <div class="product-info">
                 <div class="product-meta">
-                    <span class="badge badge-category">⭐ {{ $product['category'] }}</span>
-                    <span class="badge badge-condition">{{ $product['condition'] == 'new' ? '✨ Baru' : '♻️ Bekas' }}</span>
+                    <span class="badge badge-primary">{{ $product->productCategory?->name ?? 'Uncategorized' }}</span>
+                    <span class="badge {{ $product->condition == 'new' ? 'badge-success' : 'badge-warning' }}">{{ $product->condition == 'new' ? 'NEW COND' : 'USED COND' }}</span>
                 </div>
                 
-                <h1>{{ $product['name'] }}</h1>
+                <h1 style="color:white; margin-top:1rem;">{{ $product->name }}</h1>
                 
                 <div class="rating">
-                    <div class="stars">
+                    <div class="stars" style="color:#ffd700;">
                         @for($i = 1; $i <= 5; $i++)
-                            {{ $i <= 4 ? '★' : '☆' }}
+                            @if($i <= 4) ★ @else ☆ @endif
                         @endfor
                     </div>
-                    <span>({{ count($product['reviews']) }} ulasan)</span>
+                    <span style="color:#aaa;">({{ $product->productReviews->count() }} Reviews)</span>
                 </div>
                 
-                <div class="price">Rp {{ number_format($product['price'], 0, ',', '.') }}</div>
+                <div class="price" style="font-size:2rem; font-weight:bold; color:var(--primary); margin:1rem 0;">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                 
-                <div class="store-info">
-                    <h3>🏪 {{ $product['store_name'] }}</h3>
-                    <p>📍 {{ $product['store_city'] }}</p>
+                <div class="store-info" style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:10px; margin-bottom:1.5rem;">
+                    <h3 style="color:white; font-size:1.1rem; margin-bottom:0.2rem;">Store: {{ $product->store?->name ?? 'No Store' }}</h3>
+                    <p style="color:#aaa; font-size:0.9rem;">Location: {{ $product->store?->city ?? 'Unknown City' }}</p>
                 </div>
                 
-                <div class="stock-info">
-                    @if($product['stock'] > 0)
-                        <span style="color:#00C49A;">✅ Stok tersedia: <strong>{{ $product['stock'] }}</strong> unit</span>
+                <div class="stock-info" style="margin-bottom:1.5rem;">
+                    @if($product->stock > 0)
+                        <span style="color:var(--success); font-weight:bold;">In Stock: {{ $product->stock }} units</span>
                     @else
-                        <span style="color:#dc3545;">❌ Stok habis</span>
+                        <span style="color:var(--danger); font-weight:bold;">Out of Stock</span>
                     @endif
                 </div>
                 
-                <div class="description">
-                    <h3>📝 Deskripsi Produk</h3>
-                    <p>{{ $product['description'] }}</p>
+                <div class="description" style="color:#ddd; line-height:1.6; margin-bottom:1.5rem;">
+                    <h3 style="color:white; margin-bottom:0.5rem;">Description</h3>
+                    <p>{{ $product->description }}</p>
                 </div>
                 
-                <p><strong>⚖️ Berat:</strong> {{ $product['weight'] }} gram</p>
+                <p style="color:#aaa; margin-bottom:1.5rem;"><strong>Weight:</strong> {{ $product->weight }} gram</p>
                 
-                @if($product['stock'] > 0)
-                <div class="quantity-selector">
-                    <button class="qty-btn" onclick="updateQty(-1)">-</button>
-                    <input type="number" class="qty-input" id="quantity" value="1" min="1" max="{{ $product['stock'] }}" readonly>
-                    <button class="qty-btn" onclick="updateQty(1)">+</button>
+                @if($product->stock > 0)
+                <div class="quantity-selector" style="display:flex; gap:10px; margin-bottom:1.5rem;">
+                    <button class="btn btn-secondary" onclick="updateQty(-1)" style="padding:0.5rem 1rem;">-</button>
+                    <input type="number" id="quantity" value="1" min="1" max="{{ $product->stock }}" readonly style="width:60px; text-align:center;">
+                    <button class="btn btn-secondary" onclick="updateQty(1)" style="padding:0.5rem 1rem;">+</button>
                 </div>
                 
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="addToCart({{ $product['id'] }})">🛒 Tambah ke Keranjang</button>
-                    <a href="{{ route('checkout') }}" class="btn btn-outline">⚡ Beli Langsung</a>
-                </div>
+                <form action="{{ route('cart.add') }}" method="POST" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <input type="number" name="qty" value="1" min="1" style="width: 60px; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; text-align: center;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1; font-size: 1.1rem;">ADD TO CART</button>
+                </form>
                 @else
-                <div style="background:#fee; padding:1rem; border-radius:10px; text-align:center;">
-                    ℹ️ Produk sedang habis
+                <div style="background:rgba(220,53,69,0.1); padding:1rem; border-radius:10px; text-align:center; color:var(--danger);">
+                    Product Currently Unavailable
                 </div>
                 @endif
             </div>
         </div>
         
-        <div class="reviews-section">
-            <h2>⭐ Ulasan Produk</h2>
-            @forelse($product['reviews'] as $review)
-            <div class="review-item">
-                <div class="review-header">
-                    <span class="reviewer-name">👤 {{ $review['user_name'] }}</span>
-                    <span class="review-stars">
+        <div class="reviews-section" style="margin-top:3rem;">
+            <h2 style="color:white; margin-bottom:1.5rem;">Product Reviews</h2>
+            @forelse($product->productReviews as $review)
+            <div class="review-item" style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:10px; margin-bottom:1rem;">
+                <div class="review-header" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span class="reviewer-name" style="font-weight:bold; color:white;">{{ $review->user->name }}</span>
+                    <span class="review-stars" style="color:#ffd700;">
                         @for($i = 1; $i <= 5; $i++)
-                            {{ $i <= $review['rating'] ? '★' : '☆' }}
+                            @if($i <= $review->rating) ★ @else ☆ @endif
                         @endfor
                     </span>
                 </div>
-                <p>{{ $review['review'] }}</p>
+                <p style="color:#ddd;">{{ $review->review }}</p>
             </div>
             @empty
-            <p style="text-align:center; color:#666;">Belum ada ulasan untuk produk ini</p>
+            <p style="text-align:center; color:#666;">No reviews yet.</p>
             @endforelse
         </div>
     </div>

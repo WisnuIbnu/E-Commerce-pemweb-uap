@@ -1,14 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'FlexSport - Future of Sports')
+@section('title', 'Collection - FlexSport')
+
+@push('styles')
+<style>
+    /* Mini Header for Collection */
+    .collection-header {
+        padding: 4rem 0 2rem;
+        text-align: center;
+    }
+
+    .collection-header h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        color: white;
+    }
+</style>
+@endpush
 
 @section('content')
-    <div class="hero">
+    <div class="collection-header">
         <div class="container">
-            <h1>NEXT GEN<br>PERFORMANCE GEAR</h1>
-            <p>Elevate your game with premium sports equipment. Built for champions, designed for the future.</p>
-            
-            <form action="{{ route('home') }}" method="GET" class="search-box">
+            <h1>OUR COLLECTION</h1>
+            <form action="{{ route('collection') }}" method="GET" class="search-box">
                 <input type="text" name="search" class="search-input" 
                        placeholder="Search products..." value="{{ request('search') }}">
                 <button type="submit" class="search-btn">SEARCH</button>
@@ -18,25 +34,20 @@
 
     <div class="container">
         <!-- Categories -->
-        <div class="section-header">
-            <h2 class="section-title">CATEGORIES</h2>
-        </div>
-        
         <div class="category-scroll">
-            <div class="category-card {{ !request('category') ? 'active' : '' }}" onclick="window.location.href='{{ route('home') }}'">
-                <div class="category-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+            <div class="category-card {{ !request('category') ? 'active' : '' }}" onclick="window.location.href='{{ route('collection') }}'">
+                <div class="category-icon">⚡</div>
                 <div class="category-name">All Items</div>
             </div>
             
             @foreach($categories as $category)
             <div class="category-card {{ request('category') == $category->id ? 'active' : '' }}" 
-                 onclick="window.location.href='{{ route('home') }}?category={{ $category->id }}#products'">
+                 onclick="window.location.href='{{ route('collection') }}?category={{ $category->id }}'">
                 <div class="category-icon">
                     @auth
-                        <!-- Icon Placeholder -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                        💠
                     @else
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                        💠
                     @endauth
                 </div>
                 <div class="category-name">{{ $category->name }}</div>
@@ -45,12 +56,12 @@
         </div>
 
         <!-- Products -->
-        <div class="section-header" id="products">
+        <div class="section-header">
             <h2 class="section-title">
                 @if(request('search'))
                     SEARCH RESULTS
                 @else
-                    LATEST DROPS
+                    ALL PRODUCTS
                 @endif
             </h2>
         </div>
@@ -63,7 +74,7 @@
                         @php $img = $product->productImages->first()->image; @endphp
                         <img src="{{ Str::startsWith($img, ['http', 'https']) ? $img : asset('storage/' . $img) }}" alt="{{ $product->name }}">
                     @else
-                        <span style="opacity: 0.5;"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
+                        <span style="font-size: 3rem; opacity: 0.5;">⚡</span>
                     @endif
                 </div>
                 <div class="product-info">
@@ -96,9 +107,9 @@
 @endsection
 
 @push('scripts')
-<script>
-    function addToCart(id) {
-        alert('Item added to cart!');
-    }
-</script>
+    <script>
+        function addToCart(id) {
+            alert('Item added to cart!');
+        }
+    </script>
 @endpush

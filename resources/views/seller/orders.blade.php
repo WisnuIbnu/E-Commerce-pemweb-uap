@@ -1,151 +1,116 @@
-@extends('layouts.app')
+@extends('layouts.seller')
 
-@section('title', 'Kelola Pesanan - FlexSport')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/orders.css') }}">
-@endpush
+@section('title', 'Order Management - Seller')
 
 @section('content')
-<div class="content">
-    <div class="page-header">
-        <h1>📋 Kelola Pesanan</h1>
-        <p>Toko: <strong>Sport Gear Pro</strong></p>
+<div class="header">
+    <div>
+        <h1 style="margin: 0; font-size: 2rem;">📦 Incoming Orders</h1>
+        <p style="margin: 0.5rem 0 0 0; color: var(--text-muted);">Manage and fulfill customer orders</p>
     </div>
+</div>
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    
-    @if(session('error'))
-    <div class="alert alert-error">{{ session('error') }}</div>
-    @endif
-
-    @if($errors->any())
-    <div class="alert alert-error">
-        @foreach($errors->all() as $error)
-            {{ $error }}<br>
-        @endforeach
-    </div>
-    @endif
-
+<div style="background: var(--darkl); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
     @if(count($orders) > 0)
-        @foreach($orders as $order)
-        <div class="order-card">
-            <div class="order-header">
-                <span class="order-code">📦 {{ $order['code'] }}</span>
-                <span class="badge badge-{{ $order['payment_status'] }}">
-                    @if($order['payment_status'] === 'paid')
-                        ✅ LUNAS
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Order ID</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Customer</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Items</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Total</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Payment</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Order Status</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Date</th>
+                <th style="padding: 1rem; text-align: left; color: var(--text-muted); font-weight: 600;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($orders as $order)
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 1rem;">
+                    <span style="font-family:'Orbitron'; color:var(--primary); font-weight: bold;">#{{ $order->code }}</span>
+                </td>
+                <td style="padding: 1rem;">
+                    <div>
+                        <div style="font-weight: bold;">{{ $order->user->name ?? 'Unknown' }}</div>
+                        <div style="font-size:0.85rem; color:var(--text-muted)">{{ $order->city }}</div>
+                    </div>
+                </td>
+                <td style="padding: 1rem;">
+                    {{ $order->transactionDetails->count() }} item(s)
+                </td>
+                <td style="padding: 1rem;">
+                    <span style="font-weight: bold;">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</span>
+                </td>
+                <td style="padding: 1rem;">
+                    @if($order->payment_status == 'paid')
+                        <span style="background: rgba(34, 197, 94, 0.2); color: #22c55e; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">PAID</span>
                     @else
-                        ⏳ BELUM BAYAR
+                        <span style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">UNPAID</span>
                     @endif
-                </span>
-            </div>
-            
-            <div class="order-info">
-                <div class="info-item">
-                    <div class="info-label">👤 Pembeli</div>
-                    <div class="info-value">{{ $order['buyer_name'] }}</div>
-                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">
-                        {{ $order['buyer_email'] }}
-                    </div>
-                    @if(isset($order['phone_number']) && $order['phone_number'])
-                    <div style="font-size: 0.85rem; color: #666;">
-                        📞 {{ $order['phone_number'] }}
-                    </div>
+                </td>
+                <td style="padding: 1rem;">
+                    @php
+                        $statusColors = [
+                            'pending' => ['bg' => 'rgba(251, 191, 36, 0.2)', 'text' => '#fbbf24'],
+                            'processing' => ['bg' => 'rgba(59, 130, 246, 0.2)', 'text' => '#3b82f6'],
+                            'shipped' => ['bg' => 'rgba(168, 85, 247, 0.2)', 'text' => '#a855f7'],
+                            'delivered' => ['bg' => 'rgba(34, 197, 94, 0.2)', 'text' => '#22c55e'],
+                            'cancelled' => ['bg' => 'rgba(239, 68, 68, 0.2)', 'text' => '#ef4444'],
+                        ];
+                        $status = $order->order_status ?? 'pending';
+                        $color = $statusColors[$status] ?? ['bg' => 'rgba(100, 100, 100, 0.2)', 'text' => '#666'];
+                    @endphp
+                    <span style="background: {{ $color['bg'] }}; color: {{ $color['text'] }}; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">
+                        {{ $status }}
+                    </span>
+                </td>
+                <td style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                    {{ $order->created_at->format('d M Y') }}
+                </td>
+                <td style="padding: 1rem;">
+                    @if($order->order_status == 'pending')
+                        <form action="{{ route('seller.orders.update', $order->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="order_status" value="processing">
+                            <button type="submit" style="background: var(--primary); color: black; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                                Process
+                            </button>
+                        </form>
+                    @elseif($order->order_status == 'processing')
+                        <form action="{{ route('seller.orders.update', $order->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="order_status" value="shipped">
+                            <button type="submit" style="background: #a855f7; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                                Ship
+                            </button>
+                        </form>
+                    @elseif($order->order_status == 'shipped')
+                        <form action="{{ route('seller.orders.update', $order->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="order_status" value="delivered">
+                            <button type="submit" style="background: #22c55e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                                Delivered
+                            </button>
+                        </form>
+                    @else
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">—</span>
                     @endif
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-label">📍 Alamat Pengiriman</div>
-                    <div class="info-value">{{ $order['city'] }}</div>
-                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">
-                        {{ $order['address'] }}
-                    </div>
-                    <div style="font-size: 0.85rem; color: #666;">
-                        Kode Pos: {{ $order['postal_code'] }}
-                    </div>
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-label">🚚 Pengiriman</div>
-                    <div class="info-value">{{ $order['shipping'] }}</div>
-                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">
-                        {{ ucfirst($order['shipping_type']) }}
-                    </div>
-                    <div style="font-size: 0.85rem; color: #666;">
-                        Ongkir: Rp {{ number_format($order['shipping_cost'], 0, ',', '.') }}
-                    </div>
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-label">💰 Total Pesanan</div>
-                    <div class="info-value" style="color: #00C49A; font-size: 1.3rem;">
-                        Rp {{ number_format($order['grand_total'], 0, ',', '.') }}
-                    </div>
-                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">
-                        Subtotal: Rp {{ number_format($order['order_total'], 0, ',', '.') }}
-                    </div>
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-label">📅 Tanggal Pesanan</div>
-                    <div class="info-value">{{ \Carbon\Carbon::parse($order['created_at'])->format('d M Y') }}</div>
-                    <div style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">
-                        {{ \Carbon\Carbon::parse($order['created_at'])->format('H:i') }} WIB
-                    </div>
-                </div>
-                
-                <div class="info-item">
-                    <div class="info-label">🔖 Nomor Resi</div>
-                    <div class="info-value">
-                        @if(isset($order['tracking_number']) && $order['tracking_number'])
-                            {{ $order['tracking_number'] }}
-                        @else
-                            ❌ Belum ada
-                        @endif
-                    </div>
-                </div>
-            </div>
-            
-            <div class="order-actions">
-                @if($order['payment_status'] === 'unpaid')
-                <form method="POST" action="#" style="display: inline;">
-                    @csrf
-                    <input type="hidden" name="transaction_id" value="{{ $order['id'] }}">
-                    <button type="submit" name="confirm_payment" class="btn btn-success" 
-                            onclick="return confirm('Konfirmasi pembayaran untuk pesanan ini?')">
-                        ✅ Konfirmasi Pembayaran
-                    </button>
-                </form>
-                @endif
-                
-                @if($order['payment_status'] === 'paid')
-                <form method="POST" action="#" class="tracking-form">
-                    @csrf
-                    <input type="hidden" name="transaction_id" value="{{ $order['id'] }}">
-                    <input type="text" name="tracking_number" placeholder="Masukkan nomor resi..." 
-                           value="{{ $order['tracking_number'] ?? '' }}" required>
-                    <button type="submit" name="update_tracking" class="btn btn-primary">
-                        🚚 {{ isset($order['tracking_number']) && $order['tracking_number'] ? 'Update' : 'Tambah' }} Resi
-                    </button>
-                </form>
-                @endif
-            </div>
-        </div>
-        @endforeach
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
     @else
-    <div class="empty-state">
-        <h3>😔 Belum ada pesanan masuk</h3>
-        <p>Pesanan dari pembeli akan muncul di sini</p>
+    <div style="text-align: center; padding: 4rem; color: var(--text-muted);">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+        <h3 style="margin: 0 0 0.5rem 0;">No Orders Yet</h3>
+        <p style="margin: 0;">Wait for customers to purchase your products!</p>
     </div>
     @endif
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    // Additional JavaScript if needed
-</script>
-@endpush

@@ -1,243 +1,167 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat Transaksi - FlexSport')
+@section('title', 'My Orders - FlexSport')
+
+@push('styles')
+<style>
+    .history-header {
+        margin: 4rem 0 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding-bottom: 1rem;
+    }
+
+    .history-card {
+        background: var(--darkl);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s;
+    }
+
+    .history-card:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    }
+
+    .trans-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .trans-id {
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .trans-date {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .trans-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .status-paid { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .status-shipped { background: rgba(79, 172, 254, 0.1); color: var(--secondary); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+    .trans-items {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .item-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .item-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        background: #333;
+        object-fit: cover;
+    }
+
+    .item-info h4 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .item-meta {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .trans-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: white;
+    }
+</style>
+@endpush
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/transaction-history.css') }}">
-
 <div class="container">
-    <div class="page-header">
-        <h1>📋 Riwayat Transaksi</h1>
-        <p>Lihat semua pesanan dan status pengiriman Anda</p>
+    <div class="history-header">
+        <h1>MY ORDER HISTORY</h1>
+        <p>Track your gear purchases and order status.</p>
     </div>
 
-    <!-- Filter Tabs -->
-    <div class="filter-tabs">
-        <button class="tab active" data-status="all">Semua</button>
-        <button class="tab" data-status="unpaid">Belum Bayar</button>
-        <button class="tab" data-status="paid">Sudah Bayar</button>
-        <button class="tab" data-status="shipped">Dikirim</button>
-        <button class="tab" data-status="completed">Selesai</button>
-    </div>
-
-    <!-- Transaction List -->
-    <div class="transaction-list">
-        <!-- Transaction Item 1 -->
-        <div class="transaction-card" data-status="paid">
-            <div class="card-header">
-                <div class="store-info">
-                    <span class="store-icon">🏪</span>
-                    <div>
-                        <strong>Sport Gear Pro</strong>
-                        <span class="transaction-date">03 Des 2025, 14:30</span>
-                    </div>
-                </div>
-                <span class="badge badge-paid">✅ Sudah Bayar</span>
+    @forelse($transactions as $trans)
+    <div class="history-card">
+        <div class="trans-header">
+            <div>
+                <div class="trans-id">ORDER #{{ $trans->code ?? $trans->id }}</div>
+                <div class="trans-date">{{ $trans->created_at->format('d M Y, H:i') }}</div>
             </div>
-
-            <div class="card-body">
-                <div class="product-info">
-                    <img src="https://via.placeholder.com/80" alt="Product" class="product-image">
-                    <div class="product-details">
-                        <h4>Sepatu Futsal Nike Mercurial</h4>
-                        <p class="product-meta">1x | Rp 450.000</p>
-                        <span class="product-condition">✨ Baru</span>
-                    </div>
-                </div>
-
-                <div class="transaction-details">
-                    <div class="detail-row">
-                        <span>Kode Transaksi</span>
-                        <strong>TRX-20251203-001</strong>
-                    </div>
-                    <div class="detail-row">
-                        <span>Metode Pembayaran</span>
-                        <span>Transfer Bank BCA</span>
-                    </div>
-                    <div class="detail-row">
-                        <span>Pengiriman</span>
-                        <span>JNE Regular (3-5 hari)</span>
-                    </div>
-                    <div class="detail-row">
-                        <span>No. Resi</span>
-                        <strong class="tracking-number">JNE123456789</strong>
-                    </div>
-                    <div class="detail-row total">
-                        <span>Total Pembayaran</span>
-                        <strong class="price">Rp 499.500</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-footer">
-                <button class="btn btn-outline" onclick="trackOrder('JNE123456789')">
-                    📦 Lacak Paket
-                </button>
-                <button class="btn btn-primary" onclick="viewDetail('TRX-20251203-001')">
-                    👁️ Lihat Detail
-                </button>
-            </div>
+            <span class="trans-status status-{{ strtolower($trans->payment_status ?? 'pending') }}">
+                {{ $trans->payment_status ?? 'PENDING' }}
+            </span>
         </div>
 
-        <!-- Transaction Item 2 -->
-        <div class="transaction-card" data-status="unpaid">
-            <div class="card-header">
-                <div class="store-info">
-                    <span class="store-icon">🏪</span>
-                    <div>
-                        <strong>Olahraga Store</strong>
-                        <span class="transaction-date">02 Des 2025, 10:15</span>
-                    </div>
-                </div>
-                <span class="badge badge-unpaid">⏳ Belum Bayar</span>
-            </div>
-
-            <div class="card-body">
-                <div class="product-info">
-                    <img src="https://via.placeholder.com/80" alt="Product" class="product-image">
-                    <div class="product-details">
-                        <h4>Raket Badminton Yonex</h4>
-                        <p class="product-meta">1x | Rp 750.000</p>
-                        <span class="product-condition">✨ Baru</span>
-                    </div>
-                </div>
-
-                <div class="transaction-details">
-                    <div class="detail-row">
-                        <span>Kode Transaksi</span>
-                        <strong>TRX-20251202-002</strong>
-                    </div>
-                    <div class="detail-row">
-                        <span>Metode Pembayaran</span>
-                        <span>E-Wallet (GoPay)</span>
-                    </div>
-                    <div class="detail-row">
-                        <span>Batas Pembayaran</span>
-                        <strong style="color: #dc3545;">03 Des 2025, 10:15</strong>
-                    </div>
-                    <div class="detail-row total">
-                        <span>Total Pembayaran</span>
-                        <strong class="price">Rp 807.500</strong>
-                    </div>
+        <div class="trans-items">
+            @foreach($trans->transactionDetails as $detail)
+            <div class="item-row">
+                @php 
+                    $img = $detail->product->productImages->first()->image ?? ''; 
+                    $src = Str::startsWith($img, ['http', 'https']) ? $img : asset('storage/' . $img);
+                @endphp
+                @if($img)
+                <img src="{{ $src }}" class="item-img" alt="{{ $detail->product->name }}">
+                @else
+                <div class="item-img" style="display:flex;align-items:center;justify-content:center;">⚡</div>
+                @endif
+                
+                <div class="item-info">
+                    <h4>{{ $detail->product->name }}</h4>
+                    <div class="item-meta">{{ $detail->qty }} x Rp {{ number_format($detail->price, 0, ',', '.') }}</div>
                 </div>
             </div>
-
-            <div class="card-footer">
-                <button class="btn btn-danger" onclick="cancelOrder('TRX-20251202-002')">
-                    ❌ Batalkan
-                </button>
-                <button class="btn btn-success" onclick="payNow('TRX-20251202-002')">
-                    💳 Bayar Sekarang
-                </button>
-            </div>
+            @endforeach
         </div>
 
-        <!-- Transaction Item 3 -->
-        <div class="transaction-card" data-status="completed">
-            <div class="card-header">
-                <div class="store-info">
-                    <span class="store-icon">🏪</span>
-                    <div>
-                        <strong>Sport Equipment</strong>
-                        <span class="transaction-date">25 Nov 2025, 16:45</span>
-                    </div>
-                </div>
-                <span class="badge badge-completed">✅ Selesai</span>
+        <div class="trans-footer">
+            <div class="store-info">
+                <span style="color:var(--text-muted)">Sold by:</span> 
+                <strong>{{ $trans->store->name ?? 'Unknown Store' }}</strong>
             </div>
-
-            <div class="card-body">
-                <div class="product-info">
-                    <img src="https://via.placeholder.com/80" alt="Product" class="product-image">
-                    <div class="product-details">
-                        <h4>Bola Basket Molten</h4>
-                        <p class="product-meta">2x | Rp 600.000</p>
-                        <span class="product-condition">✨ Baru</span>
-                    </div>
-                </div>
-
-                <div class="transaction-details">
-                    <div class="detail-row">
-                        <span>Kode Transaksi</span>
-                        <strong>TRX-20251125-003</strong>
-                    </div>
-                    <div class="detail-row">
-                        <span>Diterima Tanggal</span>
-                        <span>28 Nov 2025</span>
-                    </div>
-                    <div class="detail-row total">
-                        <span>Total Pembayaran</span>
-                        <strong class="price">Rp 666.000</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-footer">
-                <button class="btn btn-outline" onclick="buyAgain()">
-                    🔄 Beli Lagi
-                </button>
-                <button class="btn btn-warning" onclick="reviewProduct('TRX-20251125-003')">
-                    ⭐ Beri Ulasan
-                </button>
+            <div class="total-price">
+                Total: Rp {{ number_format($trans->grand_total, 0, ',', '.') }}
             </div>
         </div>
     </div>
-
-    <!-- Empty State (Hidden by default) -->
-    <div class="empty-state" style="display: none;">
-        <div class="empty-icon">📭</div>
-        <h3>Belum Ada Transaksi</h3>
-        <p>Yuk mulai belanja produk olahraga favoritmu!</p>
-        <a href="{{ route('home') }}" class="btn btn-primary">
-            🛍️ Mulai Belanja
-        </a>
+    @empty
+    <div style="text-align: center; padding: 4rem; color: var(--text-muted);">
+        <h3>No Orders Yet</h3>
+        <p>You haven't bought any gear yet. Time to upgrade your inventory?</p>
+        <a href="{{ route('home') }}" class="btn btn-primary" style="margin-top:1rem;">START SHOPPING</a>
     </div>
+    @endforelse
+
+    <div style="height:4rem;"></div>
 </div>
-
-<script>
-// Filter tabs functionality
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function() {
-        // Remove active class from all tabs
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        
-        const status = this.dataset.status;
-        const cards = document.querySelectorAll('.transaction-card');
-        
-        cards.forEach(card => {
-            if (status === 'all' || card.dataset.status === status) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-});
-
-function trackOrder(trackingNumber) {
-    alert(`🚚 Melacak paket dengan resi: ${trackingNumber}\n\nFitur tracking akan terintegrasi dengan API kurir.`);
-}
-
-function viewDetail(transactionCode) {
-    alert(`📋 Menampilkan detail transaksi: ${transactionCode}`);
-}
-
-function cancelOrder(transactionCode) {
-    if (confirm(`Yakin ingin membatalkan pesanan ${transactionCode}?`)) {
-        alert('✅ Pesanan berhasil dibatalkan');
-    }
-}
-
-function payNow(transactionCode) {
-    alert(`💳 Mengarahkan ke halaman pembayaran untuk ${transactionCode}`);
-}
-
-function buyAgain() {
-    alert('🔄 Produk ditambahkan ke keranjang');
-}
-
-function reviewProduct(transactionCode) {
-    alert(`⭐ Buka form review untuk transaksi ${transactionCode}`);
-}
-</script>
 @endsection

@@ -1,173 +1,28 @@
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    body {
-        font-family: 'Sora', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        min-height: 100vh;
-    }
-    
-    /* Header Admin */
-    header {
-        background: linear-gradient(135deg, #003459 40%, #0077C8 100%);
-        color: white;
-        padding: 1rem 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    
-    .header-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 3rem;
-        display: grid;
-        grid-template-columns: 250px 1fr auto;
-        align-items: center;
-        gap: 2rem;
-    }
-    
-    /* Logo Section */
-    .logo {
-        font-size: 1.8rem;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        text-decoration: none;
-        color: white;
-        transition: transform 0.3s;
-    }
-    
-    .logo:hover {
-        transform: scale(1.05);
-    }
-    
-    .logo-icon {
-        font-size: 2rem;
-    }
-    
-    /* Center Menu */
-    .nav-center {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: center;
-        list-style: none;
-    }
-    
-    .nav-center a {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-        font-size: 0.95rem;
-    }
-    
-    .nav-center a:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-    }
-    
-    .nav-center a.active {
-        background: rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Right Menu */
-    .nav-right {
-        display: flex;
-        gap: 0.8rem;
-        align-items: center;
-        list-style: none;
-    }
-    
-    .btn-profile {
-        background: transparent;
-        border: 2px solid white;
-        color: white;
-        padding: 0.7rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-        transition: all 0.3s;
-    }
-    
-    .btn-profile:hover {
-        background: rgba(202, 0, 0, 1);
-        transform: translateY(-2px);
-    }
-    
-    .btn-logout {
-        background: rgba(235, 0, 0, 1);
-        padding: 0.7rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        color: white;
-        font-size: 0.95rem;
-        transition: all 0.3s;
-    }
-    
-    .btn-logout:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-    }
-    
-    .profile-icon {
-        font-size: 1.2rem;
-    }
-    
-    @media (max-width: 1024px) {
-        .header-container {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            text-align: center;
-        }
-        
-        .nav-center {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .nav-right {
-            justify-content: center;
-        }
-    }
-</style>
-
+<!-- Admin Header -->
 <header>
     <div class="header-container">
         <!-- Logo -->
         <a href="{{ route('admin.dashboard') }}" class="logo">
-            <span class="logo-icon">⚙️</span>
-            <span>Admin Panel</span>
+            ADMIN PANEL
         </a>
         
         <!-- Center Menu -->
         <ul class="nav-center">
             <li>
-                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    Dashboard
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                    Overview
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.stores') }}" class="{{ request()->routeIs('admin.stores') ? 'active' : '' }}">
-                    Toko
+                <a href="{{ route('admin.stores') }}" class="{{ request()->routeIs('admin.stores') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Stores
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                <a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users') ? 'active' : '' }}" style="display: flex; align-items: center; gap: 6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     Users
                 </a>
             </li>
@@ -176,15 +31,14 @@
         <!-- Right Menu -->
         <ul class="nav-right">
             <li>
-                <a href="{{ route('profile') }}" class="btn-profile">
-                    <span class="profile-icon">👤</span>
-                    <span>Profile</span>
+                <a href="{{ route('profile.edit') }}" class="btn-profile">
+                    {{ Auth::user()->name }}
                 </a>
             </li>
             <li>
                 <a href="{{ route('logout') }}" class="btn-logout"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    Logout
+                    LOGOUT
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf

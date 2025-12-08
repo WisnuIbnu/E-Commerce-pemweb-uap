@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('code')->unique();
-            $table->foreignId('buyer_id')->constrained('buyers')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
             $table->text('address');
-            $table->string('address_id');
+            $table->string('address_id')->nullable();
             $table->string('city');
             $table->string('postal_code');
             $table->string('shipping');
@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('tracking_number')->nullable();
             $table->decimal('tax', 26, 2);
             $table->decimal('grand_total', 26, 2);
-            $table->enum('payment_status', ['unpaid', 'paid'])->default('unpaid');
+            $table->enum('payment_status', ['unpaid', 'paid', 'refunded'])->default('unpaid');
+            $table->enum('order_status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }

@@ -1,67 +1,26 @@
-@extends('layouts.app')
+@extends('layouts.seller')
 
-@section('title', 'Saldo Toko - FlexSport')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/balance.css') }}">
-@endpush
-
-
+@section('title', 'Balance - Seller')
 
 @section('content')
-<div class="content">
-    <a href="{{ route('seller.dashboard') }}" class="btn-back">
-        ← Kembali
-    </a>
-    
-    <div class="balance-card">
-        <h1>💰 Saldo Toko Anda</h1>
-        <div class="balance-amount">Rp {{ number_format($balance, 0, ',', '.') }}</div>
-        <a href="{{ route('seller.withdrawal') }}" class="btn btn-primary">💸 Tarik Saldo</a>
+<div class="header">
+    <div>
+        <h1 style="margin: 0; font-size: 2rem;">💰 Store Balance</h1>
+        <p style="margin: 0.5rem 0 0 0; color: var(--text-muted);">Manage your earnings</p>
     </div>
+</div>
 
-    <div class="card">
-        <h2>📋 Riwayat Saldo</h2>
-        @if(count($history) > 0)
-        <table>
-            <thead>
-                <tr>
-                    <th>Tipe</th>
-                    <th>Jumlah</th>
-                    <th>Keterangan</th>
-                    <th>Tanggal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($history as $h)
-                <tr>
-                    <td>
-                        @if($h['type'] == 'income')
-                            📈 Pemasukan
-                        @else
-                            📉 Penarikan
-                        @endif
-                    </td>
-                    <td style="color:{{ $h['type'] == 'income' ? '#00C49A' : '#dc3545' }}; font-weight:700;">
-                        {{ $h['type'] == 'income' ? '+' : '-' }} Rp {{ number_format($h['amount'], 0, ',', '.') }}
-                    </td>
-                    <td>{{ $h['remarks'] }}</td>
-                    <td>{{ \Carbon\Carbon::parse($h['created_at'])->format('d M Y H:i') }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @else
-        <div class="empty-state">
-            <p>Belum ada riwayat saldo</p>
-        </div>
-        @endif
+<div style="background: var(--darkl); padding: 3rem; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 2rem;">
+    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Balance</div>
+    <div style="font-size: 3rem; font-weight: bold; color: var(--primary); margin-bottom: 1.5rem;">Rp {{ number_format($balance ?? 0, 0, ',', '.') }}</div>
+    <button style="background: var(--primary); color: black; border: none; padding: 1rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer;">Withdraw Funds</button>
+</div>
+
+<div style="background: var(--darkl); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+    <h2 style="margin: 0 0 1.5rem 0;">Transaction History</h2>
+    <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+        <p>No transaction history yet</p>
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    // Additional JavaScript if needed
-</script>
-@endpush

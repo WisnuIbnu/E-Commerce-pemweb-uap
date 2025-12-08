@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - FlexSport</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --dark: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,146 +23,76 @@
         
         body {
             font-family: 'Sora', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 172, 254, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(0, 242, 254, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(79, 172, 254, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(0, 242, 254, 0.15) 0px, transparent 50%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .login-wrapper {
-            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background shapes */
+        .shape {
+            position: absolute;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+        }
+        .shape-1 { top: -10%; left: -10%; width: 500px; height: 500px; }
+        .shape-2 { bottom: -10%; right: -10%; width: 400px; height: 400px; animation-delay: -5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
         }
         
         .login-container {
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            max-width: 1000px;
             width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            max-width: 450px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
         }
         
-        .login-side {
-            background: linear-gradient(135deg, #0077C8 0%, #003459 100%);
-            padding: 3rem;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .login-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 2.5rem;
         }
-        
-        .login-side::before {
-            content: "⚽🏀🎾🏈";
-            position: absolute;
-            font-size: 10rem;
-            opacity: 0.1;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-        }
-        
-        .logo {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .logo::before {
-            content: "⚡";
-            margin-right: 0.5rem;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            font-weight: 300;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .sport-icons {
-            margin-top: 2rem;
+
+        .brand h1 {
+            font-family: 'Orbitron', sans-serif;
             font-size: 2.5rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .sport-icons span {
-            animation: bounce 2s infinite;
-            display: inline-block;
-        }
-        
-        .sport-icons span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .sport-icons span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        .sport-icons span:nth-child(4) {
-            animation-delay: 0.6s;
-        }
-        
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-        
-        .form-side {
-            padding: 3rem;
-        }
-        
-        .form-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #003459;
+            font-weight: 900;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
             margin-bottom: 0.5rem;
         }
-        
-        .form-subtitle {
-            color: #666;
-            margin-bottom: 2rem;
-        }
-        
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .alert-error {
-            background: #fee;
-            color: #c33;
-            border: 2px solid #fcc;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
+
+        .brand p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
         }
         
         .form-group {
@@ -163,139 +102,154 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: #003459;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         input {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid #E1E5EA;
-            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             font-family: 'Sora', sans-serif;
             font-size: 1rem;
-            transition: all 0.3s;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
         
         input:focus {
             outline: none;
-            border-color: #0077C8;
-            box-shadow: 0 0 0 3px rgba(0, 119, 200, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+            background: rgba(15, 23, 42, 0.8);
         }
         
         .btn {
             width: 100%;
             padding: 1rem;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-family: 'Sora', sans-serif;
             font-size: 1rem;
             font-weight: 700;
+            color: var(--dark);
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1rem;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #00C49A 0%, #00a882 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 196, 154, 0.4);
-        }
-        
-        .btn-primary:hover {
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 196, 154, 0.6);
+            box-shadow: 0 10px 20px -10px var(--primary);
         }
-        
-        .form-footer {
+
+        .footer-links {
             text-align: center;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
         }
-        
-        .form-footer a {
-            color: #0077C8;
+
+        .footer-links a {
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
+            transition: color 0.3s;
         }
-        
-        .form-footer a:hover {
+
+        .footer-links a:hover {
+            color: white;
             text-decoration: underline;
         }
-        
-        @media (max-width: 768px) {
-            .login-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .login-side {
-                padding: 2rem;
-            }
-            
-            .logo {
-                font-size: 2rem;
-            }
+
+        .error-msg {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        /* Session Status */
+        .status-msg {
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="login-wrapper">
-        <div class="login-container">
-            <div class="login-side">
-                <div class="logo">FlexSport</div>
-                <p class="tagline">Platform E-Commerce Olahraga Terpercaya</p>
-     
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="brand">
+                <h1>FLEXSPORT</h1>
+                <p>Welcome back, Champion.</p>
             </div>
-            
-            <div class="form-side">
-                <h1 class="form-title">🔐 Login ke FlexSport</h1>
-                <p class="form-subtitle">Selamat datang kembali!</p>
-                
-                @if(session('success'))
-                <div class="alert alert-success">
-                    ✅ {{ session('success') }}
+
+            <!-- Session Status -->
+            @if(session('status'))
+                <div class="status-msg">
+                    {{ session('status') }}
                 </div>
-                @endif
+            @endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
                 
-                @if(session('error'))
-                <div class="alert alert-error">
-                    ❌ {{ session('error') }}
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="john@example.com">
+                    @error('email')
+                        <span class="error-msg">{{ $message }}</span>
+                    @enderror
                 </div>
-                @endif
-                
-                @if($errors->any())
-                <div class="alert alert-error">
-                    @foreach($errors->all() as $error)
-                        ❌ {{ $error }}<br>
-                    @endforeach
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                    @error('password')
+                        <span class="error-msg">{{ $message }}</span>
+                    @enderror
                 </div>
-                @endif
-                
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    
-                    <div class="form-group">
-                        <label for="email">📧 Email</label>
-                        <input type="email" id="email" name="email" 
-                               placeholder="nama@email.com" 
-                               value="{{ old('email') }}" 
-                               required autofocus>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="password">🔑 Password</label>
-                        <input type="password" id="password" name="password" 
-                               placeholder="Masukkan password" 
-                               required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">🚀 Login Sekarang</button>
-                </form>
-                
-                <div class="form-footer">
-                    <p>Belum punya akun? <a href="{{ route('register') }}">📝 Daftar di sini</a></p>
-                    <p style="margin-top:0.5rem;"><a href="{{ route('home') }}">🏠 Kembali ke Home</a></p>
+
+                <div class="form-group" style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="flex items-center" style="margin:0; text-transform:none; cursor:pointer;">
+                        <input type="checkbox" name="remember" style="width:auto; margin-right:0.5rem;">
+                        <span style="font-size:0.85rem;">Remember me</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" style="color:var(--text-muted); font-size:0.85rem; text-decoration:none;">Forgot Password?</a>
+                    @endif
                 </div>
-            </div>
+
+                <button type="submit" class="btn">
+                    Sign In
+                </button>
+
+                <div class="footer-links">
+                    Don't have an account? <a href="{{ route('register') }}">Create Account</a>
+                    <br><br>
+                    <a href="{{ route('home') }}" style="color: var(--text-muted); font-size: 0.8em;">Back to Store</a>
+                </div>
+            </form>
         </div>
     </div>
 </body>
