@@ -11,12 +11,12 @@ class BuyerProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::where('stock', '>', 0);
-        
+
         // Filter by category
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
-        
+
         // Filter by price range
         if ($request->has('min_price')) {
             $query->where('price', '>=', $request->min_price);
@@ -24,12 +24,12 @@ class BuyerProductController extends Controller
         if ($request->has('max_price')) {
             $query->where('price', '<=', $request->max_price);
         }
-        
+
         // Search
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
+
         // Sorting
         switch ($request->sort) {
             case 'price_low':
@@ -47,16 +47,27 @@ class BuyerProductController extends Controller
             default:
                 $query->latest();
         }
-        
+
         $products = $query->paginate(12);
-        
+
         return view('buyer.products.index', compact('products'));
     }
-    
+
     public function show($id)
     {
         $product = Product::findOrFail($id);
-        
-        return view('buyer.products.show', compact('product'));
+
+        // Produk lain dari toko yang sama, selain produk ini
+        $relatedProducts = Product::where('store_id', $product->store_id)
+            ->where('id', '!=', $product->id)
+            ->where('stock', '>', 0)    // optional, biar cuma yang masih ada stok
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('buyer.products.show', [
+            'product' => $product,
+            'relatedProducts' => $relatedProducts,
+        ]);
     }
 }

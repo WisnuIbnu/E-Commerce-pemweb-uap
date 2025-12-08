@@ -3,15 +3,9 @@
 @section('title', 'Pesanan Saya - ELSHOP')
 
 @section('content')
-<div class="breadcrumb">
-    <a href="{{ route('buyer.dashboard') }}">Beranda</a>
-    <span>/</span>
-    <span>Pesanan Saya</span>
-</div>
-
 <div class="section">
     <div class="section-header">
-        <h2 class="section-title">📦 Pesanan Saya</h2>
+        <h2 class="section-title">Pesanan Saya</h2>
     </div>
 
     {{-- Filter Tabs --}}

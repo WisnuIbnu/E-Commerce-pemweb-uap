@@ -23,7 +23,7 @@
         {{-- Tombol Approve / Reject --}}
         <div class="mt-6 flex justify-center gap-3">
             @if(!$store->is_verified)
-                <form action="{{ route('stores.approve', $store->id) }}" method="POST">
+                <form action="{{ route('admin.stores.approve', $store->id) }}" method="POST">
                     @csrf
                     <button type="submit"
                         class="px-4 py-2 bg-[#98bad5] hover:bg-[#b2cbde] text-[#304674] rounded transition">
@@ -31,7 +31,7 @@
                     </button>
                 </form>
 
-                <form action="{{ route('stores.reject', $store->id) }}" method="POST">
+                <form action="{{ route('admin.stores.reject', $store->id) }}" method="POST">
                     @csrf
                     <button type="submit"
                         class="px-4 py-2 bg-[#f5c2c7] hover:bg-[#f5a3a8] text-[#b02a37] rounded transition">
@@ -42,7 +42,7 @@
         </div>
 
         <div class="mt-6 text-center">
-            <a href="{{ route('stores.index') }}"
+            <a href="{{ route('admin.stores.index') }}"
                class="inline-block px-6 py-3 bg-[#98bad5] hover:bg-[#304674] text-white font-semibold rounded-lg transition">
                 Kembali
             </a>

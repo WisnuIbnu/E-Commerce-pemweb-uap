@@ -1,37 +1,47 @@
 <?php
+
 namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class BuyerProfileController extends Controller
 {
     public function edit()
     {
-        $user = auth()->user();
+        $user = Auth::user();
+
+        // Pastikan ini hanya untuk role buyer
+        if ($user->role !== 'buyer') {
+            abort(403, 'Unauthorized');
+        }
+
         return view('buyer.profile.edit', compact('user'));
     }
 
     public function update(Request $request)
     {
-        $user = auth()->user();
-
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:8|confirmed',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email',
+            'phone'   => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
         ]);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user = Auth::user();
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        if ($user->role !== 'buyer') {
+            abort(403, 'Unauthorized');
         }
 
-        $user->save();
+        $user->update([
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'phone'   => $request->phone,
+            'address' => $request->address,
+        ]);
 
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

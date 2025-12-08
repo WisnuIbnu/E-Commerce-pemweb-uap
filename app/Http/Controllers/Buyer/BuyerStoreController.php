@@ -17,7 +17,7 @@ class BuyerStoreController extends Controller
                 ->with('info', 'Anda sudah memiliki pengajuan toko');
         }
 
-        return view('buyer.store.apply');
+        return view('buyer.store.create');
     }
 
     public function store(Request $request)
@@ -84,7 +84,7 @@ class BuyerStoreController extends Controller
         $store = Store::where('user_id', auth()->id())->first();
         
         if (!$store) {
-            return redirect()->route('buyer.store.apply');
+            return redirect()->route('buyer.store.create');
         }
 
         return view('buyer.store.status', compact('store'));

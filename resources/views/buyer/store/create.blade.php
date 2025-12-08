@@ -1,14 +1,6 @@
 @extends('layouts.buyer')
-
 @section('title', 'Daftar Toko - ELSHOP')
-
 @section('content')
-<div class="breadcrumb">
-    <a href="{{ route('buyer.dashboard') }}">Beranda</a>
-    <span>/</span>
-    <span>Daftar Toko</span>
-</div>
-
 <div class="section">
     <div class="section-header">
         <h2 class="section-title"><i class="fas fa-store"></i> Daftar Toko Anda</h2>

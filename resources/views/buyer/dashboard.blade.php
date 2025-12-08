@@ -6,10 +6,10 @@
     {{-- Hero Banner --}}
     <section class="hero-banner">
         <div class="hero-content">
-            <h1>Selamat Datang, {{ auth()->user()->name }}! 👋</h1>
+            <h1>HALLO BANG</h1>
             <p>Temukan berbagai snack premium dan camilan favorit Anda di ELSHOP</p>
             <a href="{{ route('buyer.products.index') }}" class="hero-btn">
-                🛍️ Mulai Belanja Sekarang
+                Mulai Belanja Sekarang
             </a>
         </div>
     </section>
@@ -37,7 +37,6 @@
                                     'Minuman' => '🥤',
                                     'Instan' => '🍜',
                                 ];
-
 
                                 $icon = $iconMap[$category->name] ?? '<svg width="48" height="48" fill="currentColor" viewBox="0 0 16 16" style="color: #6b7280"><path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/></svg>';
                             @endphp
@@ -132,9 +131,9 @@
         </div>
 
         {{-- Quick Filter --}}
-        <div class="filter-bar" style="margin-bottom: 24px;">
+        <div class="filter-bar">
             <div class="filter-group">
-                <label>📁 Kategori:</label>
+                <label>Kategori:</label>
                 <select class="filter-select" id="categoryFilter">
                     <option value="">Semua Kategori</option>
                     @if(isset($categories))
@@ -146,7 +145,7 @@
             </div>
 
             <div class="filter-group">
-                <label>📊 Urutkan:</label>
+                <label>Urutkan:</label>
                 <select class="filter-select" id="sortFilter">
                     <option value="latest">Terbaru</option>
                     <option value="price_low">Harga Terendah</option>
@@ -156,7 +155,7 @@
             </div>
 
             <button type="button" class="filter-btn" id="applyFilter">
-                🔍 Terapkan Filter
+                Terapkan Filter
             </button>
         </div>
 
@@ -190,11 +189,11 @@
             </div>
         @else
             <div class="empty-state">
-                <div class="empty-icon">📦</div>
+                <div class="empty-icon"></div>
                 <h3 class="empty-title">Belum Ada Produk</h3>
                 <p class="empty-text">Produk akan segera hadir. Silakan cek kembali nanti!</p>
                 <a href="{{ route('buyer.products.index') }}" class="hero-btn">
-                    🔍 Cari Produk Lain
+                    Cari Produk Lain
                 </a>
             </div>
         @endif
@@ -202,26 +201,16 @@
 
     {{-- Promo Banner --}}
     <section class="section">
-        <div
-            style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 16px; padding: 48px; color: white; display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: center; box-shadow: var(--shadow-lg);">
-            <div>
-                <div
-                    style="background: rgba(255,255,255,0.2); display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 600; margin-bottom: 16px;">
-                    🎁 PROMO SPESIAL
-                </div>
-                <h2 style="font-size: 2rem; margin-bottom: 12px; font-weight: 700;">
-                    Diskon hingga 50% untuk produk pilihan!
-                </h2>
-                <p style="font-size: 1.063rem; margin-bottom: 24px; opacity: 0.95;">
-                    Buruan belanja sebelum promo berakhir. Stok terbatas!
-                </p>
-                <a href="{{ route('buyer.products.index', ['promo' => true]) }}"
-                    style="display: inline-block; background: white; color: var(--primary); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; box-shadow: var(--shadow-md); transition: all 0.2s;">
-                    🏷️ Lihat Promo
+        <div class="promo-banner">
+            <img src="https://image.slidesdocs.com/responsive-images/background/food-cute-cartoon-illustration-powerpoint-background_a777da9c8d__960_540.jpg" 
+                 alt="Promo Diskon" 
+                 class="promo-image"
+                 onerror="this.src='https://placehold.co/800x400/304674/ffffff?text=Diskon+hingga+50%'">
+            <div class="promo-overlay">
+                <div class="promo-badge">PROMO SPESIAL</div>
+                <h2 class="promo-title">Diskon hingga 50% untuk produk pilihan!</h2>
+                <p class="promo-description">Buruan belanja sebelum promo berakhir. Stok terbatas!</p>
                 </a>
-            </div>
-            <div style="text-align: center; font-size: 8rem;">
-                🎉
             </div>
         </div>
     </section>
@@ -230,7 +219,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Filter functionality
             const applyBtn = document.getElementById('applyFilter');
             const categoryFilter = document.getElementById('categoryFilter');
             const sortFilter = document.getElementById('sortFilter');

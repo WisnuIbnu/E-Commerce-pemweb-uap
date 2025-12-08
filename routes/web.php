@@ -81,12 +81,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/orders/{id}/cancel', [BuyerOrderController::class, 'cancel'])->name('orders.cancel');
         Route::post('/orders/{id}/confirm', [BuyerOrderController::class, 'confirmReceived'])->name('orders.confirm');
 
-        Route::get('/profile/edit', [BuyerProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile/update', [BuyerProfileController::class, 'update'])->name('profile.update');
+            Route::get('/profile/edit', [BuyerProfileController::class, 'edit'])->name('profile.edit');
+            Route::patch('/profile/update', [BuyerProfileController::class, 'update'])->name('profile.update');
 
-        Route::get('/store/create', [BuyerStoreController::class, 'create'])->name('store.create');
-        Route::post('/store', [BuyerStoreController::class, 'store'])->name('store.store');
-        Route::get('/store/status', [BuyerStoreController::class, 'status'])->name('store.status');
+            Route::get('/store/create', [BuyerStoreController::class, 'create'])->name('store.create');
+            Route::post('/store', [BuyerStoreController::class, 'store'])->name('store.store');
+            Route::get('/store/status', [BuyerStoreController::class, 'status'])->name('store.status');
+        });
     });
 
 
@@ -147,7 +148,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
         Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
     });
-});
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -38,15 +38,28 @@ class Store extends Model
         return $this->hasMany(Product::class);
     }
 
-    // 🔥 Relasi WAJIB untuk menghindari error
+    // Relasi ke Store Balance
     public function storeBalance()
     {
         return $this->hasOne(StoreBalance::class);
     }
 
-    // 🔥 Kamu pakai loadCount('transactions'), jadi relasi harus ada
+    // Relasi ke Transaction
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+    
+    public function getStatusAttribute()
+    {
+        if ($this->deleted_at) {
+            return 'rejected';
+        }
+
+        if ($this->is_verified) {
+            return 'approved';
+        }
+
+        return 'pending';
     }
 }
