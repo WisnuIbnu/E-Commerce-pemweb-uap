@@ -27,8 +27,4 @@ class RoleMiddleware
 
         return $next($request);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a46398e877102ea4ff13f2b18cdd3aa564707dbe
