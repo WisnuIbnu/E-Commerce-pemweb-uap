@@ -40,7 +40,7 @@
                                 <!-- Product Image -->
                                 <div class="w-24 h-24 rounded-lg overflow-hidden bg-tumbloo-dark flex-shrink-0">
                                     @if($item['product']->images->isNotEmpty())
-                                        <img src="{{ asset('storage/' . $item['product']->images->first()->image) }}" 
+                                        <img src="{{ asset($product->images->first()->image) }}" 
                                              alt="{{ $item['product']->name }}"
                                              class="w-full h-full object-cover">
                                     @else
