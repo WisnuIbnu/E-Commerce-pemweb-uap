@@ -78,20 +78,20 @@
                         <div class="p-6">
                             <!-- Products -->
                             <div class="space-y-4 mb-4">
-                                @foreach($transaction->details as $detail)
+                                @foreach($transaction->transactionDetails as $detail)
                                     <div class="flex gap-4">
                                         <div class="w-20 h-20 rounded-lg overflow-hidden bg-tumbloo-dark flex-shrink-0">
                                             @if($detail->product->images->isNotEmpty())
-                                                <img src="{{ asset('storage/' . $detail->product->images->first()->image) }}" 
-                                                     alt="{{ $detail->product->name }}"
-                                                     class="w-full h-full object-cover">
+                                                <img src="{{ asset(ltrim($detail->product->images->first()->image, '/')) }}"
+                                                alt="{{ $detail->product->name }}"
+                                                class="w-full h-full object-cover">
                                             @endif
                                         </div>
                                         <div class="flex-1">
                                             <h3 class="text-tumbloo-white font-semibold mb-1">{{ $detail->product->name }}</h3>
                                             <div class="flex justify-between items-center">
-                                                <span class="text-tumbloo-gray text-sm">{{ $detail->qty }}x Rp {{ number_format($detail->product->price, 0, ',', '.') }}</span>
-                                                <span class="text-tumbloo-accent font-semibold">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+                                                <span class="text-blue-200 text-sm">{{ $detail->qty }}x Rp {{ number_format($detail->product->price, 0, ',', '.') }}</span>
+                                                <span class="text-blue-500 font-semibold">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -102,19 +102,19 @@
                             <div class="border-t border-tumbloo-accent pt-4 mb-4">
                                 <div class="flex justify-between text-lg font-bold">
                                     <span class="text-tumbloo-white">Total Pembayaran</span>
-                                    <span class="text-tumbloo-accent">Rp {{ number_format($transaction->grand_total, 0, ',', '.') }}</span>
+                                    <span class="text-blue-500">Rp {{ number_format($transaction->grand_total, 0, ',', '.') }}</span>
                                 </div>
                             </div>
 
                             <!-- Actions -->
                             <div class="flex gap-3">
-                                <a href="{{ route('transactions.show', $transaction->id) }}" 
+                                <a href="{{ route('payment.show', $transaction->id) }}" 
                                    class="flex-1 text-center bg-tumbloo-accent hover:bg-tumbloo-accent-light text-white font-semibold py-2 px-4 rounded-lg transition">
                                     Lihat Detail
                                 </a>
                                 
                                 @if($transaction->payment_status === 'pending')
-                                    <form action="{{ route('transactions.cancel', $transaction->id) }}" method="POST" class="flex-1">
+                                    <form action="{{ route('transaction.cancel', $transaction->id) }}" method="POST" class="flex-1">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" 
@@ -126,7 +126,7 @@
                                 @endif
 
                                 @if($transaction->payment_status === 'delivered')
-                                    <a href="{{ route('reviews.create', ['transaction' => $transaction->id, 'product' => $transaction->details->first()->product_id]) }}" 
+                                    <a href="{{ route('reviews.create', ['transaction' => $transaction->id, 'product' => $transaction->transactionDetails->first()->product_id]) }}" 
                                        class="flex-1 text-center bg-tumbloo-dark hover:bg-tumbloo-accent/20 text-tumbloo-white border border-tumbloo-accent font-semibold py-2 px-4 rounded-lg transition">
                                         Beri Ulasan
                                     </a>

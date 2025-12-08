@@ -26,7 +26,7 @@
             <div class="flex gap-4">
                 <div class="w-24 h-24 rounded-lg overflow-hidden bg-tumbloo-dark flex-shrink-0">
                     @if($product->images->isNotEmpty())
-                        <img src="{{ asset('storage/' . $product->images->first()->image) }}" 
+                        <img src="{{ asset($product->images->first()->image) }}" 
                              alt="{{ $product->name }}"
                              class="w-full h-full object-cover">
                     @endif
