@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // daftar seeder yang ingin dipanggil (nama class)
         $seeders = [
             'UserAndStoreSeeder',
+            'StoreSeeder',
             'ProductCategorySeeder',
             'ProductSeeder',
             'ProductImageSeeder',

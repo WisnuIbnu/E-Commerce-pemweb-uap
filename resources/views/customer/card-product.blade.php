@@ -9,7 +9,8 @@
         <!-- Products Grid - Responsive: 2 cols mobile, 3 cols tablet, 4 cols desktop -->
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             @forelse($products as $product)
-                <div class="product-card-wrapper cursor-pointer group">
+                <!-- ✨ TAMBAHKAN <a> TAG DI SINI -->
+                <a href="{{ route('product.show', $product->id) }}" class="product-card-wrapper cursor-pointer group block">
                     <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                         <!-- Product Image -->
                         <div class="relative overflow-hidden aspect-square bg-gray-100">
@@ -82,7 +83,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
+                <!-- ✨ PENUTUP <a> TAG -->
             @empty
                 <div class="col-span-full text-center py-16">
                     <div class="flex flex-col items-center">
@@ -112,6 +114,7 @@
 /* Product Card Animations */
 .product-card-wrapper {
     animation: fadeInUp 0.5s ease-out backwards;
+    text-decoration: none; /* ✨ TAMBAHKAN INI - Hilangkan underline */
 }
 
 .product-card-wrapper:nth-child(1) { animation-delay: 0.05s; }

@@ -12,9 +12,12 @@ export default defineConfig({
                 'resources/css/customer/banner.css',
                 'resources/css/customer/category.css',
                 'resources/css/dashboard.css',
+                'resources/css/customer/product/detail.css',
+                'resources/js/customer/product/detail.js',
                 'resources/js/app.js',
                 'resources/js/header.js',
-                'resources/js/footer.js'
+                'resources/js/footer.js',
+
                 // ← HAPUS 'resources/js/dashboard.js' kalau tidak ada
             ],
             refresh: true,
