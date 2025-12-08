@@ -68,6 +68,12 @@
                         class="text-gray-700 hover:text-orange-400 font-medium">
                         Produk
                     </a>
+
+                    {{-- 🔸 MENU TRANSAKSI UNTUK BUYER --}}
+                    <a href="{{ route('transactions.index') }}"
+                        class="text-gray-700 hover:text-orange-400 font-medium {{ request()->routeIs('transactions.*') ? 'text-orange-500 font-semibold' : '' }}">
+                        Transaksi
+                    </a>
                     @endif
                     @endguest
 
@@ -198,6 +204,8 @@
             <a href="{{ route('dashboard') }}" class="block text-gray-700 hover:text-orange-600">Home</a>
             <a href="{{ route('category.show', 'sembako') }}" class="block text-gray-700 hover:text-orange-600">Kategori</a>
             <a href="{{ route('products.search') }}" class="block text-gray-700 hover:text-orange-600">Produk</a>
+            {{-- 🔸 MENU TRANSAKSI (MOBILE) --}}
+            <a href="{{ route('transactions.index') }}" class="block text-gray-700 hover:text-orange-600">Transaksi</a>
             @endif
             @endguest
         </div>

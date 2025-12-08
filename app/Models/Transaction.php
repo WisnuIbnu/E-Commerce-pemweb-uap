@@ -61,10 +61,26 @@ class Transaction extends Model
     public function getStatusBadgeClassAttribute()
     {
         return match ($this->payment_status) {
-            self::STATUS_PENDING => 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800',
-            self::STATUS_PAID    => 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800',
-            self::STATUS_FAILED  => 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800',
-            default              => 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800',
+            
+            self::STATUS_PENDING => '
+                inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                bg-orange-50 text-orange-700 border border-orange-200
+            ',
+
+            self::STATUS_PAID => '
+                inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                bg-green-50 text-green-700 border border-green-200
+            ',
+
+            self::STATUS_FAILED => '
+                inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                bg-red-50 text-red-700 border border-red-200
+            ',
+
+            default => '
+                inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                bg-gray-50 text-gray-700 border border-gray-200
+            ',
         };
     }
 }
