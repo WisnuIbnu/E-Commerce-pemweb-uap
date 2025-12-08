@@ -78,6 +78,9 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(152, 66, 22, 0.12);
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .main-product-image {
@@ -89,6 +92,27 @@
 
         .main-image-container:hover .main-product-image {
             transform: scale(1.05);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .placeholder-icon {
+            font-size: 120px;
+            opacity: 0.4;
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         /* Wishlist Badge */
@@ -132,6 +156,7 @@
             cursor: pointer;
             border: 3px solid transparent;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .thumbnail-item:hover,
@@ -146,11 +171,12 @@
             object-fit: cover;
         }
 
-        /* Product Info */
+        /* Product Info Wrapper */
         .product-info-wrapper {
             padding: 20px 0;
         }
 
+        /* Category Tag */
         .category-tag {
             display: inline-flex;
             align-items: center;
@@ -167,14 +193,21 @@
             box-shadow: 0 4px 12px rgba(141, 149, 126, 0.25);
         }
 
+        .tag-icon {
+            font-size: 16px;
+        }
+
+        /* Product Title */
         .product-title {
             font-size: 40px;
             font-weight: 800;
             color: #333;
             margin-bottom: 20px;
             line-height: 1.3;
+            letter-spacing: -0.5px;
         }
 
+        /* Rating Section */
         .rating-section {
             display: flex;
             align-items: center;
@@ -192,7 +225,17 @@
 
         .star {
             font-size: 20px;
+            color: #E0E0E0;
+        }
+
+        .star.filled {
             color: #FFC107;
+        }
+
+        .star.half {
+            background: linear-gradient(90deg, #FFC107 50%, #E0E0E0 50%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .rating-value {
@@ -207,16 +250,38 @@
             font-size: 14px;
         }
 
+        /* Price Section */
         .price-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
             margin-bottom: 28px;
+            flex-wrap: wrap;
         }
 
         .current-price {
             font-size: 48px;
             font-weight: 800;
             color: #984216;
+            letter-spacing: -1px;
         }
 
+        .original-price {
+            font-size: 24px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: linear-gradient(135deg, #E8A87C 0%, #984216 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* Stock Section */
         .stock-section {
             display: flex;
             align-items: center;
@@ -247,12 +312,18 @@
             border: 2px solid #EF5350;
         }
 
+        .stock-icon {
+            font-size: 18px;
+        }
+
         .stock-count {
             color: #666;
             font-size: 14px;
         }
 
-        .description-section {
+        /* Description & Features */
+        .description-section,
+        .features-section {
             margin-bottom: 32px;
             padding: 24px;
             background: linear-gradient(135deg, #F9F9F9 0%, #FEFEFE 100%);
@@ -270,36 +341,62 @@
             margin-bottom: 16px;
         }
 
+        .heading-icon {
+            font-size: 24px;
+        }
+
         .description-text {
             color: #666;
             font-size: 15px;
             line-height: 1.8;
         }
-.features-section {
-margin-top: 24px;
-padding: 20px;
-background: #FFF8F2;
-border-radius: 16px;
-border: 2px solid #F0D6C5;
-}
-.features-section .section-heading {
-font-size: 20px;
-font-weight: 800;
-margin-bottom: 12px;
-color: #8E4B25;
-display: flex;
-align-items: center;
-gap: 6px;
-}
-.features-list {
-padding-left: 20px;
-color: #784F2B;
-line-height: 1.7;
-}
-.features-list li {
-margin-bottom: 6px;
-list-style: disc;
-}
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 12px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #8D957E 0%, #9BA789 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* NEW: wrapper to place description and features side-by-side */
+        .desc-feature-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .desc-feature-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Quantity Section */
         .quantity-section {
             display: flex;
             align-items: center;
@@ -329,6 +426,7 @@ list-style: disc;
             background: transparent;
             cursor: pointer;
             color: #984216;
+            font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -352,6 +450,7 @@ list-style: disc;
             color: #333;
         }
 
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 16px;
@@ -372,6 +471,7 @@ list-style: disc;
             gap: 12px;
             transition: all 0.3s ease;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .btn-add-cart {
@@ -399,8 +499,10 @@ list-style: disc;
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none !important;
         }
 
+        /* Trust Badges */
         .trust-badges {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -418,13 +520,19 @@ list-style: disc;
 
         .trust-icon {
             font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .trust-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .trust-text strong {
             font-size: 14px;
             color: #984216;
             font-weight: 700;
-            display: block;
         }
 
         .trust-text span {
@@ -502,6 +610,15 @@ list-style: disc;
             transform: scale(1.1);
         }
 
+        .related-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+        }
+
         .related-overlay {
             position: absolute;
             top: 0;
@@ -525,6 +642,7 @@ list-style: disc;
             font-size: 16px;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .related-info {
@@ -540,6 +658,7 @@ list-style: disc;
             padding: 6px 12px;
             border-radius: 12px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             margin-bottom: 12px;
         }
 
@@ -584,7 +703,7 @@ list-style: disc;
             transform: scale(1.1);
         }
 
-        /* Responsive */
+        /* Responsive Design */
         @media (max-width: 1024px) {
             .product-container {
                 grid-template-columns: 1fr;
@@ -593,6 +712,18 @@ list-style: disc;
 
             .product-gallery {
                 position: static;
+            }
+
+            .main-image-container {
+                height: 500px;
+            }
+
+            .product-title {
+                font-size: 32px;
+            }
+
+            .current-price {
+                font-size: 40px;
             }
         }
 
@@ -613,19 +744,53 @@ list-style: disc;
                 flex-direction: column;
             }
 
+            .trust-badges {
+                grid-template-columns: 1fr;
+            }
+
             .related-products-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .breadcrumb-container {
+                font-size: 12px;
+            }
+
+            .product-main-section {
+                padding: 40px 0;
+            }
+
+            .main-image-container {
+                height: 320px;
+                border-radius: 16px;
+            }
+
+            .product-title {
+                font-size: 24px;
+            }
+
+            .current-price {
+                font-size: 32px;
+            }
+
+            .related-products-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 
     <div class="product-detail-page">
-        <!-- Breadcrumb -->
+        <!-- Breadcrumb dengan tema -->
         <div class="breadcrumb-wrapper">
             <div class="breadcrumb-container">
                 <a href="{{ route('dashboard') }}" class="breadcrumb-link">Home</a>
                 <span class="breadcrumb-separator">›</span>
-                <a href="#" class="breadcrumb-link">{{ $product->productCategory->name }}</a>
+                <a href="{{ url('/category/' . ($product->productCategory->id ?? '#')) }}" class="breadcrumb-link">
+                    {{ $product->productCategory->name ?? 'Category' }}
+                </a>
                 <span class="breadcrumb-separator">›</span>
                 <span class="breadcrumb-current">{{ $product->name }}</span>
             </div>
@@ -634,109 +799,133 @@ list-style: disc;
         <!-- Main Product Section -->
         <div class="product-main-section">
             <div class="product-container">
-                
+
                 <!-- Product Gallery -->
                 <div class="product-gallery">
-                    @php
-                        $mainImageRecord = $product->productImages->firstWhere('is_thumbnail', true) 
-                                        ?? $product->productImages->first();
-                        $mainImagePath = $mainImageRecord->image ?? null;
-                        $imageExists = $mainImagePath && file_exists(public_path($mainImagePath));
-                    @endphp
-
                     <div class="main-image-container">
-                        @if($imageExists)
-                            <img src="{{ asset($mainImagePath) }}"
+                        @php
+                            $hasImagesCollection = isset($product->productImages) && $product->productImages->count() > 0;
+                        @endphp
+
+                        @if($hasImagesCollection)
+                            @php
+                                $mainImageRecord = $product->productImages->firstWhere('is_thumbnail', true) ?? $product->productImages->first();
+                                $mainImagePath = $mainImageRecord->image ?? null;
+                                $imageExists = $mainImagePath && file_exists(public_path($mainImagePath));
+                                $mainImageUrl = $imageExists ? asset($mainImagePath) : "https://placehold.co/600x600/E4D6C5/984216?text=" . urlencode(Str::limit($product->name, 20));
+                            @endphp
+
+                            <img src="{{ $mainImageUrl }}"
+                                 alt="{{ $product->name }}"
+                                 class="main-product-image"
+                                 id="mainImage">
+                        @elseif(isset($product->image) && $product->image)
+                            <img src="{{ asset('storage/' . $product->image) }}"
                                  alt="{{ $product->name }}"
                                  class="main-product-image"
                                  id="mainImage">
                         @else
-                            <img src="https://placehold.co/600x600/E4D6C5/984216?text={{ urlencode(Str::limit($product->name, 20)) }}"
-                                 alt="{{ $product->name }}"
-                                 class="main-product-image"
-                                 id="mainImage">
+                            <div class="image-placeholder">
+                                <span class="placeholder-icon">🍼</span>
+                                <p class="placeholder-text">No image available</p>
+                            </div>
                         @endif
 
-                        <button class="wishlist-badge">
+                        <button class="wishlist-badge" aria-label="Wishlist">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                             </svg>
                         </button>
                     </div>
 
-                    @if($product->productImages->count() > 0)
+                    <!-- Thumbnail Gallery -->
+                    @if($hasImagesCollection)
                         <div class="thumbnail-gallery">
                             @foreach($product->productImages as $img)
-                                @php 
+                                @php
                                     $thumbPath = $img->image;
-                                    $thumbExists = file_exists(public_path($thumbPath));
+                                    $thumbExists = $thumbPath && file_exists(public_path($thumbPath));
+                                    $thumbUrl = $thumbExists ? asset($thumbPath) : "https://placehold.co/100x100/E4D6C5/984216?text=" . $loop->iteration;
                                 @endphp
                                 <div class="thumbnail-item {{ ($img->id === ($mainImageRecord->id ?? null)) ? 'active' : '' }}"
-                                     onclick="changeMainImage('{{ $thumbExists ? asset($thumbPath) : 'https://placehold.co/600x600/E4D6C5/984216?text=Thumb' }}', this)">
-                                    @if($thumbExists)
-                                        <img src="{{ asset($thumbPath) }}" alt="Thumbnail">
-                                    @else
-                                        <img src="https://placehold.co/100x100/E4D6C5/984216?text={{ $loop->iteration }}" alt="Thumbnail">
-                                    @endif
+                                     onclick="changeMainImage('{{ $thumbUrl }}', this)">
+                                    <img src="{{ $thumbUrl }}" alt="Thumbnail {{ $loop->iteration }}">
                                 </div>
                             @endforeach
+                        </div>
+                    @elseif(isset($product->image) && $product->image)
+                        <div class="thumbnail-gallery">
+                            <div class="thumbnail-item active">
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="Thumbnail">
+                            </div>
                         </div>
                     @endif
                 </div>
 
                 <!-- Product Info -->
                 <div class="product-info-wrapper">
+                    <!-- Category Badge -->
                     <div class="category-tag">
-                        <span>🏷️</span>
-                        {{ $product->productCategory->name }}
+                        <span class="tag-icon">🏷️</span>
+                        {{ $product->productCategory->name ?? 'Uncategorized' }}
                     </div>
 
+                    <!-- Product Title -->
                     <h1 class="product-title">{{ $product->name }}</h1>
 
+                    <!-- Rating & Reviews -->
                     <div class="rating-section">
                         <div class="stars">
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
-                            <span class="star">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star half">★</span>
                         </div>
                         <span class="rating-value">4.8</span>
                         <span class="review-count">(124 reviews)</span>
                         <span class="sold-count">• 350+ sold</span>
                     </div>
 
+                    <!-- Price Section -->
                     <div class="price-section">
                         <div class="current-price">
                             Rp {{ number_format($product->price, 0, ',', '.') }}
                         </div>
                     </div>
 
+                    <!-- Stock Status -->
                     <div class="stock-section">
                         @if($product->stock > 0)
                             <div class="stock-badge in-stock">
-                                <span>✓</span>
+                                <span class="stock-icon">✓</span>
                                 In Stock
                             </div>
                             <span class="stock-count">{{ $product->stock }} items available</span>
                         @else
                             <div class="stock-badge out-of-stock">
-                                <span>✗</span>
+                                <span class="stock-icon">✗</span>
                                 Out of Stock
                             </div>
                         @endif
                     </div>
 
+                    <!-- Quantity Selector -->
                     <div class="quantity-section">
                         <label class="quantity-label">Quantity:</label>
                         <div class="quantity-selector">
-                            <button class="qty-btn" id="decreaseBtn">
+                            <button class="qty-btn qty-decrease" id="decreaseBtn" type="button" aria-label="Decrease">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
                                 </svg>
                             </button>
-                            <input type="number" value="1" min="1" max="{{ $product->stock }}" class="qty-input" id="qtyInput">
-                            <button class="qty-btn" id="increaseBtn">
+                            <input type="number"
+                                   value="1"
+                                   min="1"
+                                   max="{{ max(0, $product->stock) }}"
+                                   class="qty-input"
+                                   id="qtyInput">
+                            <button class="qty-btn qty-increase" id="increaseBtn" type="button" aria-label="Increase">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <line x1="12" y1="5" x2="12" y2="19"></line>
                                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -745,6 +934,7 @@ list-style: disc;
                         </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="action-buttons">
                         <button class="btn btn-add-cart" {{ $product->stock == 0 ? 'disabled' : '' }}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -763,6 +953,7 @@ list-style: disc;
                         </button>
                     </div>
 
+                    <!-- Trust Badges -->
                     <div class="trust-badges">
                         <div class="trust-badge">
                             <span class="trust-icon">🚚</span>
@@ -786,104 +977,110 @@ list-style: disc;
                             </div>
                         </div>
                     </div>
+
+           
+
                 </div>
             </div>
         </div>
-        <!-- Updated product detail with features and description moved below store info -->
-<!-- Please paste your full original file here if you want a fully merged version; this is a placeholder ready for integration. -->
 
-<!-- Store Info -->
-@include('customer.store.store')
+        <!-- Store Info -->
+        @include('customer.store.store')
+ 
+                 <!-- DESC + FEATURES WRAPPER (side-by-side on desktop) -->
+                    <div class="desc-feature-wrapper">
+                        <!-- Description -->
+                        <div>
+                            @if($product->description)
+                                <div class="description-section">
+                                    <h3 class="section-heading">
+                                        <span class="heading-icon">📝</span>
+                                        Description
+                                    </h3>
+                                    <p class="description-text">{{ $product->description }}</p>
+                                </div>
+                            @endif
+                        </div>
 
-<!-- Description (Moved) -->
-@if($product->description)
-<div class="description-section">
-    <h3 class="section-heading">
-        <span class="heading-icon">📝</span>
-        Description
-    </h3>
-    <p class="description-text">{{ $product->description }}</p>
-</div>
-@endif
-
-<!-- Features (Moved) -->
-@if($product->features)
-<div class="features-section">
-    <h3 class="section-heading">
-        <span class="heading-icon">✨</span>
-        Features
-    </h3>
-    <ul class="features-list">
-        @foreach($product->features as $feature)
-            <li>{{ $feature }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
+                        <!-- Features -->
+                        <div>
+                            @if(!empty($product->features) && is_array($product->features))
+                                <div class="features-section">
+                                    <h3 class="section-heading">
+                                        <span class="heading-icon">✨</span>
+                                        Features
+                                    </h3>
+                                    <ul class="features-list">
+                                        @foreach($product->features as $feature)
+                                            <li>{{ $feature }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <!-- end desc-feature-wrapper -->
         <!-- Related Products -->
         @if(isset($relatedProducts) && $relatedProducts->count() > 0)
-        <div class="related-products-section">
-            <div class="related-container">
-                <div class="section-header-related">
-                    <h2 class="section-title-related">You May Also Like</h2>
-                    <p class="section-subtitle-related">Similar products just for you</p>
-                </div>
+            <div class="related-products-section">
+                <div class="related-container">
+                    <div class="section-header-related">
+                        <h2 class="section-title-related">You May Also Like</h2>
+                        <p class="section-subtitle-related">Similar products just for you</p>
+                    </div>
 
-                <div class="related-products-grid">
-                    @foreach($relatedProducts as $related)
-                        @php
-                            $relatedImage = $related->productImages->firstWhere('is_thumbnail', true) 
-                                         ?? $related->productImages->first();
-                            $relatedImagePath = $relatedImage->image ?? null;
-                            $relatedImageExists = $relatedImagePath && file_exists(public_path($relatedImagePath));
-                        @endphp
-                        
-                        <a href="{{ route('product.show', $related->id) }}" class="related-product-card">
-                            <div class="related-image-wrapper">
-                                @if($relatedImageExists)
-                                    <img src="{{ asset($relatedImagePath) }}" 
-                                         alt="{{ $related->name }}"
-                                         class="related-image">
-                                @else
-                                    <img src="https://placehold.co/280x280/E4D6C5/984216?text={{ urlencode(Str::limit($related->name, 15)) }}" 
-                                         alt="{{ $related->name }}"
-                                         class="related-image">
-                                @endif
-                                <div class="related-overlay">
-                                    <span class="view-text">View Details</span>
+                    <div class="related-products-grid">
+                        @foreach($relatedProducts as $related)
+                            <a href="{{ route('product.show', $related->id) }}" class="related-product-card">
+                                <div class="related-image-wrapper">
+                                    @if(isset($related->productImages) && $related->productImages->count() > 0)
+                                        @php
+                                            $relatedImage = $related->productImages->firstWhere('is_thumbnail', true) ?? $related->productImages->first();
+                                            $relatedImagePath = $relatedImage->image ?? null;
+                                            $relatedImageExists = $relatedImagePath && file_exists(public_path($relatedImagePath));
+                                        @endphp
+                                        <img src="{{ $relatedImageExists ? asset($relatedImagePath) : "https://placehold.co/280x280/E4D6C5/984216?text=" . urlencode(Str::limit($related->name, 15)) }}" alt="{{ $related->name }}" class="related-image">
+                                    @elseif(isset($related->image) && $related->image)
+                                        <img src="{{ asset('storage/' . $related->image) }}" alt="{{ $related->name }}" class="related-image">
+                                    @else
+                                        <div class="related-placeholder">
+                                            <span>🍼</span>
+                                        </div>
+                                    @endif
+                                    <div class="related-overlay">
+                                        <span class="view-text">View Details</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="related-info">
-                                <span class="related-category">{{ $related->productCategory->name }}</span>
-                                <h4 class="related-name">{{ Str::limit($related->name, 40) }}</h4>
-                                <div class="related-footer">
-                                    <span class="related-price">Rp {{ number_format($related->price, 0, ',', '.') }}</span>
-                                    <button class="related-cart-btn" onclick="event.preventDefault()">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="9" cy="21" r="1"></circle>
-                                            <circle cx="20" cy="21" r="1"></circle>
-                                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                                        </svg>
-                                    </button>
+                                <div class="related-info">
+                                    <span class="related-category">{{ $related->productCategory->name ?? 'Category' }}</span>
+                                    <h4 class="related-name">{{ Str::limit($related->name, 40) }}</h4>
+                                    <div class="related-footer">
+                                        <span class="related-price">Rp {{ number_format($related->price, 0, ',', '.') }}</span>
+                                        <button class="related-cart-btn" type="button" aria-label="Add related to cart">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="9" cy="21" r="1"></circle>
+                                                <circle cx="20" cy="21" r="1"></circle>
+                                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    @endforeach
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
         @endif
     </div>
 
     <script>
-        // Change main image function
+        // Change main image function (works with both thumbnails and external urls)
         function changeMainImage(imageSrc, element) {
             const mainImage = document.getElementById('mainImage');
-            if (mainImage) {
+            if (mainImage && imageSrc) {
                 mainImage.src = imageSrc;
             }
-            
+
             // Update active thumbnail
             document.querySelectorAll('.thumbnail-item').forEach(item => {
                 item.classList.remove('active');
@@ -893,7 +1090,7 @@ list-style: disc;
             }
         }
 
-        // Quantity selector
+        // Quantity selector functionality
         document.addEventListener('DOMContentLoaded', function() {
             const decreaseBtn = document.getElementById('decreaseBtn');
             const increaseBtn = document.getElementById('increaseBtn');
@@ -901,24 +1098,26 @@ list-style: disc;
 
             if (decreaseBtn && increaseBtn && qtyInput) {
                 decreaseBtn.addEventListener('click', function() {
-                    let value = parseInt(qtyInput.value);
-                    if (value > parseInt(qtyInput.min)) {
+                    let value = parseInt(qtyInput.value) || 1;
+                    const min = parseInt(qtyInput.min) || 1;
+                    if (value > min) {
                         qtyInput.value = value - 1;
                     }
                 });
 
                 increaseBtn.addEventListener('click', function() {
-                    let value = parseInt(qtyInput.value);
-                    if (value < parseInt(qtyInput.max)) {
+                    let value = parseInt(qtyInput.value) || 1;
+                    const max = parseInt(qtyInput.max) || value;
+                    if (value < max) {
                         qtyInput.value = value + 1;
                     }
                 });
 
                 qtyInput.addEventListener('input', function() {
                     let value = parseInt(this.value);
-                    let min = parseInt(this.min);
-                    let max = parseInt(this.max);
-                    
+                    let min = parseInt(this.min) || 1;
+                    let max = parseInt(this.max) || value;
+
                     if (isNaN(value) || value < min) {
                         this.value = min;
                     } else if (value > max) {

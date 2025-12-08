@@ -15,11 +15,12 @@ class Product extends Model
         'name',
         'slug',
         'description',
-        'features', // <-- tambahkan ini supaya mass assignment aman
+        'features', // mass assignment aman
         'condition',
         'price',
         'weight',
         'stock',
+        'image',
     ];
 
     /**
@@ -28,6 +29,9 @@ class Product extends Model
      */
     protected $casts = [
         'features' => 'array',
+        'price' => 'decimal:2',
+        'weight' => 'integer',
+        'stock' => 'integer',
     ];
 
     // Relasi ke ProductCategory
@@ -36,15 +40,16 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    // ✅ RELASI ProductImage
+    // Relasi ke Store
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
+    // RELASI ProductImage
     public function productImages()
     {
         return $this->hasMany(ProductImage::class, 'product_id');
     }
 
-    // Relasi lain jika ada
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
 }

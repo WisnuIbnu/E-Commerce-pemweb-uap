@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Controllers/Customer/ProductController.php
-
 namespace App\Http\Controllers\Customer;
 
 use App\Models\Product;
@@ -12,10 +10,10 @@ class ProductController extends Controller
 {
     public function show($id)
     {
-        // eager-load productCategory dan productImages
+        // Eager-load productCategory dan productImages
         $product = Product::with(['productCategory', 'productImages'])->findOrFail($id);
 
-        // related products (eager-load relasi juga supaya thumbnail muncul)
+        // Related products (eager-load juga untuk thumbnails)
         $relatedProducts = Product::with(['productCategory', 'productImages'])
             ->where('product_category_id', $product->product_category_id)
             ->where('id', '!=', $id)

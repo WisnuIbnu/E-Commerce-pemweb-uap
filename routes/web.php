@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\customer\ProductController;
+use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\StoreController;
 
 Route::get('/', function () {
@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 // Route produk customer
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 
+// Route store customer
 Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');
 
 require __DIR__.'/auth.php';
