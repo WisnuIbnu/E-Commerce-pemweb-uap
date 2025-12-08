@@ -159,15 +159,6 @@
                                     </button>
                                 </form>
                             @endif
-
-                            @if(in_array($transaction->payment_status, ['unpaid', 'pending']))
-                                <form 
-                                    method="POST" 
-                                    action="{{ route('transactions.cancel', $transaction->id) }}"
-                                    style="display: inline-block;"
-                                    onsubmit="return confirm('Yakin ingin membatalkan transaksi ini? Stok produk akan dikembalikan.');"
-                                >
-                            @endif
                         </div>
                     </div>
                 @endforeach
@@ -188,19 +179,4 @@
             @endif
         </div>
     </div>
-
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    setTimeout(() => {
-                        alert.style.transition = 'opacity 0.3s';
-                        alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 300);
-                    }, 5000);
-                });
-            });
-        </script>
-    @endpush
-</x-app-layout>
+</x-app-layout> 

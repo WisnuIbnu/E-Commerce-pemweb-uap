@@ -16,13 +16,13 @@
             <div class="product-images-section">
                 <div class="main-image">
                     @php
-                        $thumbnail = $product->productImages->where('is_thumbnail', true)->first() 
+                        $thumbnail = $product->productImages->where('is_thumbnail', true)->first()
                                   ?? $product->productImages->first();
                     @endphp
-                    
+
                     @if($thumbnail)
-                        <img 
-                            src="{{ asset('storage/' . $thumbnail->image) }}" 
+                        <img
+                            src="{{ asset('storage/' . $thumbnail->image) }}"
                             alt="{{ $product->name }}"
                             id="mainImage"
                         >
@@ -31,14 +31,16 @@
                     @endif
                 </div>
 
+                {{-- Thumbnail list --}}
                 @if($product->productImages->count() > 1)
                     <div class="thumbnail-images">
                         @foreach($product->productImages as $image)
                             <div class="thumbnail-item">
-                                <img 
-                                    src="{{ asset('storage/' . $image->image) }}" 
+                                <img
+                                    src="{{ asset('storage/' . $image->image) }}"
                                     alt="{{ $product->name }}"
-                                    onclick="changeMainImage('{{ asset('storage/' . $image->image) }}')"
+                                    class="thumb-image"
+                                    data-full-src="{{ asset('storage/' . $image->image) }}"
                                 >
                             </div>
                         @endforeach
@@ -50,7 +52,7 @@
             <div class="product-info-section">
                 <div class="product-header">
                     <h1>{{ $product->name }}</h1>
-                    
+
                     <div class="product-badges">
                         @if($product->condition === 'new')
                             <span class="badge badge-new">Baru</span>
@@ -97,8 +99,8 @@
                     <h3>Informasi Toko</h3>
                     <div class="store-details">
                         @if($product->store->logo)
-                            <img 
-                                src="{{ asset('storage/' . $product->store->logo) }}" 
+                            <img
+                                src="{{ asset('storage/' . $product->store->logo) }}"
                                 alt="{{ $product->store->name }}"
                                 class="store-logo"
                             >
@@ -113,8 +115,8 @@
                 <!-- Action Buttons -->
                 @if($product->stock > 0)
                     <div class="product-actions">
-                        <a 
-                            href="{{ route('checkout.create', $product->id) }}" 
+                        <a
+                            href="{{ route('checkout.create', $product->id) }}"
                             class="btn btn-primary btn-buy"
                         >
                             Beli Sekarang
@@ -142,7 +144,7 @@
         <div class="product-reviews-section">
             <div class="section-card">
                 <h2>Ulasan Produk</h2>
-                
+
                 @if($product->productReviews->count() > 0)
                     <div class="reviews-list">
                         @foreach($product->productReviews as $review)
@@ -181,9 +183,19 @@
 
     @push('scripts')
         <script>
-            function changeMainImage(imageUrl) {
-                document.getElementById('mainImage').src = imageUrl;
-            }
+            document.addEventListener('DOMContentLoaded', function () {
+                const mainImage = document.getElementById('mainImage');
+                const thumbs    = document.querySelectorAll('.thumb-image');
+
+                if (!mainImage || thumbs.length === 0) return;
+
+                thumbs.forEach(function (img) {
+                    img.addEventListener('click', function () {
+                        const newSrc = this.dataset.fullSrc || this.src;
+                        mainImage.src = newSrc;
+                    });
+                });
+            });
         </script>
     @endpush
 </x-app-layout>

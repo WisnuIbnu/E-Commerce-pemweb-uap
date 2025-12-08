@@ -6,7 +6,7 @@ body {
     color: #333;
 }
 
-.welcome-header {
+.welcome-top-header {
     width: 100%;
     margin: 0;
     padding: 20px 40px;
@@ -59,7 +59,6 @@ body {
     color: #666;
 }
 
-/* tombol utama */
 .btn-primary {
     background: #333;
     color: white;
@@ -85,4 +84,17 @@ body {
 
 .welcome-footer-space {
     height: 50px;
+}
+
+.product-card a,
+.product-link,
+.product-link-guest {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card a:hover,
+.product-link:hover,
+.product-link-guest:hover {
+    text-decoration: none;
 }

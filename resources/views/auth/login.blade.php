@@ -82,12 +82,12 @@
 
                 {{-- Actions --}}
                 <div class="auth-actions">
-                    @if (Route::has('password.request'))
+                    @if (Route::has('register'))
                         <a
-                            href="{{ route('password.request') }}"
+                            href="{{ route('register') }}"
                             class="auth-link"
                         >
-                            {{ __('Forgot your password?') }}
+                            {{ __("Don’t have an account?") }}
                         </a>
                     @endif
 

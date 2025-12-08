@@ -67,7 +67,6 @@
         <!-- Quick Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon"></div>
                 <div class="stat-content">
                     <div class="stat-value">{{ $products->total() }}</div>
                     <div class="stat-label">Total Produk</div>
@@ -75,7 +74,6 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon"></div>
                 <div class="stat-content">
                     <div class="stat-value">{{ $products->where('stock', '>', 0)->count() }}</div>
                     <div class="stat-label">Produk Tersedia</div>
@@ -83,7 +81,6 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon"></div>
                 <div class="stat-content">
                     <div class="stat-value">{{ $products->where('stock', '<=', 5)->count() }}</div>
                     <div class="stat-label">Stok Menipis</div>

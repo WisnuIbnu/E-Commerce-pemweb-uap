@@ -25,8 +25,8 @@
 
         <!-- Balance Overview -->
         <div class="balance-overview">
-            <div class="balance-card">\
-<div class="balance-icon">💰</div>
+            <div class="balance-card">
+            <div class="balance-icon">$</div>
             <div class="balance-content">
                 <div class="balance-label">Saldo Tersedia</div>
                 <div class="balance-amount">

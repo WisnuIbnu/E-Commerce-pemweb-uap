@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\StoreBalance;
+use App\Models\StoreBalanceHistory;
+use Illuminate\Support\Facades\DB;
 
 class SellerOrderController extends Controller
 {
@@ -47,31 +50,58 @@ class SellerOrderController extends Controller
 
     /**
      * Update status pembayaran pesanan (unpaid → paid).
-     * Di DB: kolom payment_status enum('unpaid','paid')
      */
     public function updateStatus(Transaction $transaction)
     {
-        $store = Auth::user()->store;
+        $user  = Auth::user();
+        $store = $user->store;
 
-        if ($transaction->store_id !== $store->id) {
-            abort(403, 'Anda tidak berhak mengubah status pesanan ini.');
+        if (! $store || $transaction->store_id !== $store->id) {
+            abort(403, 'Anda tidak berhak memproses pesanan ini.');
         }
 
-        // Kalau sudah paid, tidak perlu diubah lagi
-        if ($transaction->payment_status === 'paid') {
+        // hanya boleh proses kalau status sudah "paid"
+        if ($transaction->payment_status !== 'paid') {
             return redirect()
                 ->route('seller.orders.index')
-                ->with('info', 'Transaksi ini sudah ditandai sebagai paid.');
+                ->with('error', 'Hanya pesanan yang sudah dibayar yang bisa diproses.');
         }
 
-        // Tandai sebagai sudah dibayar
-        $transaction->update([
-            'payment_status' => 'paid',
-        ]);
+        // cek apakah transaksi ini sudah pernah dicatat sbg "income"
+        $sudahMasukSaldo = StoreBalanceHistory::where('reference_type', Transaction::class)
+            ->where('reference_id', $transaction->id)
+            ->where('type', 'income')
+            ->exists();
+
+        if ($sudahMasukSaldo) {
+            return redirect()
+                ->route('seller.orders.index')
+                ->with('success', 'Pesanan ini sudah pernah diproses. Saldo toko tidak akan bertambah lagi.');
+        }
+
+        DB::transaction(function () use ($store, $transaction) {
+            // ambil / buat saldo toko
+            $balance = StoreBalance::firstOrCreate(
+                ['store_id' => $store->id],
+                ['balance'  => 0]
+            );
+            $productSubtotal = $transaction->transactionDetails()->sum('subtotal');
+            $balance->increment('balance', $productSubtotal);
+
+            // riwayat saldo (income)
+            StoreBalanceHistory::create([
+                'store_balance_id' => $balance->id,
+                'type'             => 'income',
+                'reference_id'     => $transaction->id,
+                'reference_type'   => Transaction::class,
+                'amount'           => $productSubtotal,
+                'remarks'          => 'Pendapatan dari pesanan ' . $transaction->code,
+            ]);
+        });
 
         return redirect()
             ->route('seller.orders.index')
-            ->with('success', 'Status pembayaran berhasil diperbarui menjadi paid.');
+            ->with('success', 'Pesanan diproses, saldo toko bertambah.');
     }
 
     /**

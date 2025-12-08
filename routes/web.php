@@ -25,10 +25,8 @@ use App\Http\Controllers\ProductCategoryController;
 |--------------------------------------------------------------------------
 */
 
-// Bisa pakai landing page biasa
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// welcome
+Route::get('/', [ProductController::class, 'welcome'])->name('home');
 
 
 /*

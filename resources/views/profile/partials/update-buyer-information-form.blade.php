@@ -1,4 +1,50 @@
 <section>
+    {{-- CSS khusus blok foto pembeli --}}
+    <style>
+        .buyer-avatar-block {
+            margin-top: 1.5rem;
+        }
+
+        .buyer-avatar-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .buyer-avatar-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .buyer-avatar-wrapper {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #d1d5db;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .buyer-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .buyer-avatar-placeholder-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+            padding: 0 0.5rem;
+        }
+    </style>
+
     <header>
         <h2 class="text-lg font-medium text-gray-900">
             {{ __('Informasi Pembeli') }}
@@ -16,19 +62,24 @@
             @csrf
             @method('patch')
 
-            <!-- Current Profile Picture -->
-            <div>
-                <x-input-label for="current_profile_picture" :value="__('Foto Profil Saat Ini')" />
-                <div class="mt-2 flex items-center gap-4">
+            {{-- Blok foto profil saat ini (tanpa Tailwind) --}}
+            <div class="buyer-avatar-block">
+                <div class="buyer-avatar-label">
+                    {{ __('Foto Profil Saat Ini') }}
+                </div>
+                <div class="buyer-avatar-row">
                     @if($user->buyer->profile_picture)
-                        <img 
-                            src="{{ asset('storage/' . $user->buyer->profile_picture) }}" 
-                            alt="Profile Picture"
-                            class="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
-                        >
+                        <div class="buyer-avatar-wrapper">
+                            <img
+                                src="{{ asset('storage/' . $user->buyer->profile_picture) }}"
+                                alt="Profile Picture"
+                            >
+                        </div>
                     @else
-                        <div class="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-300">
-                            <span class="text-xs text-gray-500 text-center px-2">Belum ada foto profil</span>
+                        <div class="buyer-avatar-wrapper">
+                            <span class="buyer-avatar-placeholder-text">
+                                Belum ada foto profil
+                            </span>
                         </div>
                     @endif
                 </div>
@@ -37,10 +88,10 @@
             <!-- Upload New Profile Picture -->
             <div>
                 <x-input-label for="profile_picture" :value="__('Upload Foto Profil Baru (Opsional)')" />
-                <input 
-                    id="profile_picture" 
-                    name="profile_picture" 
-                    type="file" 
+                <input
+                    id="profile_picture"
+                    name="profile_picture"
+                    type="file"
                     accept="image/*"
                     class="mt-1 block w-full text-sm text-gray-500
                         file:mr-4 file:py-2 file:px-4
@@ -58,13 +109,13 @@
             <!-- Phone Number -->
             <div>
                 <x-input-label for="phone_number" :value="__('Nomor Telepon')" />
-                <x-text-input 
-                    id="phone_number" 
-                    name="phone_number" 
-                    type="text" 
-                    class="mt-1 block w-full" 
-                    :value="old('phone_number', $user->buyer->phone_number)" 
-                    required 
+                <x-text-input
+                    id="phone_number"
+                    name="phone_number"
+                    type="text"
+                    class="mt-1 block w-full"
+                    :value="old('phone_number', $user->buyer->phone_number)"
+                    required
                 />
                 <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
             </div>
@@ -95,7 +146,6 @@
         </form>
     @else
         <div class="mt-6">
-            <!-- Tombol Lengkapi Informasi -->
             <!-- Alert -->
             <div class="rounded-md bg-yellow-50 p-4">
                 <div class="flex">
@@ -114,14 +164,16 @@
                     </div>
                 </div>
             </div>
+
             <div class="mt-4">
-            <a 
-                href="{{ route('buyer.profile.create') }}"
-                class="inline-flex items-center px-3 py-2 bg-gray-800 text-white font-semibold 
-                    rounded-md shadow hover:bg-gray-900 transition"
-            >
-                Lengkapi Informasi
-            </a>
+                <a
+                    href="{{ route('buyer.profile.create') }}"
+                    class="inline-flex items-center px-3 py-2 bg-gray-800 text-white font-semibold
+                        rounded-md shadow hover:bg-gray-900 transition"
+                >
+                    Lengkapi Informasi
+                </a>
+            </div>
         </div>
     @endif
 </section>
