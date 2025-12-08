@@ -3,73 +3,50 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Store extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'name',
         'logo',
-        'about', // Sesuai DB (bukan description)
+        'about',
         'phone',
-        'address_id', // Sesuai DB
+        'address_id',
         'city',
         'address',
         'postal_code',
-        'is_verified', // 0 = pending, 1 = approved
+        'is_verified'
     ];
 
     protected $casts = [
-        'is_verified' => 'boolean',
+        'is_verified' => 'boolean'
     ];
 
-    // Relationships
+    // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function balance()
-    {
-        return $this->hasOne(StoreBalance::class);
-    }
-
+    // Relasi ke Product
     public function products()
     {
         return $this->hasMany(Product::class);
     }
 
+    // 🔥 Relasi WAJIB untuk menghindari error
+    public function storeBalance()
+    {
+        return $this->hasOne(StoreBalance::class);
+    }
+
+    // 🔥 Kamu pakai loadCount('transactions'), jadi relasi harus ada
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
-    }
-
-    // Accessors
-    public function getIsApprovedAttribute()
-    {
-        return $this->is_verified == 1;
-    }
-
-    public function getIsPendingAttribute()
-    {
-        return $this->is_verified == 0;
-    }
-
-    public function getStatusTextAttribute()
-    {
-        return $this->is_verified ? 'Approved' : 'Pending';
-    }
-
-    public function getLogoUrlAttribute()
-    {
-        if (!$this->logo) {
-            return asset('images/default-store.png');
-        }
-        
-        if (str_starts_with($this->logo, ['http://', 'https://'])) {
-            return $this->logo;
-        }
-        
-        return asset('storage/' . $this->logo);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductCategory;
 use App\Models\Store;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -16,234 +17,155 @@ class ProductSeeder extends Seeder
         $stores = Store::where('is_verified', 1)->get();
 
         if ($categories->isEmpty() || $stores->isEmpty()) {
-            $this->command->error('Kategori atau Store belum ada! Jalankan ProductCategorySeeder dan StoreSeeder terlebih dahulu.');
+            $this->command->error('⚠️ Category atau Store belum ada! Jalankan ProductCategorySeeder & StoreSeeder.');
             return;
         }
 
-        // Dummy products untuk setiap kategori
+        // === DATA PRODUK FINAL (SEMUA KATEGORI) === //
         $productsData = [
+            // ========================
             // KERIPIK
+            // ========================
             [
                 'category' => 'Keripik',
                 'products' => [
-                    [
-                        'name' => 'Keripik Kentang Original',
-                        'description' => 'Keripik kentang dengan rasa original yang renyah dan gurih. Dibuat dari kentang pilihan dengan bumbu berkualitas.',
-                        'price' => 15000,
-                        'weight' => 150,
-                        'stock' => 50,
-                    ],
-                    [
-                        'name' => 'Keripik Singkong Balado',
-                        'description' => 'Keripik singkong dengan bumbu balado pedas mantap. Cocok untuk teman santai dan nonton.',
-                        'price' => 12000,
-                        'weight' => 200,
-                        'stock' => 45,
-                    ],
-                    [
-                        'name' => 'Keripik Pisang Cokelat',
-                        'description' => 'Keripik pisang premium dengan taburan cokelat manis. Perpaduan sempurna manis dan gurih.',
-                        'price' => 18000,
-                        'weight' => 180,
-                        'stock' => 30,
-                    ],
-                    [
-                        'name' => 'Keripik Tempe Original',
-                        'description' => 'Keripik tempe renyah dan gurih, sumber protein nabati yang lezat dan sehat.',
-                        'price' => 10000,
-                        'weight' => 100,
-                        'stock' => 60,
-                    ],
+                    ['name' => 'Keripik Kentang Original', 'desc' => 'Keripik kentang renyah rasa original.', 'price' => 15000, 'w' => 150, 'stock' => 50],
+                    ['name' => 'Keripik Singkong Balado', 'desc' => 'Keripik singkong pedas balado mantap.', 'price' => 12000, 'w' => 200, 'stock' => 40],
+                    ['name' => 'Keripik Pisang Cokelat', 'desc' => 'Keripik pisang dengan taburan cokelat.', 'price' => 18000, 'w' => 180, 'stock' => 30],
                 ],
             ],
+
+            // ========================
             // BISKUIT
+            // ========================
             [
                 'category' => 'Biskuit',
                 'products' => [
-                    [
-                        'name' => 'Biskuit Marie Susu',
-                        'description' => 'Biskuit marie klasik dengan kandungan susu tinggi. Cocok untuk sarapan atau cemilan sehat.',
-                        'price' => 8000,
-                        'weight' => 120,
-                        'stock' => 100,
-                    ],
-                    [
-                        'name' => 'Cookies Choco Chips',
-                        'description' => 'Cookies premium dengan choco chips berlimpah. Tekstur renyah dengan rasa cokelat yang kaya.',
-                        'price' => 25000,
-                        'weight' => 200,
-                        'stock' => 40,
-                    ],
-                    [
-                        'name' => 'Wafer Vanilla',
-                        'description' => 'Wafer berlapis dengan cream vanilla yang lembut dan manis. Favorit keluarga Indonesia.',
-                        'price' => 12000,
-                        'weight' => 150,
-                        'stock' => 80,
-                    ],
-                    [
-                        'name' => 'Biskuit Kelapa Premium',
-                        'description' => 'Biskuit dengan taburan kelapa sangrai asli. Aromanya harum dan rasanya gurih manis.',
-                        'price' => 15000,
-                        'weight' => 180,
-                        'stock' => 55,
-                    ],
+                    ['name' => 'Biskuit Marie Susu', 'desc' => 'Biskuit marie klasik dengan susu.', 'price' => 8000, 'w' => 120, 'stock' => 100],
+                    ['name' => 'Cookies Choco Chips', 'desc' => 'Cookies premium dengan choco chips banyak.', 'price' => 25000, 'w' => 200, 'stock' => 40],
+                    ['name' => 'Wafer Vanilla', 'desc' => 'Wafer lembut dengan vanilla.', 'price' => 12000, 'w' => 150, 'stock' => 80],
                 ],
             ],
+
+            // ========================
             // COKELAT
+            // ========================
             [
                 'category' => 'Cokelat',
                 'products' => [
-                    [
-                        'name' => 'Cokelat Batang Dark 70%',
-                        'description' => 'Cokelat dark premium dengan kakao 70%. Cocok untuk pecinta cokelat pahit dan sehat.',
-                        'price' => 35000,
-                        'weight' => 100,
-                        'stock' => 25,
-                    ],
-                    [
-                        'name' => 'Cokelat Susu Classic',
-                        'description' => 'Cokelat susu dengan rasa manis yang pas. Favorit semua kalangan dari anak-anak hingga dewasa.',
-                        'price' => 20000,
-                        'weight' => 150,
-                        'stock' => 70,
-                    ],
-                    [
-                        'name' => 'Cokelat Praline Assorted',
-                        'description' => 'Kumpulan praline cokelat dengan berbagai rasa. Cocok untuk hadiah atau koleksi pribadi.',
-                        'price' => 50000,
-                        'weight' => 250,
-                        'stock' => 20,
-                    ],
-                    [
-                        'name' => 'Wafer Cokelat Crispy',
-                        'description' => 'Wafer berlapis cokelat dengan tekstur super crispy. Kombinasi sempurna gurih dan manis.',
-                        'price' => 18000,
-                        'weight' => 180,
-                        'stock' => 60,
-                    ],
+                    ['name' => 'Cokelat Dark 70%', 'desc' => 'Cokelat dark premium 70% kakao.', 'price' => 35000, 'w' => 100, 'stock' => 20],
+                    ['name' => 'Cokelat Susu Classic', 'desc' => 'Cokelat susu manis dan lembut.', 'price' => 20000, 'w' => 150, 'stock' => 60],
+                    ['name' => 'Wafer Cokelat Crispy', 'desc' => 'Wafer cokelat crispy.', 'price' => 18000, 'w' => 180, 'stock' => 70],
                 ],
             ],
+
+            // ========================
             // PERMEN
+            // ========================
             [
                 'category' => 'Permen',
                 'products' => [
-                    [
-                        'name' => 'Permen Buah Assorted',
-                        'description' => 'Permen keras dengan berbagai rasa buah segar. Kemasan praktis untuk dibawa kemana-mana.',
-                        'price' => 10000,
-                        'weight' => 150,
-                        'stock' => 90,
-                    ],
-                    [
-                        'name' => 'Lollipop Rainbow',
-                        'description' => 'Lollipop warna-warni dengan rasa buah yang manis. Favorit anak-anak!',
-                        'price' => 5000,
-                        'weight' => 50,
-                        'stock' => 120,
-                    ],
-                    [
-                        'name' => 'Permen Karet Mint',
-                        'description' => 'Permen karet dengan sensasi mint yang menyegarkan. Menjaga nafas tetap segar.',
-                        'price' => 8000,
-                        'weight' => 100,
-                        'stock' => 85,
-                    ],
+                    ['name' => 'Permen Buah Mix', 'desc' => 'Permen keras rasa buah.', 'price' => 10000, 'w' => 150, 'stock' => 90],
+                    ['name' => 'Lollipop Rainbow', 'desc' => 'Lollipop warna-warni.', 'price' => 5000, 'w' => 50, 'stock' => 120],
+                    ['name' => 'Permen Karet Mint', 'desc' => 'Permen karet rasa mint segar.', 'price' => 8000, 'w' => 100, 'stock' => 85],
                 ],
             ],
+
+            // ========================
             // MINUMAN
+            // ========================
             [
                 'category' => 'Minuman',
                 'products' => [
-                    [
-                        'name' => 'Teh Kotak Jasmine',
-                        'description' => 'Teh jasmine dalam kemasan kotak praktis. Rasa teh yang autentik dengan aroma melati.',
-                        'price' => 5000,
-                        'weight' => 200,
-                        'stock' => 150,
-                    ],
-                    [
-                        'name' => 'Kopi Susu Kemasan',
-                        'description' => 'Kopi susu siap minum dengan rasa yang nikmat. Praktis untuk menemani aktivitas.',
-                        'price' => 6000,
-                        'weight' => 200,
-                        'stock' => 130,
-                    ],
-                    [
-                        'name' => 'Jus Buah Mix Sachet',
-                        'description' => 'Jus buah dalam kemasan sachet praktis. Tinggal seduh dengan air dingin.',
-                        'price' => 12000,
-                        'weight' => 100,
-                        'stock' => 75,
-                    ],
+                    ['name' => 'Teh Jasmine Kotak', 'desc' => 'Teh melati dalam kemasan kotak.', 'price' => 5000, 'w' => 200, 'stock' => 150],
+                    ['name' => 'Kopi Susu Kemasan', 'desc' => 'Kopi susu siap minum.', 'price' => 6000, 'w' => 200, 'stock' => 130],
+                    ['name' => 'Jus Bubuk Buah Mix', 'desc' => 'Minuman serbuk rasa buah.', 'price' => 12000, 'w' => 100, 'stock' => 75],
                 ],
             ],
+
+            // ========================
             // MAKANAN INSTAN
+            // ========================
             [
                 'category' => 'Makanan Instan',
                 'products' => [
-                    [
-                        'name' => 'Mie Goreng Instan Pedas',
-                        'description' => 'Mie goreng dengan bumbu pedas yang mantap. Siap dalam 3 menit!',
-                        'price' => 3500,
-                        'weight' => 85,
-                        'stock' => 200,
-                    ],
-                    [
-                        'name' => 'Mie Kuah Rasa Ayam',
-                        'description' => 'Mie kuah dengan kaldu ayam yang gurih. Cocok untuk malam hari yang dingin.',
-                        'price' => 3500,
-                        'weight' => 75,
-                        'stock' => 180,
-                    ],
-                    [
-                        'name' => 'Bubur Ayam Instan',
-                        'description' => 'Bubur ayam praktis tinggal seduh. Rasa autentik bubur ayam tradisional.',
-                        'price' => 8000,
-                        'weight' => 150,
-                        'stock' => 95,
-                    ],
-                    [
-                        'name' => 'Cup Noodles Korea',
-                        'description' => 'Mie cup dengan rasa khas Korea yang pedas gurih. Favorit anak muda!',
-                        'price' => 15000,
-                        'weight' => 120,
-                        'stock' => 70,
-                    ],
+                    ['name' => 'Mie Goreng Pedas', 'desc' => 'Mie instan goreng pedas.', 'price' => 3500, 'w' => 85, 'stock' => 200],
+                    ['name' => 'Mie Kuah Ayam', 'desc' => 'Mie kuah dengan rasa ayam.', 'price' => 3500, 'w' => 75, 'stock' => 160],
+                    ['name' => 'Cup Noodles Korea', 'desc' => 'Mie cup rasa Korea pedas.', 'price' => 15000, 'w' => 120, 'stock' => 60],
+                ],
+            ],
+
+            // ----------------------------------------------------
+            // BARU → KERUPUK
+            // ----------------------------------------------------
+            [
+                'category' => 'Kerupuk',
+                'products' => [
+                    ['name' => 'Kerupuk Udang', 'desc' => 'Kerupuk udang renyah.', 'price' => 9000, 'w' => 120, 'stock' => 80],
+                    ['name' => 'Kerupuk Bawang', 'desc' => 'Kerupuk bawang gurih.', 'price' => 8000, 'w' => 150, 'stock' => 100],
+                ],
+            ],
+
+            // ----------------------------------------------------
+            // BARU → Roti
+            // ----------------------------------------------------
+            [
+                'category' => 'Roti',
+                'products' => [
+                    ['name' => 'Roti Sobek Cokelat', 'desc' => 'Roti lembut isi cokelat.', 'price' => 12000, 'w' => 200, 'stock' => 60],
+                ],
+            ],
+
+            // ----------------------------------------------------
+            // BARU → Minuman Dingin
+            // ----------------------------------------------------
+            [
+                'category' => 'Minuman Dingin',
+                'products' => [
+                    ['name' => 'Es Teh Manis Cup', 'desc' => 'Teh manis dingin menyegarkan.', 'price' => 7000, 'w' => 250, 'stock' => 100],
+                    ['name' => 'Es Kopi Susu Cup', 'desc' => 'Kopi susu dingin creamy.', 'price' => 12000, 'w' => 250, 'stock' => 80],
                 ],
             ],
         ];
 
+        // ==========================================================
+        // INSERT PRODUK
+        // ==========================================================
         foreach ($productsData as $categoryData) {
-            $category = $categories->where('name', $categoryData['category'])->first();
-            
+
+            $category = $categories->firstWhere('name', $categoryData['category']);
             if (!$category) continue;
 
-            foreach ($categoryData['products'] as $index => $productData) {
-                // Distribute products across stores
-                $store = $stores[$index % $stores->count()];
-                
-                $product = Product::create([
-                    'store_id' => $store->id,
-                    'product_category_id' => $category->id,
-                    'name' => $productData['name'],
-                    'slug' => \Illuminate\Support\Str::slug($productData['name']),
-                    'description' => $productData['description'],
-                    'condition' => 'new', // Semua snack new
-                    'price' => $productData['price'],
-                    'weight' => $productData['weight'],
-                    'stock' => $productData['stock'],
-                ]);
+            foreach ($categoryData['products'] as $i => $p) {
 
-                // Create dummy image (placeholder)
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => "https://via.placeholder.com/400x400/98bad5/ffffff?text=" . urlencode($product->name),
-                    'is_thumbnail' => true,
-                ]);
+                $store = $stores[$i % $stores->count()];
+
+                // AUTO UPDATE (no duplicate)
+                $product = Product::updateOrCreate(
+                    ['slug' => Str::slug($p['name'])],
+                    [
+                        'store_id' => $store->id,
+                        'product_category_id' => $category->id,
+                        'name' => $p['name'],
+                        'description' => $p['desc'],
+                        'condition' => 'new',
+                        'price' => $p['price'],
+                        'weight' => $p['w'],
+                        'stock' => $p['stock'],
+                    ]
+                );
+
+                // Gambar
+                ProductImage::updateOrCreate(
+                    ['product_id' => $product->id],
+                    [
+                        'image' => "https://via.placeholder.com/400x400/98bad5/ffffff?text=" . urlencode($product->name),
+                        'is_thumbnail' => true,
+                    ]
+                );
             }
         }
 
-        $this->command->info('✅ Berhasil membuat ' . Product::count() . ' produk snack!');
+        $this->command->info('🎉 Berhasil seeding produk lengkap tanpa duplikasi!');
     }
 }

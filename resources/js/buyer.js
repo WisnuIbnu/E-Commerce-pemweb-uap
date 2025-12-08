@@ -1,5 +1,5 @@
 /**
- * Buyer JavaScript - Complete
+ * Buyer JavaScript - FIXED RELOAD LOOP
  * File: resources/js/buyer.js
  */
 
@@ -8,40 +8,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Profile Dropdown
     initProfileDropdown();
     
-    // Auto Hide Alerts
-    autoHideAlerts();
+    // Alert Close Buttons
+    initAlertButtons();
+    
+    // Active Nav Link
+    setActiveNavLink();
+    
+    // Prevent All Default Link Behaviors
+    preventDefaultLinks();
     
 });
 
 /**
- * Profile Dropdown Functionality
+ * Profile Dropdown - INSTANT (No Animation)
  */
 function initProfileDropdown() {
-    const dropdown = document.getElementById('profileDropdown');
-    const overlay = document.getElementById('dropdownOverlay');
+    const dropdown = document.querySelector('.profile-dropdown');
     
     if (!dropdown) return;
     
     const trigger = dropdown.querySelector('.profile-trigger');
     
-    // Toggle dropdown
+    if (!trigger) return;
+    
+    // Toggle dropdown INSTANTLY
     trigger.addEventListener('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
         dropdown.classList.toggle('active');
-        overlay.classList.toggle('active');
-    });
-    
-    // Close on overlay click
-    overlay.addEventListener('click', function() {
-        dropdown.classList.remove('active');
-        overlay.classList.remove('active');
     });
     
     // Close on outside click
     document.addEventListener('click', function(e) {
         if (!dropdown.contains(e.target)) {
             dropdown.classList.remove('active');
-            overlay.classList.remove('active');
         }
     });
     
@@ -49,44 +49,61 @@ function initProfileDropdown() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             dropdown.classList.remove('active');
-            overlay.classList.remove('active');
         }
     });
 }
 
 /**
- * Auto Hide Alerts after 5 seconds
+ * Alert Close Buttons - INSTANT REMOVE (No Animation)
  */
-function autoHideAlerts() {
+function initAlertButtons() {
     const alerts = document.querySelectorAll('.alert');
     
     alerts.forEach(function(alert) {
-        setTimeout(function() {
-            alert.style.opacity = '0';
-            alert.style.transform = 'translateY(-20px)';
-            
-            setTimeout(function() {
+        const closeBtn = alert.querySelector('.alert-close');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 alert.remove();
-            }, 300);
-        }, 5000);
+            });
+        }
+        
+        // Auto-hide success alerts after 5 seconds
+        if (alert.classList.contains('alert-success')) {
+            setTimeout(function() {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
     });
 }
 
 /**
- * Smooth Scroll for Anchor Links
+ * Set Active Nav Link
  */
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        if (href !== '#') {
-            e.preventDefault();
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+function setActiveNavLink() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(function(link) {
+        const href = link.getAttribute('href');
+        if (href && (href === currentPath || (currentPath.includes(href) && href !== '/'))) {
+            link.classList.add('active');
         }
     });
-});
+}
+
+/**
+ * Prevent # Links from Reloading
+ */
+function preventDefaultLinks() {
+    // Prevent empty href links
+    document.querySelectorAll('a[href="#"], a[href=""]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+        });
+    });
+}

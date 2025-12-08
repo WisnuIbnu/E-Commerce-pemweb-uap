@@ -6,11 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'ELSHOP - Snack E-Commerce')</title>
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    {{-- VITE CSS --}}
-    @vite(['resources/css/buyer.css'])
+    {{-- VITE CSS & JS --}}
+    @vite(['resources/css/buyer.css', 'resources/js/buyer.js'])
     
     @stack('styles')
 </head>
@@ -23,19 +20,19 @@
         {{-- Flash Messages --}}
         @if(session('success'))
             <div class="alert alert-success">
-                {{ session('success') }}
+                <strong>✓</strong> {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
             <div class="alert alert-error">
-                {{ session('error') }}
+                <strong>✗</strong> {{ session('error') }}
             </div>
         @endif
 
         @if(session('info'))
             <div class="alert alert-info">
-                {{ session('info') }}
+                <strong>ℹ</strong> {{ session('info') }}
             </div>
         @endif
 
@@ -44,9 +41,6 @@
 
     {{-- FOOTER --}}
     <x-buyer-footer />
-
-    {{-- VITE JS --}}
-    @vite(['resources/js/buyer.js'])
     
     @stack('scripts')
 </body>
