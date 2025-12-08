@@ -98,7 +98,38 @@
 @push('scripts')
 <script>
     function addToCart(id) {
-        alert('Item added to cart!');
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        fetch("{{ route('cart.add') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": token
+            },
+            body: JSON.stringify({
+                product_id: id,
+                qty: 1
+            })
+        })
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = "{{ route('login') }}";
+                return;
+            }
+            return response.json().then(data => ({ status: response.status, body: data }));
+        })
+        .then(result => {
+            if (result && result.status === 200) {
+                window.location.href = "{{ route('checkout') }}";
+            } else if (result) {
+                alert(result.body.message || 'Error adding to cart');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Something went wrong. Please try again.');
+        });
     }
 </script>
 @endpush
