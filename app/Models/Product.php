@@ -45,7 +45,8 @@ class Product extends Model
 
     public function productReviews()
     {
-        return $this->hasMany(ProductReview::class);
+    // Relasi one-to-many ke model ProductReview
+    return $this->hasMany(ProductReview::class, 'product_id');
     }
 
     public function images()

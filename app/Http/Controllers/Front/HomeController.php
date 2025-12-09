@@ -28,10 +28,10 @@ class HomeController extends Controller
 
     public function show($slug)
     {
-        $product = Product::with(['productCategory', 'productImages', 'store'])
-            ->where('slug', $slug)
-            ->firstOrFail();
+    $product = Product::with(['productCategory', 'productImages', 'store', 'productReviews.user']) 
+        ->where('slug', $slug)
+        ->firstOrFail();
 
-        return view('front.details', compact('product'));
+    return view('front.details', compact('product'));
     }
 }
