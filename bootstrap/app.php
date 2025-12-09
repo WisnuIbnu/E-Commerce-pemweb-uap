@@ -11,7 +11,18 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // Alias middleware default Laravel
+        $middleware->alias([
+            'auth'      => \App\Http\Middleware\Authenticate::class,
+            'verified'  => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+            'guest'     => \App\Http\Middleware\RedirectIfAuthenticated::class,
+            'throttle'  => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+
+            // Custom middleware
+            'role'      => \App\Http\Middleware\CheckRole::class,
+            'has_store' => \App\Http\Middleware\HasStore::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
