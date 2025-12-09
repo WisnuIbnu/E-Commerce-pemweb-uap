@@ -25,11 +25,11 @@
             <div class="footer-section">
                 <h4>SHOP</h4>
                 <ul class="footer-links">
-                    <li><a href="#">New Arrivals</a></li>
-                    <li><a href="#">Best Sellers</a></li>
-                    <li><a href="#">Men's Equipment</a></li>
-                    <li><a href="#">Women's Equipment</a></li>
-                    <li><a href="#">Sale</a></li>
+                    <li><a href="{{ route('collection') }}?sort=new">New Arrivals</a></li>
+                    <li><a href="{{ route('collection') }}?sort=popular">Best Sellers</a></li>
+                    <li><a href="{{ route('collection') }}?category=mens">Men's Equipment</a></li>
+                    <li><a href="{{ route('collection') }}?category=womens">Women's Equipment</a></li>
+                    <li><a href="{{ route('collection') }}?sort=sale">Sale</a></li>
                 </ul>
             </div>
 

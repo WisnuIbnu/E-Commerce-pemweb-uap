@@ -69,7 +69,7 @@
                 <div class="product-img">
                     @if($product->productImages->isNotEmpty())
                         @php $img = $product->productImages->first()->image; @endphp
-                        <img src="{{ Str::startsWith($img, ['http', 'https']) ? $img : asset('storage/' . $img) }}" alt="{{ $product->name }}">
+                        <img src="{{ $img }}" alt="{{ $product->name }}">
                     @else
                         <span style="font-size: 3rem; opacity: 0.5;">⚡</span>
                     @endif

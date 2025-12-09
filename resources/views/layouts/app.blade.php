@@ -6,6 +6,7 @@
     <title>@yield('title', 'FlexSport - E-Commerce Olahraga')</title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
     @stack('styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -18,6 +19,7 @@
     
     @include('components.footer')
     
+    <script src="{{ asset('js/chatbot.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

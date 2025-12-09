@@ -14,7 +14,7 @@
                 <div class="main-image" id="mainImage">
                     @if($product->productImages->isNotEmpty())
                         @php $mainImg = $product->productImages->first()->image; @endphp
-                        <img src="{{ Str::startsWith($mainImg, ['http', 'https']) ? $mainImg : asset('storage/' . $mainImg) }}" style="width:100%; height:100%; object-fit:cover; border-radius:15px;">
+                        <img src="{{ $mainImg }}" style="width:100%; height:100%; object-fit:cover; border-radius:15px;">
                     @else
                         <div style="width:100%; height:100%; background:#333; display:flex; align-items:center; justify-content:center; border-radius:15px; color:#666;">
                             NO IMAGE
@@ -25,8 +25,8 @@
                 @if($product->productImages->count() > 1)
                 <div class="thumbnails">
                     @foreach($product->productImages as $imgObj)
-                    @php $img = $imgObj->image; $src = Str::startsWith($img, ['http', 'https']) ? $img : asset('storage/' . $img); @endphp
-                    <img src="{{ $src }}" class="thumbnail {{ $loop->first ? 'active' : '' }}" onclick="changeImage('{{ $src }}')">
+                    @php $img = $imgObj->image; @endphp
+                    <img src="{{ $img }}" class="thumbnail {{ $loop->first ? 'active' : '' }}" onclick="changeImage('{{ $img }}')">>
                     @endforeach
                 </div>
                 @endif

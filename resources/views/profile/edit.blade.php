@@ -7,9 +7,10 @@
         background: rgba(255, 255, 255, 0.05); /* Glassmorphism */
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 30px;
-        padding: 3.5rem;
+        border-radius: 40px; /* Increased from 30px for softer corners */
+        padding: 4.5rem; /* Increased from 3.5rem for more breathing room */
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        margin-bottom: 1rem; /* Extra spacing between cards */
     }
     
     .profile-card h2, .profile-card header h2 {
@@ -23,13 +24,15 @@
     }
 
     .profile-card header {
-        margin-bottom: 2.5rem !important;
-        padding-bottom: 1.5rem !important;
+        margin-bottom: 3rem !important; /* Increased from 2.5rem */
+        padding: 0 !important; /* Remove extra padding, use card padding instead */
     }
     
     .profile-card label {
         color: #ccc !important;
         font-weight: 500;
+        display: block;
+        margin-bottom: 0.75rem; /* More space between label and input */
     }
     
     .profile-card input[type="text"],
@@ -38,8 +41,8 @@
         background: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        border-radius: 15px;
-        padding: 0.8rem 1rem; /* Ensure consistent input padding */
+        border-radius: 20px; /* Increased from 15px for smoother edges */
+        padding: 1rem 1.5rem; /* Increased padding for better UX */
     }
     
     .profile-card input:focus {
@@ -53,14 +56,26 @@
         color: white !important;
         font-weight: bold;
         border: none;
-        padding: 0.8rem 2rem;
-        border-radius: 15px;
+        padding: 1rem 2.5rem; /* Increased padding */
+        border-radius: 20px; /* Increased from 15px */
         text-transform: uppercase;
         letter-spacing: 1px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .profile-card button.inline-flex:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
     }
     
     .profile-card button.text-red-600 { /* Delete Account Button */
         color: #ff4d4d !important;
+        border-radius: 20px; /* Consistent rounded corners */
+    }
+    
+    /* Add spacing between form fields */
+    .profile-card form > div {
+        margin-bottom: 2rem;
     }
 </style>
 @endpush
@@ -87,10 +102,10 @@
             </div>
 
             <!-- Profile Dashboard Grid -->
-            <div style="display: grid; grid-template-columns: 2fr 1.5fr; gap: 2rem;">
+            <div style="display: grid; grid-template-columns: 2fr 1.5fr; gap: 3rem;">
                 
                 <!-- Left Column: Main Settings -->
-                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div style="display: flex; flex-direction: column; gap: 3rem;">
                     <!-- Update Profile Info -->
                     <div class="profile-card">
                         <header style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
@@ -117,7 +132,7 @@
                 </div>
 
                 <!-- Right Column: Danger Zone & Status -->
-                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div style="display: flex; flex-direction: column; gap: 3rem;">
                     
                     <!-- Account Status Card (Optional decoration/info) -->
                     <div class="profile-card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));">

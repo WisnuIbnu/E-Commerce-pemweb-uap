@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\ChatbotController;
 
 // Public/Buyer Routes
 Route::get('/', [BuyerController::class, 'index'])->name('home');
@@ -34,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::post('/cart/add', [BuyerController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [BuyerController::class, 'showCart'])->name('cart.show');
 Route::delete('/cart/{id}', [BuyerController::class, 'removeFromCart'])->name('cart.remove');
+
+// Chatbot Routes (Public Access)
+Route::post('/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.message');
 
 // Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

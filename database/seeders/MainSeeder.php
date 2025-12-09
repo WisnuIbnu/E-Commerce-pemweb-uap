@@ -75,71 +75,83 @@ class MainSeeder extends Seeder
             // Footwear
             [
                 'cat_idx' => 0, 'name' => 'Neon Striker Elite', 'price' => 1250000, 
-                'desc' => 'Top-tier soccer cleats with neon glow technology.',
-                'image' => 'https://placehold.co/600x600/1a0500/FF4500?text=Neon+Striker'
+                'desc' => 'Top-tier soccer cleats with neon glow technology and high ankle support for maximum protection.',
+                'image' => '/images/products/neon_striker_elite_1765270076095.png',
+                'features' => 'ankle-support,high-top,soccer,cleats'
             ],
             [
                 'cat_idx' => 0, 'name' => 'AirWalker Pro Run', 'price' => 890000, 
-                'desc' => 'Lightweight running shoes for marathon training.',
-                'image' => 'https://placehold.co/600x600/ff5733/ffffff?text=AirWalker+Pro'
+                'desc' => 'Lightweight running shoes for marathon training with breathable mesh.',
+                'image' => '/images/products/airwalker_pro_run_1765270092786.png',
+                'features' => 'running,lightweight,breathable,marathon'
             ],
             [
                 'cat_idx' => 0, 'name' => 'CourtMaster Basketball', 'price' => 1500000, 
-                'desc' => 'High-grip soles for indoor courts.',
-                'image' => 'https://placehold.co/600x600/0066cc/ffffff?text=CourtMaster'
+                'desc' => 'High-top basketball shoes with superior ankle support and high-grip soles for indoor courts.',
+                'image' => '/images/products/courtmaster_basketball_1765270110264.png',
+                'features' => 'ankle-support,high-top,basketball,grip,indoor'
             ],
             
             // Apparel
             [
                 'cat_idx' => 1, 'name' => 'CyberRun Smart Jersey', 'price' => 450000, 
-                'desc' => 'Moisture-wicking fabric with breathable mesh.',
-                'image' => 'https://placehold.co/600x600/1e293b/f43f5e?text=CyberRun+Jersey'
+                'desc' => 'Moisture-wicking fabric with breathable mesh panels for intense training.',
+                'image' => '/images/products/cyberrun_smart_jersey_1765270136995.png',
+                'features' => 'breathable,moisture-wicking,training,jersey'
             ],
             [
                 'cat_idx' => 1, 'name' => 'FlexFit Compression Shorts', 'price' => 300000, 
-                'desc' => 'Muscle support for intense workouts.',
-                'image' => 'https://placehold.co/600x600/1e293b/FF4500?text=FlexFit'
+                'desc' => 'Muscle support compression shorts for intense workouts and injury prevention.',
+                'image' => '/images/products/flexfit_compression_shorts_1765270154236.png',
+                'features' => 'compression,muscle-support,workout,shorts'
             ],
             [
                 'cat_idx' => 1, 'name' => 'ProTech Training Jacket', 'price' => 750000, 
-                'desc' => 'Windproof and water-resistant.',
-                'image' => 'https://placehold.co/600x600/2d3748/fbbf24?text=ProTech'
+                'desc' => 'Windproof and water-resistant training jacket for all-weather workouts.',
+                'image' => '/images/products/protech_training_jacket_1765270173451.png',
+                'features' => 'windproof,water-resistant,training,jacket'
             ],
 
             // Rackets
             [
                 'cat_idx' => 2, 'name' => 'Vortex Pro Tennis Racket', 'price' => 2800000, 
-                'desc' => 'Carbon fiber frame for maximum power.',
-                'image' => 'https://placehold.co/600x600/0f172a/FF8C00?text=Vortex+Pro'
+                'desc' => 'Professional carbon fiber tennis racket for maximum power and control.',
+                'image' => '/images/products/vortex_pro_tennis_1765270190221.png',
+                'features' => 'tennis,racket,carbon-fiber,professional'
             ],
             [
                 'cat_idx' => 2, 'name' => 'SmashLite Badminton Set', 'price' => 1200000, 
-                'desc' => 'Includes 2 rackets and shuttlecocks.',
-                'image' => 'https://placehold.co/600x600/0f172a/ffd700?text=SmashLite'
+                'desc' => 'Complete badminton set with 2 rackets and shuttlecocks.',
+                'image' => '/images/products/smashlite_badminton_set_1765270207273.png',
+                'features' => 'badminton,racket,set,shuttlecock'
             ],
 
             // Gym Gear
             [
                 'cat_idx' => 3, 'name' => 'Titanium Grip Dumbbells', 'price' => 850000, 
-                'desc' => 'Anti-slip grip, available in 5kg-20kg.',
-                'image' => 'https://placehold.co/600x600/000000/ffffff?text=Titanium+Grip'
+                'desc' => 'Anti-slip grip dumbbells, available in 5kg-20kg for strength training.',
+                'image' => '/images/products/titanium_grip_dumbbells_1765270231565.png',
+                'features' => 'dumbbells,weights,strength,gym,anti-slip'
             ],
             [
                 'cat_idx' => 3, 'name' => 'PowerBench Press 3000', 'price' => 3500000, 
-                'desc' => 'Adjustable bench for home gyms.',
-                'image' => 'https://placehold.co/600x600/333333/ffffff?text=PowerBench'
+                'desc' => 'Adjustable weight bench for home gyms and professional training.',
+                'image' => '/images/products/powerbench_press_3000_1765270252180.png',
+                'features' => 'bench,weights,gym,adjustable,home-gym'
             ],
             [
                 'cat_idx' => 3, 'name' => 'Elite Resistance Bands', 'price' => 250000, 
-                'desc' => 'Set of 5 bands with varying tension.',
-                'image' => 'https://placehold.co/600x600/1a1a1a/22c55e?text=Resistance'
+                'desc' => 'Set of 5 resistance bands with varying tension for flexibility training.',
+                'image' => '/images/products/elite_resistance_bands_1765270268843.png',
+                'features' => 'resistance-bands,flexibility,training,workout'
             ],
 
              // Accessories
              [
                 'cat_idx' => 4, 'name' => 'HydraMax Water Bottle', 'price' => 150000, 
-                'desc' => 'Keep your drink cold for 24 hours.',
-                'image' => 'https://placehold.co/600x600/475569/ffd700?text=HydraMax'
+                'desc' => 'Premium insulated water bottle that keeps drinks cold for 24 hours.',
+                'image' => '/images/products/hydramax_water_bottle_1765270288532.png',
+                'features' => 'water-bottle,insulated,hydration,accessory'
             ],
         ];
 
