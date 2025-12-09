@@ -1,7 +1,7 @@
 <x-seller-layout>
     @if (session('success'))
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Toko Berhasil Dibuat',
@@ -47,7 +47,7 @@
                 <p><span class="font-medium">Nama Toko:</span> {{ $store->name }}</p>
                 <p><span class="font-medium">Kota:</span> {{ $store->city }}</p>
                 <p><span class="font-medium">Alamat:</span> {{ $store->address }}</p>
-                <p><span class="font-medium">Status:</span> 
+                <p><span class="font-medium">Status:</span>
                     <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-yellow-100 text-yellow-800">
                         Pending Verifikasi
                     </span>
@@ -70,7 +70,7 @@
                 <p><span class="font-medium">Nama Toko:</span> {{ $store->name }}</p>
                 <p><span class="font-medium">Kota:</span> {{ $store->city }}</p>
                 <p><span class="font-medium">Alamat:</span> {{ $store->address }}</p>
-                <p><span class="font-medium">Status:</span> 
+                <p><span class="font-medium">Status:</span>
                     <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-800">
                         Ditolak
                     </span>
@@ -79,6 +79,7 @@
 
         {{-- 4. STATUS APPROVED / VERIFIED --}}
         @else
+            {{-- Alert verifikasi --}}
             <div class="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-4 mb-6">
                 <p class="font-semibold text-emerald-800">
                     Toko Anda sudah diverifikasi 🎉
@@ -88,19 +89,33 @@
                 </p>
             </div>
 
-            {{-- Contoh kartu ringkasan --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-white rounded-xl shadow-sm p-4">
-                    <p class="text-sm text-gray-500">Produk Aktif</p>
-                    <p class="text-2xl font-bold mt-1">0</p>
+            {{-- Kartu statistik: 3 kolom --}}
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                {{-- Kartu Produk Aktif --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <p class="text-xs text-gray-500">Produk Aktif</p>
+                    <p class="mt-2 text-2xl font-bold text-gray-800">
+                        {{ $productCount }}
+                    </p>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm p-4">
-                    <p class="text-sm text-gray-500">Pesanan Hari Ini</p>
-                    <p class="text-2xl font-bold mt-1">0</p>
+
+                {{-- Kartu Pesanan Hari Ini --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <p class="text-xs text-gray-500">Pesanan Hari Ini</p>
+                    <p class="mt-2 text-2xl font-bold text-gray-800">
+                        {{ $todayOrders }}
+                    </p>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm p-4">
-                    <p class="text-sm text-gray-500">Saldo Toko</p>
-                    <p class="text-2xl font-bold mt-1">Rp 0</p>
+
+                {{-- Kartu Saldo Toko --}}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <p class="text-xs text-gray-500">Saldo Toko</p>
+                    <p class="mt-2 text-2xl font-bold text-gray-800">
+                        Rp {{ number_format($saldoToko, 0, ',', '.') }}
+                    </p>
+                    <p class="mt-1 text-[11px] text-gray-500">
+                        Saldo yang dapat ditarik.
+                    </p>
                 </div>
             </div>
 
@@ -110,7 +125,7 @@
                 <p><span class="font-medium">Nama Toko:</span> {{ $store->name }}</p>
                 <p><span class="font-medium">Kota:</span> {{ $store->city }}</p>
                 <p><span class="font-medium">Alamat:</span> {{ $store->address }}</p>
-                <p><span class="font-medium">Status:</span> 
+                <p><span class="font-medium">Status:</span>
                     <span class="inline-flex items-center px-2 py-0.5 text-xs rounded-full bg-emerald-100 text-emerald-800">
                         Terverifikasi
                     </span>
