@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 // ================= SELLER SIDE =================
-Route::middleware(['auth', 'role:seller'])  // pastikan 'role:seller' middleware sudah terpasang di RoleMiddleware
+Route::middleware(['auth', 'role:seller'])
     ->prefix('seller')
     ->name('seller.')
     ->group(function () {
@@ -71,4 +71,7 @@ Route::middleware(['auth', 'role:seller'])  // pastikan 'role:seller' middleware
         // Profil Toko (Untuk mengedit dan melihat profil toko)
         Route::get('/store', [SellerStoreController::class, 'edit'])->name('store.edit');
         Route::patch('/store', [SellerStoreController::class, 'update'])->name('store.update');
+
+        // Kategori Produk
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     });
