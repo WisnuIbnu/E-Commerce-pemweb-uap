@@ -130,25 +130,66 @@
         <div class="mt-24 pt-12 border-t border-gray-100 max-w-2xl" id="review">
             <h3 class="font-heading font-black text-2xl text-slate-900 mb-8 uppercase">Reviews ({{ $product->reviews->count() }})</h3>
             
+            <!-- Add Review Form -->
+            @auth
+                @if(isset($canReview) && $canReview)
+                    <div class="bg-gray-50 rounded-xl p-6 mb-10 border border-gray-100">
+                        <h4 class="font-bold text-slate-900 uppercase tracking-widest text-xs mb-4">Write a Review</h4>
+                        <form action="{{ route('reviews.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            
+                            <div class="mb-4">
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rating</label>
+                                <div class="flex gap-2" x-data="{ rating: 0, tempRating: 0 }">
+                                    <input type="hidden" name="rating" :value="rating">
+                                    <template x-for="i in 5">
+                                        <button type="button" 
+                                                @click="rating = i" 
+                                                @mouseenter="tempRating = i" 
+                                                @mouseleave="tempRating = rating"
+                                                class="text-2xl transition-colors focus:outline-none"
+                                                :class="i <= (tempRating || rating) ? 'text-yellow-400' : 'text-gray-300'">
+                                            ★
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Comment</label>
+                                <textarea name="review" rows="3" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-black outline-none text-sm" placeholder="Share your thoughts about this product..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="px-6 py-2 bg-black text-white text-xs font-bold uppercase rounded hover:bg-slate-800 transition-colors">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                @endif
+            @endauth
+
             <div class="space-y-8">
                 @forelse($product->reviews as $review)
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center font-bold text-slate-600 flex-shrink-0">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-800 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
                             {{ substr($review->user->name ?? 'A', 0, 1) }}
                         </div>
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-slate-900 text-sm">{{ $review->user->name ?? 'Anonymous' }}</span>
-                                <div class="flex text-blue-600 text-xs gap-0.5">
+                                <span class="font-bold text-slate-900 text-sm">{{ $review->user->name ?? 'Buyer' }}</span>
+                                <div class="flex text-yellow-400 text-xs gap-0.5">
                                     @for($i = 0; $i < $review->rating; $i++) ★ @endfor
                                 </div>
                             </div>
-                            <p class="text-slate-500 text-sm leading-relaxed">{{ $review->comment }}</p>
+                            <p class="text-slate-500 text-sm leading-relaxed">{{ $review->review }}</p>
                             <span class="text-[10px] text-slate-400 uppercase mt-2 block">{{ $review->created_at->diffForHumans() }}</span>
                         </div>
                     </div>
                 @empty
-                    <p class="text-slate-400 italic text-sm">No reviews yet for this product.</p>
+                    <div class="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <p class="text-slate-400 italic text-sm">No reviews yet. Be the first to review!</p>
+                    </div>
                 @endforelse
             </div>
         </div>

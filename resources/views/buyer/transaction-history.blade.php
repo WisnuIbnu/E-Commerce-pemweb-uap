@@ -42,18 +42,24 @@
                                         </span>
                                     </td>
                                     <td class="py-6">
-                                        <div class="flex -space-x-2 overflow-hidden">
-                                            @foreach($transaction->details->take(3) as $detail)
-                                                <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 overflow-hidden">
-                                                    @if($detail->product && $detail->product->images->first())
-                                                        <img src="{{ Str::startsWith($detail->product->images->first()->image, 'http') ? $detail->product->images->first()->image : asset('storage/' . $detail->product->images->first()->image) }}" class="h-full w-full object-cover">
+                                        <div class="flex items-center gap-4">
+                                            @php $firstItem = $transaction->details->first(); @endphp
+                                            @if($firstItem && $firstItem->product)
+                                                <div class="h-12 w-12 bg-gray-100 rounded overflow-hidden flex-shrink-0 border border-gray-200">
+                                                    @if($firstItem->product->images->first())
+                                                        <img src="{{ Str::startsWith($firstItem->product->images->first()->image, 'http') ? $firstItem->product->images->first()->image : asset('storage/' . $firstItem->product->images->first()->image) }}" class="h-full w-full object-cover">
                                                     @endif
                                                 </div>
-                                            @endforeach
-                                            @if($transaction->details->count() > 3)
-                                                <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-gray-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                                    +{{ $transaction->details->count() - 3 }}
+                                                <div>
+                                                    <p class="font-bold text-slate-900 text-sm line-clamp-1">{{ $firstItem->product->name }}</p>
+                                                    <p class="text-xs text-slate-500">{{ $firstItem->qty }} item(s) 
+                                                        @if($transaction->details->count() > 1)
+                                                            <span class="text-slate-400">+ {{ $transaction->details->count() - 1 }} other products</span>
+                                                        @endif
+                                                    </p>
                                                 </div>
+                                            @else
+                                                <span class="text-sm text-slate-400">Items unavailable</span>
                                             @endif
                                         </div>
                                     </td>

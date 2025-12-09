@@ -93,13 +93,17 @@
                         Payment
                     </h3>
                     <div class="grid grid-cols-2 gap-4">
-                        <label class="border border-gray-200 p-4 cursor-pointer hover:border-black transition-colors text-center">
-                            <input type="radio" name="payment_method" value="COD" class="sr-only" required>
-                            <span class="font-bold text-sm uppercase tracking-wide">COD</span>
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="payment_method" value="COD" class="peer sr-only" required>
+                            <div class="border border-gray-200 p-4 text-center transition-all peer-checked:bg-black peer-checked:text-white peer-checked:border-black group-hover:border-black">
+                                <span class="font-bold text-sm uppercase tracking-wide">COD</span>
+                            </div>
                         </label>
-                        <label class="border border-gray-200 p-4 cursor-pointer hover:border-black transition-colors text-center">
-                            <input type="radio" name="payment_method" value="Transfer" class="sr-only" required>
-                            <span class="font-bold text-sm uppercase tracking-wide">Bank Transfer</span>
+                        <label class="cursor-pointer group">
+                            <input type="radio" name="payment_method" value="Transfer" class="peer sr-only" required>
+                            <div class="border border-gray-200 p-4 text-center transition-all peer-checked:bg-black peer-checked:text-white peer-checked:border-black group-hover:border-black">
+                                <span class="font-bold text-sm uppercase tracking-wide">Bank Transfer</span>
+                            </div>
                         </label>
                     </div>
                 </div>

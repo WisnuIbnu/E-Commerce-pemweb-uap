@@ -70,9 +70,29 @@ class BuyerController extends Controller
 
     public function productDetail($id)
     {
-        $product = Product::with(['category', 'images', 'reviews'])->findOrFail($id);
+        $product = Product::with(['category', 'images', 'reviews.transaction.buyer.user'])->findOrFail($id);
         
-        return view('buyer.product-detail', compact('product'));
+        $canReview = false;
+        if (Auth::check() && Auth::user()->buyer) {
+            // Check if user bought product and hasn't reviewed it
+            $hasPurchased = Transaction::where('buyer_id', Auth::user()->buyer->id)
+                ->whereHas('details', function ($q) use ($id) {
+                    $q->where('product_id', $id);
+                })->exists();
+
+            if ($hasPurchased) {
+                // Check if already reviewed (naive check based on ANY transaction of this user)
+                // A better approach would be to check if there is AT LEAST ONE unreviewed transaction
+                $existingReview = ProductReview::where('product_id', $id)
+                    ->whereHas('transaction', function($q) {
+                        $q->where('buyer_id', Auth::user()->buyer->id);
+                    })->exists();
+                
+                $canReview = !$existingReview;
+            }
+        }
+        
+        return view('buyer.product-detail', compact('product', 'canReview'));
     }
 
     public function cart()
