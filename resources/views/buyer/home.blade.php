@@ -24,59 +24,6 @@
             </p>
         </div>
 
-        <!-- Search Results Indicator -->
-        @if(request('search') || request('category') || request('min_price') || request('max_price'))
-            <div class="mb-8 animate-fade-in delay-150">
-                <div class="bg-[#1e293b] border-2 border-[#60A5FA] rounded-2xl p-6 md:p-8">
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                            <h3 class="font-heading font-black text-lg md:text-xl text-white uppercase tracking-wide mb-2">
-                                🔍 Search Results
-                            </h3>
-                            <div class="flex flex-wrap gap-2 text-sm">
-                                @if(request('search'))
-                                    <span class="inline-flex items-center gap-2 bg-[#60A5FA] text-white px-4 py-2 rounded-full font-bold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                        </svg>
-                                        "{{ request('search') }}"
-                                    </span>
-                                @endif
-                                @if(request('category'))
-                                    <span class="inline-flex items-center gap-2 bg-[#93C5FD] text-[#1E3A8A] px-4 py-2 rounded-full font-bold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                                        </svg>
-                                        {{ request('category') }}
-                                    </span>
-                                @endif
-                                @if(request('min_price') || request('max_price'))
-                                    <span class="inline-flex items-center gap-2 bg-[#93C5FD] text-[#1E3A8A] px-4 py-2 rounded-full font-bold">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        {{ request('min_price') ? 'Rp ' . number_format(request('min_price'), 0, ',', '.') : '' }}
-                                        {{ request('min_price') && request('max_price') ? ' - ' : '' }}
-                                        {{ request('max_price') ? 'Rp ' . number_format(request('max_price'), 0, ',', '.') : '' }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-2xl md:text-3xl font-black text-[#60A5FA]">{{ $products->total() }}</p>
-                            <p class="text-xs md:text-sm text-slate-400 uppercase tracking-wide">Products Found</p>
-                        </div>
-                    </div>
-                    <a href="{{ route('home') }}" class="mt-4 inline-flex items-center gap-2 text-[#93C5FD] hover:text-white text-sm font-bold transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                        Clear All Filters
-                    </a>
-                </div>
-            </div>
-        @endif
-
         <!-- Categories Section -->
         <div class="mb-12 text-left animate-fade-in delay-200">
             <h2 class="font-heading font-black text-xl md:text-2xl uppercase tracking-widest text-white border-l-4 border-[#60A5FA] pl-6 inline-block">
@@ -113,10 +60,49 @@
     <!-- All Products - Search Results - Dark Theme -->
     <section id="search-results" class="py-16 md:py-20 bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#1e293b]">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-end justify-between mb-8 md:mb-10">
-                <div>
-                    <h2 class="font-heading font-black text-3xl md:text-4xl uppercase tracking-tighter text-white">Search Results</h2>
-                    <p class="text-[#93C5FD] mt-2">Found {{ $products->total() }} products matching your search</p>
+            <!-- Search Results Header with Filters -->
+            <div class="mb-8 md:mb-10">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h2 class="font-heading font-black text-3xl md:text-4xl uppercase tracking-tighter text-white">Search Results</h2>
+                        <p class="text-[#93C5FD] mt-2">Found {{ $products->total() }} products matching your search</p>
+                    </div>
+                    <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-[#93C5FD] hover:text-white text-sm font-bold transition-colors px-4 py-2 border-2 border-[#93C5FD] hover:border-white rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Clear All Filters
+                    </a>
+                </div>
+                
+                <!-- Active Filters -->
+                <div class="flex flex-wrap gap-2">
+                    @if(request('search'))
+                        <span class="inline-flex items-center gap-2 bg-[#60A5FA] text-white px-4 py-2 rounded-full font-bold text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            "{{ request('search') }}"
+                        </span>
+                    @endif
+                    @if(request('category'))
+                        <span class="inline-flex items-center gap-2 bg-[#93C5FD] text-[#1E3A8A] px-4 py-2 rounded-full font-bold text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                            </svg>
+                            {{ request('category') }}
+                        </span>
+                    @endif
+                    @if(request('min_price') || request('max_price'))
+                        <span class="inline-flex items-center gap-2 bg-[#93C5FD] text-[#1E3A8A] px-4 py-2 rounded-full font-bold text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            {{ request('min_price') ? 'Rp ' . number_format(request('min_price'), 0, ',', '.') : '' }}
+                            {{ request('min_price') && request('max_price') ? ' - ' : '' }}
+                            {{ request('max_price') ? 'Rp ' . number_format(request('max_price'), 0, ',', '.') : '' }}
+                        </span>
+                    @endif
                 </div>
             </div>
 
@@ -282,7 +268,7 @@
 </section>
 
 <!-- All Products - Dark Theme -->
-<section class="py-16 md:py-20 bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#1e293b]">
+<section id="collection" class="py-16 md:py-20 bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-[#1e293b]">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-end justify-between mb-8 md:mb-10">
             <div>

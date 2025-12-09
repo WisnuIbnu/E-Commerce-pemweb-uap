@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +17,35 @@
         h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Outfit', sans-serif; }
     </style>
 </head>
-<body class="bg-white text-slate-900 flex flex-col min-h-screen" x-data="{ mobileMenu: false, searchModal: false }">
+<body class="bg-white text-slate-900 flex flex-col min-h-screen" x-data="{ 
+    mobileMenu: false, 
+    searchModal: false,
+    activeSection: 'store'
+}" x-init="
+    // Intersection Observer for active section tracking
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+                $data.activeSection = entry.target.id || 'store';
+                console.log('Active section changed to:', $data.activeSection);
+            }
+        });
+    }, { threshold: [0, 0.3, 0.5, 0.7, 1.0] });
+    
+    // Observe sections after DOM is ready
+    setTimeout(() => {
+        const sections = ['collection', 'bestseller'];
+        sections.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                observer.observe(element);
+                console.log('Observing section:', id);
+            } else {
+                console.log('Section not found:', id);
+            }
+        });
+    }, 500);
+">
 
     <!-- Top Announcement Bar -->
     <div class="bg-gradient-to-r from-[#1E3A8A] to-[#60A5FA] text-white text-xs text-center py-2.5 font-bold uppercase tracking-widest">
@@ -31,11 +59,7 @@
                 
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 bg-gradient-to-br from-[#60A5FA] to-[#1E3A8A] rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
+                    <img src="{{ asset('images/walkuno-logo.jpg') }}" alt="WalkUno Logo" class="h-10 w-auto object-contain">
                     <div class="hidden sm:block">
                         <span class="font-heading font-black text-2xl text-[#1E3A8A] tracking-tight">WALK</span><span class="font-heading font-black text-2xl text-[#60A5FA]">UNO</span>
                     </div>
@@ -43,13 +67,22 @@
 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] transition-colors uppercase tracking-wide {{ request()->routeIs('home') ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : '' }} pb-1">
+                    <a href="{{ route('home') }}" 
+                       @click="activeSection = 'store'"
+                       :class="activeSection === 'store' || activeSection === '' ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : ''"
+                       class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
                         Store
                     </a>
-                    <a href="#collection" class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] transition-colors uppercase tracking-wide pb-1">
+                    <a href="#collection" 
+                       @click="activeSection = 'collection'"
+                       :class="activeSection === 'collection' ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : ''"
+                       class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
                         Collection
                     </a>
-                    <a href="#bestseller" class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] transition-colors uppercase tracking-wide pb-1">
+                    <a href="#bestseller" 
+                       @click="activeSection = 'bestseller'"
+                       :class="activeSection === 'bestseller' ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : ''"
+                       class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
                         Best Sellers
                     </a>
                 </nav>
@@ -125,7 +158,7 @@
                     <!-- Search Icon (Desktop) -->
                     <button @click="searchModal = true" 
                             type="button"
-                            class="hidden md:flex items-center justify-center w-10 h-10 text-slate-600 hover:bg-[#F8F8FF] hover:text-[#1E3A8A] rounded-full transition-all duration-200 border border-transparent hover:border-[#60A5FA] active:scale-95"
+                            class="hidden md:flex items-center justify-center w-10 h-10 text-slate-600 hover:text-[#60A5FA] rounded-full transition-colors"
                             aria-label="Search products">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -451,7 +484,7 @@
                 </div>
 
                 <!-- Search Input -->
-                <div class="p-6 bg-gray-50">
+                <div class="px-6 pt-6 pb-12 bg-gray-50">
                     <input type="text" 
                            x-ref="searchInput"
                            x-model="searchQuery"
@@ -460,8 +493,8 @@
                            placeholder="Type product name (e.g. Air Max, Boot, Sandal)..."
                            class="w-full pl-6 pr-6 py-5 bg-white border-3 border-[#60A5FA] rounded-xl text-lg font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-[#60A5FA]/30 shadow-lg">
                     
-                    <!-- Helper text -->
-                    <p class="mt-3 text-sm text-slate-600 flex items-center gap-2">
+                    <!-- Helper text - Centered with generous spacing -->
+                    <p class="mt-4 mb-6 text-sm text-slate-600 flex items-center justify-center gap-2 text-center">
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -506,12 +539,12 @@
                     </template>
 
                     <!-- No Results -->
-                    <div x-show="!loading && searchQuery.length >= 2 && searchResults.length === 0" class="p-10 text-center bg-gray-50">
+                    <div x-show="!loading && searchQuery.length >= 2 && searchResults.length === 0" class="py-12 px-10 text-center bg-gray-50">
                         <svg class="w-20 h-20 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <p class="mt-4 text-lg font-black text-gray-500">No products found</p>
-                        <p class="text-sm font-bold text-gray-400">Try searching for "Air Max", "Boot", or "Sandal"</p>
+                        <p class="text-sm font-bold text-gray-400 mb-4">Try searching for "Air Max", "Boot", or "Sandal"</p>
                     </div>
 
                     <!-- Empty State -->
