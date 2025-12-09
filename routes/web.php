@@ -20,6 +20,9 @@ Route::delete('/cart/{id}', [BuyerController::class, 'removeFromCart'])->name('c
 // Live Search API
 Route::get('/api/search', [BuyerController::class, 'searchProducts'])->name('api.search');
 
+// Sale Products Page
+Route::get('/sale', [BuyerController::class, 'sale'])->name('sale');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('checkout');

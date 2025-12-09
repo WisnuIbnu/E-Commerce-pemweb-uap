@@ -45,6 +45,18 @@ class BuyerController extends Controller
         return view('buyer.home', compact('products', 'popularProducts', 'recommendedProducts'));
     }
 
+    public function sale()
+    {
+        // Get only products that are on sale
+        $saleProducts = Product::with(['category', 'images'])
+            ->where('is_on_sale', true)
+            ->where('stock', '>', 0)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('buyer.sale', compact('saleProducts'));
+    }
+
     public function productDetail($id)
     {
         $product = Product::with(['category', 'images', 'reviews'])->findOrFail($id);

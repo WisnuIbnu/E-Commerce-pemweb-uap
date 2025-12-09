@@ -54,6 +54,65 @@
         </div>
     </div>
 </section>
+
+<!-- Promotional Banner -->
+<section class="py-8 md:py-12 bg-white">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-3xl bg-white p-8 md:p-12 shadow-xl border-2 border-gray-200">
+            <!-- Decorative Elements -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-100 rounded-full blur-3xl opacity-30"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-30"></div>
+            
+            <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Left Content -->
+                <div class="text-center md:text-left order-2 md:order-1">
+                    <!-- Promo Badge -->
+                    <div class="inline-flex items-center gap-2 bg-blue-100 px-4 py-2 rounded-full mb-4 border-2 border-blue-300">
+                        <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        <span class="text-blue-900 font-bold text-sm uppercase tracking-wider">Limited Time Offer</span>
+                    </div>
+                    
+                    <!-- Main Heading -->
+                    <h2 class="font-heading font-black text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-3 uppercase tracking-tight">
+                        Mega Sale
+                    </h2>
+                    <p class="text-2xl md:text-3xl font-black text-orange-500 mb-4">
+                        UP TO 50% OFF
+                    </p>
+                    <p class="text-gray-800 text-base md:text-lg font-semibold mb-6">
+                        Premium footwear collection at unbeatable prices. Limited stock available!
+                    </p>
+                    
+                    <!-- CTA Button -->
+                    <a href="{{ route('sale') }}" 
+                       class="group inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-black text-lg uppercase tracking-wider rounded-full shadow-2xl transition-all duration-300 hover:scale-105">
+                        <span>Shop Now</span>
+                        <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </a>
+                    <p class="text-xs text-gray-600 text-center md:text-left mt-3 font-semibold">Free shipping on orders over Rp 1.000.000</p>
+                </div>
+                
+                <!-- Right Product Image -->
+                <div class="order-1 md:order-2 flex items-center justify-center">
+                    <div class="relative">
+                        <!-- Product Image -->
+                        <div class="relative transform hover:scale-105 transition-transform duration-500">
+                            <img src="{{ asset('artifacts/promo_shoe_white_bg.png') }}" 
+                                 alt="Premium Shoe" 
+                                 class="w-full max-w-sm md:max-w-md"
+                                 onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 @if(request('search') || request('category') || request('min_price') || request('max_price'))
     {{-- Show All Products FIRST when filtering/searching --}}
     
