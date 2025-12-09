@@ -8,6 +8,8 @@ use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\TransactionController;
 use App\Http\Controllers\Front\PaymentController;
+use App\Http\Controllers\Front\SaldoController;
+
 
 // halaman beranda (daftar produk)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -45,6 +47,11 @@ Route::middleware('auth')->group(function () {
     // Route Pembayaran
     Route::get('/payment/{code}', [PaymentController::class, 'index'])->name('front.payment');
     Route::post('/payment/{code}', [PaymentController::class, 'update'])->name('front.payment.update');
+
+    Route::get('/topup', [SaldoController::class, 'create'])->name('saldo.topup');
+
+    Route::post('/topup', [SaldoController::class, 'store'])->name('saldo.topup.store');
+
 });
 
 require __DIR__.'/auth.php';

@@ -74,4 +74,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Buyer::class);
     }
+    
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'saldo' => 'integer', // Tambahkan ini
+    ];
 }
