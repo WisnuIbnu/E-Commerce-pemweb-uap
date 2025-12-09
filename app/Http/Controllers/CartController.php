@@ -12,7 +12,10 @@ class CartController extends Controller
     // tampilkan isi cart user
     public function index()
     {
-        $cartItems = CartItem::with('product.productImages')
+        $cartItems = CartItem::with([
+                'product.store',
+                'product.productImages'
+            ])
             ->where('user_id', Auth::id())
             ->get();
 
@@ -35,9 +38,9 @@ class CartController extends Controller
             $cartItem->increment('qty', $qty);
         } else {
             CartItem::create([
-                'user_id' => Auth::id(),
+                'user_id'    => Auth::id(),
                 'product_id' => $product->id,
-                'qty' => $qty,
+                'qty'        => $qty,
             ]);
         }
 
