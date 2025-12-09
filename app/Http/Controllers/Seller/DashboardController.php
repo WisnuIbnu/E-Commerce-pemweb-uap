@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Seller;
+namespace App\Http\Controllers\Seller; 
 
 use App\Http\Controllers\Controller;
 use App\Models\Store;
@@ -17,8 +17,8 @@ class DashboardController extends Controller
         $store = $user->store;
 
         // Ambil total produk dan pesanan
-        $totalProducts = $store->products->count(); // Hitung jumlah produk
-        $totalOrders = Order::where('store_id', $store->id)->count(); // Hitung jumlah pesanan
+        $totalProducts = $store->products->count();
+        $totalOrders = Order::where('store_id', $store->id)->count();
 
         return view('seller.dashboard', [
             'store' => $store,
@@ -27,3 +27,4 @@ class DashboardController extends Controller
         ]);
     }
 }
+

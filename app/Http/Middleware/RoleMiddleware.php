@@ -13,6 +13,8 @@ class RoleMiddleware
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  string ...$roles
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
@@ -23,9 +25,10 @@ class RoleMiddleware
 
         // Kalau role user tidak ada di daftar $roles → 403
         if (! in_array(Auth::user()->role, $roles)) {
-            abort(403, 'Unauthorized.');
+            return redirect()->route('dashboard')->withErrors('Unauthorized Access');
         }
 
-        return $next($request); 
+        return $next($request);
     }
 }
+

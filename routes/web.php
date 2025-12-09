@@ -4,6 +4,7 @@ use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\User\HistoryController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\Seller\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
