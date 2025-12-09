@@ -7,9 +7,9 @@
         background: rgba(255, 255, 255, 0.05); /* Glassmorphism */
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        border-radius: 30px;
+        padding: 3.5rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
     
     .profile-card h2, .profile-card header h2 {
@@ -20,6 +20,11 @@
     
     .profile-card p, .profile-card header p {
         color: #aaa !important;
+    }
+
+    .profile-card header {
+        margin-bottom: 2.5rem !important;
+        padding-bottom: 1.5rem !important;
     }
     
     .profile-card label {
@@ -33,7 +38,8 @@
         background: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        border-radius: 10px;
+        border-radius: 15px;
+        padding: 0.8rem 1rem; /* Ensure consistent input padding */
     }
     
     .profile-card input:focus {
@@ -47,8 +53,8 @@
         color: white !important;
         font-weight: bold;
         border: none;
-        padding: 0.8rem 1.5rem;
-        border-radius: 10px;
+        padding: 0.8rem 2rem;
+        border-radius: 15px;
         text-transform: uppercase;
         letter-spacing: 1px;
     }

@@ -53,9 +53,9 @@ class MainSeeder extends Seeder
 
         // 3. Create Categories
         $categories = [
-            ['name' => 'Footwear', 'icon' => '👟', 'slug' => 'footwear', 'bg' => '003459', 'color' => '00f2fe'],
+            ['name' => 'Footwear', 'icon' => '👟', 'slug' => 'footwear', 'bg' => '1a0500', 'color' => 'FF4500'],
             ['name' => 'Apparel', 'icon' => '👕', 'slug' => 'apparel', 'bg' => '1e293b', 'color' => 'f43f5e'],
-            ['name' => 'Rackets', 'icon' => '🎾', 'slug' => 'rackets', 'bg' => '0f172a', 'color' => '4facfe'],
+            ['name' => 'Rackets', 'icon' => '🎾', 'slug' => 'rackets', 'bg' => '0f172a', 'color' => 'FF8C00'],
             ['name' => 'Gym Gear', 'icon' => '💪', 'slug' => 'gym-gear', 'bg' => '000000', 'color' => 'ffffff'],
             ['name' => 'Accessories', 'icon' => '🎒', 'slug' => 'accessories', 'bg' => '475569', 'color' => 'ffd700'],
         ];
@@ -76,7 +76,7 @@ class MainSeeder extends Seeder
             [
                 'cat_idx' => 0, 'name' => 'Neon Striker Elite', 'price' => 1250000, 
                 'desc' => 'Top-tier soccer cleats with neon glow technology.',
-                'image' => 'https://placehold.co/600x600/003459/00f2fe?text=Neon+Striker'
+                'image' => 'https://placehold.co/600x600/1a0500/FF4500?text=Neon+Striker'
             ],
             [
                 'cat_idx' => 0, 'name' => 'AirWalker Pro Run', 'price' => 890000, 
@@ -98,7 +98,7 @@ class MainSeeder extends Seeder
             [
                 'cat_idx' => 1, 'name' => 'FlexFit Compression Shorts', 'price' => 300000, 
                 'desc' => 'Muscle support for intense workouts.',
-                'image' => 'https://placehold.co/600x600/1e293b/00f2fe?text=FlexFit'
+                'image' => 'https://placehold.co/600x600/1e293b/FF4500?text=FlexFit'
             ],
             [
                 'cat_idx' => 1, 'name' => 'ProTech Training Jacket', 'price' => 750000, 
@@ -110,7 +110,7 @@ class MainSeeder extends Seeder
             [
                 'cat_idx' => 2, 'name' => 'Vortex Pro Tennis Racket', 'price' => 2800000, 
                 'desc' => 'Carbon fiber frame for maximum power.',
-                'image' => 'https://placehold.co/600x600/0f172a/4facfe?text=Vortex+Pro'
+                'image' => 'https://placehold.co/600x600/0f172a/FF8C00?text=Vortex+Pro'
             ],
             [
                 'cat_idx' => 2, 'name' => 'SmashLite Badminton Set', 'price' => 1200000, 

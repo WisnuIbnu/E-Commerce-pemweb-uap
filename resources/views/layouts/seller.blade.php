@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}"> {{-- Reuse admin styles for dashboard look --}}
     <style>
         :root {
-            --primary: #00f2fe;
+            --primary: #FF4500;
             --dark: #0f172a;
             --darkl: #1e293b;
             --text-muted: #94a3b8;
@@ -57,7 +57,7 @@
             transition: all 0.3s ease;
         }
         .nav-link:hover, .nav-link.active {
-            background: rgba(0, 242, 254, 0.1);
+            background: rgba(255, 69, 0, 0.1);
             color: var(--primary);
         }
         .header {

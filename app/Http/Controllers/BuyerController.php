@@ -66,7 +66,7 @@ class BuyerController extends Controller
                 'product_category_id' => 1,
                 'productCategory' => (object)['name' => 'Footwear'],
                 // Using placehold.co for visible images
-                'productImages' => collect([(object)['image' => 'https://placehold.co/600x400/003459/00f2fe?text=Neon+Striker']])
+                'productImages' => collect([(object)['image' => 'https://placehold.co/600x400/1a0500/FF4500?text=Neon+Striker']])
             ],
             (object)[
                 'id' => 2,
@@ -75,7 +75,7 @@ class BuyerController extends Controller
                 'condition' => 'new',
                 'product_category_id' => 2,
                 'productCategory' => (object)['name' => 'Racket Sports'],
-                'productImages' => collect([(object)['image' => 'https://placehold.co/600x400/0f172a/4facfe?text=Vortex+Pro']])
+                'productImages' => collect([(object)['image' => 'https://placehold.co/600x400/0f172a/FF8C00?text=Vortex+Pro']])
             ],
             (object)[
                 'id' => 3,
