@@ -7,8 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00f2fe;
-            --secondary: #4facfe;
+            --primary: #FF4500;
+            --secondary: #FF8C00;
             --dark: #0f172a;
             --card-bg: rgba(255, 255, 255, 0.05);
             --text-main: #ffffff;
@@ -25,10 +25,10 @@
             font-family: 'Sora', sans-serif;
             background-color: var(--dark);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(79, 172, 254, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(0, 242, 254, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(79, 172, 254, 0.15) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(0, 242, 254, 0.15) 0px, transparent 50%);
+                radial-gradient(at 0% 0%, rgba(255, 69, 0, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(255, 140, 0, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 69, 0, 0.15) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(255, 140, 0, 0.15) 0px, transparent 50%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -128,7 +128,7 @@
         input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+            box-shadow: 0 0 0 4px rgba(255, 69, 0, 0.1);
             background: rgba(15, 23, 42, 0.8);
         }
         
@@ -182,7 +182,7 @@
 
         /* Session Status */
         .status-msg {
-            background: rgba(0, 242, 254, 0.1);
+            background: rgba(255, 69, 0, 0.1);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 0.75rem;
