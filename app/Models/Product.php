@@ -49,6 +49,23 @@ class Product extends Model
     public function getThumbnailAttribute()
     {
         return $this->productImages()->where('is_thumbnail', true)->first()?->image;
+        if ($thumbnail && file_exists(public_path('storage/' . $thumbnail->image))) {
+            return asset('storage/' . $thumbnail->image);
+        }
+
+        return asset('images/default-product.png');
+    }
+    public function getAverageRatingAttribute()
+    {
+        if ($this->productReviews->count() > 0) {
+            return number_format($this->productReviews->avg('rating'), 1);
+        }
+        
+        return null;
+    }
+    public function getTotalReviewsAttribute()
+    {
+        return $this->productReviews->count();
     }
     public function scopeAvailable($query)
     {
