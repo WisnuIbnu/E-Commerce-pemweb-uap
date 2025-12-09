@@ -27,13 +27,10 @@
                         <p class="text-xs text-slate-500">{{ Auth::user()->email }}</p>
                     </div>
                     <nav class="p-4 space-y-1">
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl bg-primary/5 text-primary">
-                            <i class="fa-solid fa-gauge-high w-5"></i> Dashboard
-                        </a>
-                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 hover:text-primary transition-colors">
                             <i class="fa-solid fa-user-gear w-5"></i> Edit Profil
                         </a>
-                        <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-colors">
+                        <a href="{{ route('transactions.index') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 hover:text-primary transition-colors">
                             <i class="fa-solid fa-box-open w-5"></i> Riwayat Pesanan
                         </a>
                         
@@ -66,27 +63,51 @@
                         </div>
                         <div>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pesanan Aktif</p>
-                            <p class="text-xl font-extrabold text-slate-800">0 Pesanan</p>
+                            <p class="text-xl font-extrabold text-slate-800">{{ $activeOrders ?? 0 }} Pesanan</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4">Selamat Datang, {{ Auth::user()->name }}!</h2>
-                    <p class="text-slate-600 mb-6">
-                        Ini adalah halaman dashboard akun Anda. Anda dapat melihat riwayat pesanan terbaru dan mengelola informasi akun Anda dari sini.
-                    </p>
-                    
-                    <div class="bg-slate-50 rounded-xl p-8 text-center border-2 border-dashed border-slate-200">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-slate-300 mb-4 shadow-sm">
-                            <i class="fa-solid fa-box-open text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800">Belum ada pesanan terbaru</h3>
-                        <p class="text-slate-500 text-sm mt-1 mb-4">Yuk, mulai belanja dan temukan produk favoritmu!</p>
-                        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all shadow-lg shadow-indigo-500/20">
-                            Mulai Belanja <i class="fa-solid fa-arrow-right"></i>
-                        </a>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-bold text-slate-800">Riwayat Terbaru</h2>
+                        <a href="{{ route('transactions.index') }}" class="text-sm font-bold text-primary hover:underline">Lihat Semua</a>
                     </div>
+                    
+                    @if(isset($recentTransactions) && $recentTransactions->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($recentTransactions as $trx)
+                                <a href="{{ route('transactions.details', $trx->code) }}" class="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:bg-slate-50 transition-colors">
+                                    <div class="w-12 h-12 rounded-lg bg-indigo-50 text-primary flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-receipt"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-bold text-slate-900">Order #{{ substr($trx->code, -6) }}</p>
+                                        <p class="text-xs text-slate-500">{{ $trx->created_at->format('d M Y') }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-slate-900">Rp {{ number_format($trx->grand_total, 0, ',', '.') }}</p>
+                                        @if($trx->payment_status == 'paid')
+                                            <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Berhasil</span>
+                                        @else
+                                            <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">Unpaid</span>
+                                        @endif
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="bg-slate-50 rounded-xl p-8 text-center border-2 border-dashed border-slate-200">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-slate-300 mb-4 shadow-sm">
+                                <i class="fa-solid fa-box-open text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-800">Belum ada pesanan terbaru</h3>
+                            <p class="text-slate-500 text-sm mt-1 mb-4">Yuk, mulai belanja dan temukan produk favoritmu!</p>
+                            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all shadow-lg shadow-indigo-500/20">
+                                Mulai Belanja <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
             </div>

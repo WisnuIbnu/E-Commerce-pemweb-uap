@@ -13,32 +13,56 @@ class CartController extends Controller
     // Menampilkan halaman keranjang
     public function index()
     {
-        $carts = Cart::with('product.store')
+        $carts = Cart::with(['product.store', 'variant']) 
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
-            
+        
         return view('front.carts', compact('carts'));
     }
 
     // Menyimpan produk ke keranjang
-    public function store($slug)
+    public function store(Request $request, $slug)
     {
-        $product = Product::where('slug', $slug)->firstOrFail();
+        $product = Product::with('variants')->where('slug', $slug)->firstOrFail();
+    
+        // Validasi input
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'color' => 'nullable|string',
+            'size' => 'nullable|string',
+        ]);
 
-        // Cek apakah produk sudah ada di keranjang (opsional: hindari duplikat)
-        $exists = Cart::where('user_id', Auth::id())
-            ->where('product_id', $product->id)
-            ->exists();
-
-        if ($exists) {
-            return redirect()->route('carts.index')->with('error', 'Produk sudah ada di keranjang Anda.');
+        // Cari Varian ID jika produk memiliki varian
+        $variantId = null;
+        if ($product->variants->count() > 0) {
+            $variant = $product->variants()
+                ->where('color', $request->color)
+                ->where('size', $request->size)
+                ->first();
+            
+            if (!$variant) {
+                return redirect()->back()->with('error', 'Silakan pilih warna dan ukuran yang tersedia.');
+            }
+            $variantId = $variant->id;
         }
 
-        Cart::create([
-            'user_id' => Auth::id(),
-            'product_id' => $product->id,
-        ]);
+        // Cek duplikat di keranjang (Produk sama + Varian sama)
+        $existingCart = Cart::where('user_id', Auth::id())
+            ->where('product_id', $product->id)
+            ->where('product_variant_id', $variantId)
+            ->first();
+
+        if ($existingCart) {
+            $existingCart->increment('quantity', $request->quantity);
+        } else {
+            Cart::create([
+                'user_id' => Auth::id(),
+                'product_id' => $product->id,
+                'product_variant_id' => $variantId,
+                'quantity' => $request->quantity,
+            ]);
+        }
 
         return redirect()->route('carts.index')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }

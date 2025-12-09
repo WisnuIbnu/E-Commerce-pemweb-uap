@@ -18,7 +18,6 @@ class CheckoutController extends Controller
     {
         $product = Product::where('slug', $slug)->firstOrFail();
         
-        // Simulasi hitung pajak (misal 11% PPN)
         $tax = $product->price * 0.11;
         $total = $product->price + $tax;
 
@@ -28,7 +27,7 @@ class CheckoutController extends Controller
     // Memproses pembelian
     public function store(Request $request, $slug)
     {
-        // Validasi Input sesuai kolom di migration transactions
+        // Validasi Input
         $request->validate([
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
@@ -36,33 +35,38 @@ class CheckoutController extends Controller
             'shipping_type' => 'required|in:regular,express,instant',
         ]);
 
+        // Ambil Data Produk
         $product = Product::with('store')->where('slug', $slug)->firstOrFail();
 
-        // Menentukan Biaya Ongkir 
+        // [CEK STOK] memastikan stok masih ada sebelum lanjut
+        if($product->stock < 1) {
+            return redirect()->back()->withErrors(['error' => 'Maaf, stok produk ini sudah habis.']);
+        }
+
+        // Hitung Biaya
         $shippingCost = match($request->shipping_type) {
             'express' => 50000,
             'instant' => 35000,
-            default => 20000, // regular
+            default => 20000,
         };
 
-        // 3. Hitung Total Akhir
         $tax = $product->price * 0.11;
         $grandTotal = $product->price + $tax + $shippingCost;
 
-        // 4. Mulai Transaksi Database
+        // Proses Simpan
         DB::beginTransaction();
 
         try {
+            // Buat/Ambil Buyer (Hanya user_id)
             $buyer = Buyer::firstOrCreate(
-                ['user_id' => Auth::id()],
-                ['name' => Auth::user()->name, 'address' => $request->address] 
+                ['user_id' => Auth::id()]
             );
 
-            // Simpan ke tabel transactions
+            // Simpan Transaksi
             $transaction = Transaction::create([
                 'code' => 'TRX-' . mt_rand(10000, 99999) . '-' . time(), 
-                'buyer_id' => $buyer->id, //
-                'store_id' => $product->store_id, //
+                'buyer_id' => $buyer->id,
+                'store_id' => $product->store_id,
                 'address' => $request->address,
                 'address_id' => 0,
                 'city' => $request->city,
@@ -76,22 +80,25 @@ class CheckoutController extends Controller
                 'payment_status' => 'unpaid',
             ]);
 
-            // Simpan detail produk ke tabel transaction_details
+            // Simpan Detail Produk
             TransactionDetail::create([
                 'transaction_id' => $transaction->id,
                 'product_id' => $product->id,
-                'price' => $product->price,
-                // Tambahkan kolom lain jika ada di migration details (misal quantity)
+                'qty' => 1, 
+                'subtotal' => $product->price, 
             ]);
+
+            // Kurangi Stok Produk di Database
+            $product->decrement('stock'); 
 
             DB::commit();
 
-            // Redirect ke dashboard atau halaman sukses
-            return redirect()->route('dashboard')->with('success', 'Pembelian berhasil! Silakan lakukan pembayaran.');
+            // Arahkan ke halaman pembayaran
+            return redirect()->route('front.payment', $transaction->code);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan sistem: ' . $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'Gagal memproses pesanan: ' . $e->getMessage()]);
         }
     }
 }
