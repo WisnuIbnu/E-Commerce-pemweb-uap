@@ -304,135 +304,6 @@
         </div>
     </header>
 
-    <!-- Live Search Dropdown (Header) -->
-    <div x-show="searchModal" 
-         @click.self="searchModal = false"
-         @keydown.escape.window="searchModal = false"
-         class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-start justify-center p-4 pt-24"
-         style="display: none;"
-         x-transition>
-        
-        <div class="w-full max-w-3xl">
-                <!-- Search Box -->
-                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-[#60A5FA]"
-                     x-data="{
-                        searchQuery: '',
-                        searchResults: [],
-                        loading: false,
-                        async search() {
-                            if (this.searchQuery.length < 2) {
-                                this.searchResults = [];
-                                return;
-                            }
-                            this.loading = true;
-                            try {
-                                const response = await fetch(`{{ route('api.search') }}?q=${encodeURIComponent(this.searchQuery)}`);
-                                this.searchResults = await response.json();
-                            } catch (error) {
-                                console.error('Search error:', error);
-                            }
-                            this.loading = false;
-                        }
-                     }"
-                     x-init="setTimeout(() => $refs.searchInput && $refs.searchInput.focus(), 150)"
-                     @keydown.escape.window="searchModal = false">
-                    
-                    <!-- Header -->
-                    <div class="bg-gradient-to-r from-[#60A5FA] to-[#1E3A8A] px-6 py-4 flex items-center justify-between">
-                        <h3 class="text-xl font-black text-white uppercase">🔍 Search Products</h3>
-                        <button @click="searchModal = false" class="p-2 hover:bg-white/20 rounded-lg transition-colors">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Search Input -->
-                    <div class="p-6 bg-gray-50">
-                        <div class="relative">
-                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#60A5FA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                            <input type="text" 
-                                   x-ref="searchInput"
-                                   x-model="searchQuery"
-                                   @input.debounce.300ms="search()"
-                                   placeholder="Type product name (e.g. Air Max, Boot, Sandal)..."
-                                   class="w-full pl-14 pr-6 py-5 bg-white border-3 border-[#60A5FA] rounded-xl text-lg font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-[#60A5FA]/30 shadow-lg">
-                        </div>
-                        <p class="mt-3 text-sm text-slate-600 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Type at least 2 characters to search
-                        </p>
-                    </div>
-
-                    <!-- Results -->
-                    <div class="max-h-96 overflow-y-auto bg-white">
-                        <!-- Loading -->
-                        <div x-show="loading" class="p-8 text-center bg-gray-50">
-                            <svg class="animate-spin h-10 w-10 mx-auto text-[#60A5FA]" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            <p class="mt-3 text-base font-bold text-slate-700">Searching...</p>
-                        </div>
-
-                        <!-- Results List -->
-                        <template x-if="!loading && searchResults.length > 0">
-                            <div>
-                                <div class="px-4 py-3 bg-[#F8F8FF] border-b-2 border-[#60A5FA]">
-                                    <p class="text-sm font-bold text-slate-700">Found <span class="text-[#60A5FA]" x-text="searchResults.length"></span> products</p>
-                                </div>
-                                <template x-for="product in searchResults" :key="product.id">
-                                    <a :href="product.url" class="flex items-center gap-4 p-4 hover:bg-[#F8F8FF] transition-colors border-b border-gray-200 last:border-0">
-                                        <img :src="product.image || '/images/placeholder.png'" 
-                                             :alt="product.name"
-                                             class="w-20 h-20 object-cover rounded-xl bg-gray-100 border-2 border-gray-200"
-                                             onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=No+Image'">
-                                        <div class="flex-1 min-w-0">
-                                            <h4 class="font-black text-base text-slate-900 truncate" x-text="product.name"></h4>
-                                            <p class="text-sm font-bold text-[#60A5FA]" x-text="product.category"></p>
-                                            <p class="text-base font-black text-[#1E3A8A]" x-text="product.price_formatted"></p>
-                                        </div>
-                                        <svg class="w-6 h-6 text-[#60A5FA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-                                        </svg>
-                                    </a>
-                                </template>
-                            </div>
-                        </template>
-
-                        <!-- No Results -->
-                        <div x-show="!loading && searchQuery.length >= 2 && searchResults.length === 0" class="p-10 text-center bg-gray-50">
-                            <svg class="w-20 h-20 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <p class="mt-4 text-lg font-black text-gray-500">No products found</p>
-                            <p class="text-sm font-bold text-gray-400">Try searching for "Air Max", "Boot", or "Sandal"</p>
-                        </div>
-
-                        <!-- Empty State -->
-                        <div x-show="searchQuery.length < 2 && !loading" class="p-10 text-center bg-gradient-to-br from-gray-50 to-blue-50">
-                            <svg class="w-20 h-20 mx-auto text-[#60A5FA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                            <p class="mt-4 text-lg font-black text-slate-700">Start typing to search</p>
-                            <p class="text-sm font-bold text-slate-500 mt-2">Popular searches:</p>
-                            <div class="flex flex-wrap gap-2 justify-center mt-3">
-                                <span class="px-4 py-2 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-sm font-bold">Air Max</span>
-                                <span class="px-4 py-2 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-sm font-bold">Boots</span>
-                                <span class="px-4 py-2 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-sm font-bold">Sandals</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Main Content -->
     <main class="flex-grow">
         @yield('content')
@@ -530,6 +401,136 @@
             </div>
         </div>
     </footer>
+
+    <!-- Live Search Modal (Positioned at end of body for proper z-index) -->
+    <div x-show="searchModal" 
+         @click.self="searchModal = false"
+         @keydown.escape.window="searchModal = false"
+         class="fixed inset-0 z-[99999] isolate bg-black/60 backdrop-blur-sm flex items-start justify-center p-4 pt-24"
+         style="display: none; z-index: 99999 !important;"
+         x-transition>
+        
+        <div class="w-full max-w-3xl">
+            <!-- Search Box -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-[#60A5FA]"
+                 x-data="{
+                    searchQuery: '',
+                    searchResults: [],
+                    loading: false,
+                    async search() {
+                        if (this.searchQuery.length < 2) {
+                            this.searchResults = [];
+                            return;
+                        }
+                        this.loading = true;
+                        try {
+                            const response = await fetch(`{{ route('api.search') }}?q=${encodeURIComponent(this.searchQuery)}`);
+                            this.searchResults = await response.json();
+                        } catch (error) {
+                            console.error('Search error:', error);
+                        }
+                        this.loading = false;
+                    }
+                 }"
+                 x-init="setTimeout(() => $refs.searchInput && $refs.searchInput.focus(), 150)"
+                 @keydown.escape.window="searchModal = false">
+                
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-[#60A5FA] to-[#1E3A8A] px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <h3 class="text-xl font-black text-white uppercase">Search Products</h3>
+                    </div>
+                    <button @click="searchModal = false" class="p-2 hover:bg-white/20 rounded-lg transition-colors">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="p-6 bg-gray-50">
+                    <input type="text" 
+                           x-ref="searchInput"
+                           x-model="searchQuery"
+                           @input.debounce.300ms="search()"
+                           @keydown.enter="if(searchQuery.length >= 2) { window.location.href = '{{ route('home') }}?search=' + encodeURIComponent(searchQuery); }"
+                           placeholder="Type product name (e.g. Air Max, Boot, Sandal)..."
+                           class="w-full pl-6 pr-6 py-5 bg-white border-3 border-[#60A5FA] rounded-xl text-lg font-bold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#1E3A8A] focus:ring-4 focus:ring-[#60A5FA]/30 shadow-lg">
+                    
+                    <!-- Helper text -->
+                    <p class="mt-3 text-sm text-slate-600 flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Type at least 2 characters. Press Enter to see all matching products in catalog</span>
+                    </p>
+                </div>
+
+                <!-- Results -->
+                <div class="max-h-96 overflow-y-auto bg-white">
+                    <!-- Loading -->
+                    <div x-show="loading" class="p-8 text-center bg-gray-50">
+                        <svg class="animate-spin h-10 w-10 mx-auto text-[#60A5FA]" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-3 text-base font-bold text-slate-700">Searching...</p>
+                    </div>
+
+                    <!-- Results List -->
+                    <template x-if="!loading && searchResults.length > 0">
+                        <div>
+                            <div class="px-4 py-3 bg-[#F8F8FF] border-b-2 border-[#60A5FA]">
+                                <p class="text-sm font-bold text-slate-700">Found <span class="text-[#60A5FA]" x-text="searchResults.length"></span> products</p>
+                            </div>
+                            <template x-for="product in searchResults" :key="product.id">
+                                <a :href="product.url" class="flex items-center gap-4 p-4 hover:bg-[#F8F8FF] transition-colors border-b border-gray-200 last:border-0">
+                                    <img :src="product.image || '/images/placeholder.png'" 
+                                         :alt="product.name"
+                                         class="w-20 h-20 object-cover rounded-xl bg-gray-100 border-2 border-gray-200"
+                                         onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=No+Image'">
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-black text-base text-slate-900 truncate" x-text="product.name"></h4>
+                                        <p class="text-sm font-bold text-[#60A5FA]" x-text="product.category"></p>
+                                        <p class="text-base font-black text-[#1E3A8A]" x-text="product.price_formatted"></p>
+                                    </div>
+                                    <svg class="w-6 h-6 text-[#60A5FA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- No Results -->
+                    <div x-show="!loading && searchQuery.length >= 2 && searchResults.length === 0" class="p-10 text-center bg-gray-50">
+                        <svg class="w-20 h-20 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="mt-4 text-lg font-black text-gray-500">No products found</p>
+                        <p class="text-sm font-bold text-gray-400">Try searching for "Air Max", "Boot", or "Sandal"</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div x-show="searchQuery.length < 2 && !loading" class="p-6 text-center bg-gradient-to-br from-gray-50 to-blue-50">
+                        <svg class="w-16 h-16 mx-auto text-[#60A5FA]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <p class="mt-3 text-base font-black text-slate-700">Start typing to search</p>
+                        <p class="text-xs font-bold text-slate-500 mt-1">Popular searches:</p>
+                        <div class="flex flex-wrap gap-2 justify-center mt-2">
+                            <span class="px-3 py-1.5 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-xs font-bold">Air Max</span>
+                            <span class="px-3 py-1.5 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-xs font-bold">Boots</span>
+                            <span class="px-3 py-1.5 bg-white border-2 border-[#60A5FA] text-[#60A5FA] rounded-full text-xs font-bold">Sandals</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

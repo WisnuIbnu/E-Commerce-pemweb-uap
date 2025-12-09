@@ -232,14 +232,23 @@ class BuyerController extends Controller
             ->take(5)
             ->get()
             ->map(function($product) {
+                // Get image URL - check if it's external or local
+                $imageUrl = null;
+                if ($product->images && $product->images->first()) {
+                    $image = $product->images->first()->image;
+                    $imageUrl = str_starts_with($image, 'http') 
+                        ? $image 
+                        : asset('storage/' . $image);
+                }
+                
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
                     'price' => $product->price,
                     'price_formatted' => 'Rp ' . number_format($product->price, 0, ',', '.'),
                     'category' => $product->category->name ?? '',
-                    'image' => $product->images->first()->image ?? null,
-                    'url' => route('product.detail', $product->id),
+                    'image' => $imageUrl,
+                    'url' => route('product.show', $product->id),
                 ];
             });
         
