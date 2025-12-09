@@ -1,6 +1,6 @@
     body {
         /* Handled in admin.css, ensure no override here */
-        background: transparent;
+        background: #0000;
     }
 
     .content {
@@ -10,7 +10,7 @@
     }
 
     .page-header {
-        background: rgba(28, 28, 30, 0.6);
+        background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(20px);
         padding: 2rem;
         border-radius: 20px;
