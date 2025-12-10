@@ -202,9 +202,10 @@
                     </button>
                 </form>
             @elseif($order->payment_status == 'completed')
-                <div style="background: var(--success); color: white; padding: 14px; border-radius: 8px; text-align: center; font-weight: 600;">
-                    Pesanan Selesai
-                </div>
+                <a href="{{ route('buyer.review.create', $order->id) }}" 
+                   style="width: 100%; background: var(--warning); color: white; padding: 14px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem;">
+                    ★ Beri Rating & Review
+                </a>
             @elseif($order->payment_status == 'cancelled')
                 <div style="background: var(--danger); color: white; padding: 14px; border-radius: 8px; text-align: center; font-weight: 600;">
                     Pesanan Dibatalkan
@@ -225,7 +226,12 @@ button:hover {
     opacity: 0.9;
 }
 
-a:hover {
+a[href*="review.create"]:hover {
+    background: #d97706 !important;
+    transform: translateY(-2px);
+}
+
+a[href*="orders.index"]:hover {
     background: var(--accent-lightest) !important;
     border-color: var(--accent);
 }
@@ -234,6 +240,11 @@ a:hover {
     div[style*="display: flex"] {
         flex-direction: column;
         align-items: stretch !important;
+    }
+
+    form,
+    a[style*="width: 100%"] {
+        width: 100%;
     }
 }
 </style>
