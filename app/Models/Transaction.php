@@ -29,10 +29,13 @@ class Transaction extends Model
         'payment_method',
     ];
 
-    public const STATUS_PENDING = 'pending';
-    public const STATUS_PAID    = 'paid';
-    public const STATUS_FAILED  = 'failed';
+    // Status pembayaran
+    public const STATUS_PENDING              = 'pending';
+    public const STATUS_WAITING_CONFIRMATION = 'waiting_confirmation';
+    public const STATUS_PAID                 = 'paid';
+    public const STATUS_FAILED               = 'failed';
 
+    // Kalau pakai guarded, kosongin saja (boleh juga dihapus)
     protected $guarded = [];
 
     public function buyer()
@@ -50,29 +53,36 @@ class Transaction extends Model
         return $this->hasMany(TransactionDetail::class);
     }
 
-     public function details()
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class);
     }
 
-
+    // Label status buat ditampilkan di view
     public function getStatusLabelAttribute()
     {
         return match ($this->payment_status) {
-            self::STATUS_PENDING => 'Menunggu Pembayaran',
-            self::STATUS_PAID    => 'Sudah Dibayar',
-            self::STATUS_FAILED  => 'Gagal',
-            default              => ucfirst($this->payment_status),
+            self::STATUS_PENDING              => 'Menunggu Pembayaran',
+            self::STATUS_WAITING_CONFIRMATION => 'Menunggu Konfirmasi Admin',
+            self::STATUS_PAID                 => 'Sudah Dibayar',
+            self::STATUS_FAILED               => 'Gagal',
+            default                           => ucfirst($this->payment_status),
         };
     }
 
+    // Class badge Tailwind-like dalam bentuk string
     public function getStatusBadgeClassAttribute()
     {
         return match ($this->payment_status) {
-            
+
             self::STATUS_PENDING => '
                 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
                 bg-orange-50 text-orange-700 border border-orange-200
+            ',
+
+            self::STATUS_WAITING_CONFIRMATION => '
+                inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                bg-blue-50 text-blue-700 border border-blue-200
             ',
 
             self::STATUS_PAID => '
