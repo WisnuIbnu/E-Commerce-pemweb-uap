@@ -3,7 +3,6 @@
 @section('content')
 <div class="min-h-screen bg-tumbloo-offwhite py-8">
     <div class="max-w-3xl mx-auto px-4">
-        <!-- Header -->
         <div class="mb-8">
             <a href="{{ route('store.products.index') }}" class="text-tumbloo-gray hover:text-tumbloo-black mb-4 inline-block">
                 ← Kembali ke Produk
@@ -12,13 +11,11 @@
             <p class="text-tumbloo-gray">Update informasi produk</p>
         </div>
 
-        <!-- Form -->
         <div class="card p-8">
             <form action="{{ route('store.products.update', $product->id) }}" method="POST">
                 @csrf
                 @method('PUT')
 
-                <!-- Product Name -->
                 <div class="mb-6">
                     <label class="label">Nama Produk <span class="text-red-500">*</span></label>
                     <input type="text" name="name" 
@@ -30,7 +27,6 @@
                     @enderror
                 </div>
 
-                <!-- Category -->
                 <div class="mb-6">
                     <label class="label">Kategori <span class="text-red-500">*</span></label>
                     <select name="product_category_id" 
@@ -48,7 +44,6 @@
                     @enderror
                 </div>
 
-                <!-- About -->
                 <div class="mb-6">
                     <label class="label">Deskripsi Produk <span class="text-red-500">*</span></label>
                     <textarea name="about" rows="5"
@@ -59,7 +54,6 @@
                     @enderror
                 </div>
 
-                <!-- Price and Weight -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="label">Harga (Rp) <span class="text-red-500">*</span></label>
@@ -84,7 +78,6 @@
                     </div>
                 </div>
 
-                <!-- Stock and Condition -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="label">Stok <span class="text-red-500">*</span></label>
@@ -111,7 +104,6 @@
                     </div>
                 </div>
 
-                <!-- Submit -->
                 <div class="flex gap-3">
                     <button type="submit" class="btn-primary flex-1">
                         Update Produk

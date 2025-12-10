@@ -7,7 +7,6 @@
             <p class="text-gray-400">Kelola saldo dan riwayat pendapatan Anda</p>
         </div>
 
-        <!-- Balance Card -->
         <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-8 mb-8 border border-blue-500/20">
             <div class="flex items-center justify-between">
                 <div>
@@ -28,7 +27,6 @@
             </div>
         </div>
 
-        <!-- Transaction History -->
         <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
             <h2 class="text-xl font-bold text-white mb-6">Riwayat Transaksi</h2>
             @if($history->count() > 0)

@@ -6,7 +6,6 @@
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Alert Messages -->
         @if(session('success'))
             <div class="bg-green-500 bg-opacity-10 border-l-4 border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
                 {{ session('success') }}
@@ -19,7 +18,6 @@
             </div>
         @endif
 
-        <!-- Header -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
@@ -58,7 +56,6 @@
             </div>
         </div>
 
-        <!-- Payment Instructions -->
         @if($transaction->payment_status == 'pending' || $transaction->payment_status == 'unpaid')
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Instruksi Pembayaran</h2>
@@ -135,7 +132,6 @@
         </div>
         @endif
 
-        <!-- Order Details -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Detail Pesanan</h2>
             
@@ -168,7 +164,6 @@
             </div>
         </div>
 
-        <!-- Shipping Info -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Alamat Pengiriman</h2>
             <div class="text-tumbloo-gray space-y-1">
@@ -179,7 +174,6 @@
             </div>
         </div>
 
-        <!-- Payment Summary -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Ringkasan Pembayaran</h2>
             
@@ -205,7 +199,6 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="mt-6 flex gap-4">
             <a href="{{ route('transaction.index') }}" 
                class="flex-1 text-center bg-gray-500 hover:bg-gray-600 text-tumbloo-white font-semibold py-3 px-4 rounded-lg border border-tumbloo-accent transition">

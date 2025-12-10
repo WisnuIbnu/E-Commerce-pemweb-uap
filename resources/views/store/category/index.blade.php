@@ -3,7 +3,6 @@
 @section('content')
 <div class="min-h-screen bg-tumbloo-offwhite py-8">
     <div class="container-custom">
-        <!-- Header -->
         <div class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="text-3xl font-bold text-tumbloo-black mb-2">Kelola Kategori</h1>
@@ -22,7 +21,6 @@
             <div class="alert alert-error fade-in mb-6">{{ session('error') }}</div>
         @endif>
 
-        <!-- Categories Table -->
         <div class="card p-6">
             @if($categories->count() > 0)
                 <div class="overflow-x-auto">
@@ -134,7 +132,6 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
                 <div class="mt-6">
                     {{ $categories->links() }}
                 </div>

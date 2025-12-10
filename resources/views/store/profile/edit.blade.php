@@ -18,7 +18,6 @@
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Store Info Card -->
                 <div class="space-y-6">
                     <div class="card p-6">
                         <div class="text-center">
@@ -43,7 +42,6 @@
                         </div>
                     </div>
 
-                    <!-- Stats -->
                     <div class="card p-6">
                         <h3 class="font-bold text-tumbloo-black mb-4">Statistik</h3>
                         <div class="space-y-3 text-sm">
@@ -58,7 +56,6 @@
                         </div>
                     </div>
 
-                    <!-- Danger Zone -->
                     <div class="card p-6 border-2 border-red-500">
                         <h3 class="font-bold text-red-600 mb-4">⚠️ Danger Zone</h3>
                         <p class="text-sm text-tumbloo-gray mb-4">
@@ -75,7 +72,6 @@
                     </div>
                 </div>
 
-                <!-- Edit Form -->
                 <div class="lg:col-span-2">
                     <div class="card p-8">
                         <h2 class="text-xl font-bold text-tumbloo-black mb-6">Update Informasi Toko</h2>
@@ -84,7 +80,6 @@
                             @csrf
                             @method('PUT')
 
-                            <!-- Store Name -->
                             <div class="mb-6">
                                 <label class="label">Nama Toko <span class="text-red-500">*</span></label>
                                 <input type="text" name="name" class="input-field @error('name') border-red-500 @enderror"
@@ -94,7 +89,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Logo -->
                             <div class="mb-6">
                                 <label class="label">Logo Toko Baru (Opsional)</label>
                                 <input type="file" name="logo" class="input-field @error('logo') border-red-500 @enderror"
@@ -106,7 +100,6 @@
                                 @enderror
                             </div>
 
-                            <!-- About -->
                             <div class="mb-6">
                                 <label class="label">Tentang Toko <span class="text-red-500">*</span></label>
                                 <textarea name="about" rows="4"
@@ -118,7 +111,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Phone -->
                             <div class="mb-6">
                                 <label class="label">Nomor Telepon <span class="text-red-500">*</span></label>
                                 <input type="tel" name="phone" class="input-field @error('phone') border-red-500 @enderror"
@@ -128,7 +120,6 @@
                                 @enderror
                             </div>
 
-                            <!-- Address -->
                             <div class="mb-6">
                                 <label class="label">Alamat Lengkap <span class="text-red-500">*</span></label>
                                 <textarea name="address" rows="3"
@@ -139,7 +130,6 @@
                                 @enderror
                             </div>
 
-                            <!-- City and Postal Code -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <div>
                                     <label class="label">Kota <span class="text-red-500">*</span></label>
@@ -162,7 +152,6 @@
                                 </div>
                             </div>
 
-                            <!-- Submit -->
                             <button type="submit" class="btn-primary w-full">
                                 Update Profil Toko
                             </button>

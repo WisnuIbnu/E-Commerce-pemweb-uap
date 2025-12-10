@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Search Header -->
+
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-tumbloo-white mb-2">
                 Hasil Pencarian untuk "{{ $query }}"
@@ -13,7 +13,6 @@
             <p class="text-tumbloo-gray">Ditemukan {{ $products->total() }} produk</p>
         </div>
 
-        <!-- Search Bar -->
         <form action="{{ route('search') }}" method="GET" class="mb-8">
             <div class="flex gap-2">
                 <input 
@@ -51,12 +50,11 @@
                 </a>
             </div>
         @else
-            <!-- Products Grid -->
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($products as $product)
                     <a href="{{ route('product.show', $product->id) }}" class="group">
                         <div class="bg-tumbloo-black rounded-lg overflow-hidden border border-tumbloo-accent hover:border-tumbloo-accent-light transition-all duration-300 transform hover:-translate-y-1">
-                            <!-- Product Image -->
                             <div class="relative aspect-square overflow-hidden bg-tumbloo-dark">
                                 @if($product->images->isNotEmpty())
                                     <img src="{{ asset($product->images->first()->image) }}" 
@@ -69,8 +67,7 @@
                                         </svg>
                                     </div>
                                 @endif
-                                
-                                <!-- Stock Badge -->
+
                                 @if($product->stock < 5 && $product->stock > 0)
                                     <div class="absolute top-2 left-2 px-2 py-1 bg-red-500 text-white text-xs font-semibold rounded">
                                         Stok Terbatas
@@ -82,7 +79,6 @@
                                 @endif
                             </div>
 
-                            <!-- Product Info -->
                             <div class="p-4">
                                 <div class="text-xs text-tumbloo-gray mb-1">{{ $product->store->name }}</div>
                                 <h3 class="text-tumbloo-white font-semibold mb-2 line-clamp-2 group-hover:text-tumbloo-accent transition">
@@ -118,7 +114,6 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
             <div class="mt-12">
                 {{ $products->appends(['q' => $query])->links() }}
             </div>

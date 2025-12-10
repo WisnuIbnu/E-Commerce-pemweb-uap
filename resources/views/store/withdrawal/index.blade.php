@@ -15,7 +15,6 @@
         @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <!-- Balance Info -->
             <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                 <p class="text-sm text-gray-400 mb-2">Saldo Tersedia</p>
                 <p class="text-3xl font-bold text-white mb-4">
@@ -24,7 +23,6 @@
                 <p class="text-xs text-gray-500">Minimum penarikan: Rp 50.000</p>
             </div>
 
-            <!-- Withdrawal Form -->
             <div class="lg:col-span-2 bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                 <h2 class="text-xl font-bold text-white mb-6">Request Penarikan</h2>
                 <form action="{{ route('store.withdrawal.store') }}" method="POST">
@@ -70,7 +68,6 @@
             </div>
         </div>
 
-        <!-- Withdrawal History -->
         <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
             <h2 class="text-xl font-bold text-white mb-6">Riwayat Penarikan</h2>
             @if($withdrawals->count() > 0)

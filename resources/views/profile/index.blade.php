@@ -3,16 +3,12 @@
 @section('title', 'Profil Saya - Tumbloo')
 
 @section('content')
-    <!-- Profile Header Section -->
     <div class="relative border-b border-tumbloo-accent w-full">
-        <!-- Background with opacity -->
         <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
             style="background-image: url('{{ asset('images/background.png') }}');">
         </div>
 
-        <!-- Content -->
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <!-- Success Message -->
             @if(session('success'))
                 <div
                     class="mb-6 bg-green-500/10 border border-green-500 text-green-400 px-6 py-4 rounded-lg max-w-2xl mx-auto text-center">
@@ -21,28 +17,22 @@
                 </div>
             @endif
 
-            <!-- Profile Header Card - Landscape -->
             <div class="flex justify-center">
                 <div class="bg-tumbloo-dark rounded-xl border border-tumbloo-accent overflow-hidden inline-block">
 
-                    <!-- Profile Info - Horizontal Layout -->
                     <div class="px-8 py-6">
                         <div class="flex items-end gap-6">
-                            <!-- Avatar -->
                             <div
                                 class="h-24 w-24 rounded-full bg-tumbloo-accent border-4 border-tumbloo-dark flex items-center justify-center text-4xl font-bold shadow-xl flex-shrink-0">
                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                             </div>
 
-                            <!-- User Info & Button -->
                             <div class="flex items-end justify-between gap-8 flex-1 pb-1">
-                                <!-- User Info -->
                                 <div>
                                     <h1 class="text-2xl font-bold text-tumbloo-white mb-1">{{ $user->name }}</h1>
                                     <p class="text-sm text-tumbloo-gray mb-2">{{ $user->email }}</p>
                                 </div>
 
-                                <!-- Edit Button -->
                                 <a href="{{ route('profile.edit') }}"
                                     class="inline-flex items-center gap-2 bg-tumbloo-accent hover:bg-tumbloo-accent-light text-white px-5 py-2 rounded-lg text-sm font-semibold transition whitespace-nowrap">
                                     Edit Profil
@@ -55,16 +45,13 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="bg-tumbloo-dark min-h-screen py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- Left Column: Profile Details -->
                 <div class="lg:col-span-2 space-y-6">
 
-                    <!-- Personal Information Card -->
                     <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-6 flex items-center gap-2">
                             <i class="fas fa-user-circle text-tumbloo-accent"></i>
@@ -72,7 +59,6 @@
                         </h2>
 
                         <div class="space-y-4">
-                            <!-- Name -->
                             <div class="flex items-start gap-4 p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent">
                                 <div
                                     class="h-10 w-10 rounded-lg bg-blue-200 flex items-center justify-center flex-shrink-0">
@@ -84,7 +70,6 @@
                                 </div>
                             </div>
 
-                            <!-- Email -->
                             <div class="flex items-start gap-4 p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent">
                                 <div
                                     class="h-10 w-10 rounded-lg bg-purple-200 flex items-center justify-center flex-shrink-0">
@@ -96,7 +81,6 @@
                                 </div>
                             </div>
 
-                            <!-- Role -->
                             <div class="flex items-start gap-4 p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent">
                                 <div
                                     class="h-10 w-10 rounded-lg bg-orange-200 flex items-center justify-center flex-shrink-0">
@@ -115,7 +99,6 @@
                         </div>
                     </div>
 
-                    <!-- Account Activity Card -->
                     <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-6 flex items-center gap-2">
                             <i class="fas fa-clock text-tumbloo-accent"></i>
@@ -123,7 +106,6 @@
                         </h2>
 
                         <div class="space-y-4">
-                            <!-- Created At -->
                             <div
                                 class="flex items-center justify-between p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent">
                                 <div class="flex items-center gap-3">
@@ -139,7 +121,6 @@
                                 <span class="text-xs text-tumbloo-gray">{{ $user->created_at->diffForHumans() }}</span>
                             </div>
 
-                            <!-- Updated At -->
                             <div
                                 class="flex items-center justify-between p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent">
                                 <div class="flex items-center gap-3">
@@ -159,10 +140,8 @@
 
                 </div>
 
-                <!-- Right Column: Quick Actions -->
                 <div class="space-y-6">
 
-                    <!-- Quick Actions Card -->
                     <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-6 flex items-center gap-2">
                             <i class="fas fa-bolt text-tumbloo-accent"></i>
@@ -222,7 +201,6 @@
 
                             @if($userStore)
                                 @if($userStore->is_verified)
-                                    {{-- Toko sudah terverifikasi → Dashboard Toko --}}
                                     <a href="{{ route('store.dashboard') }}"
                                         class="flex items-center gap-3 p-4 bg-tumbloo-dark hover:bg-tumbloo-accent/10 rounded-lg border border-tumbloo-accent hover:border-tumbloo-accent-light transition group">
                                         <div
@@ -239,7 +217,6 @@
                                             class="fas fa-chevron-right text-tumbloo-gray group-hover:text-tumbloo-accent-light transition"></i>
                                     </a>
                                 @else
-                                    {{-- Toko belum terverifikasi → Status Pending --}}
                                     <a href="{{ route('store.pending') }}"
                                         class="flex items-center gap-3 p-4 bg-yellow-500/10 hover:bg-yellow-500/20 rounded-lg border border-yellow-400 transition group">
                                         <div
@@ -255,7 +232,6 @@
                                     </a>
                                 @endif
                             @else
-                                {{-- Belum punya toko → Ke Registrasi --}}
                                 <a href="{{ route('store.register') }}"
                                     class="flex items-center gap-3 p-4 bg-tumbloo-dark hover:bg-tumbloo-accent/10 rounded-lg border border-tumbloo-accent hover:border-tumbloo-accent-light transition group">
                                     <div
@@ -275,8 +251,6 @@
 
                         </div>
                     </div>
-
-                    <!-- Security Card -->
                     <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-6 flex items-center gap-2">
                             <i class="fas fa-shield-alt text-tumbloo-accent"></i>
@@ -284,7 +258,6 @@
                         </h2>
 
                         <div class="space-y-4">
-                            <!-- Email Verification Status -->
                             <div
                                 class="p-4 rounded-lg border
                                 {{ $user->email_verified_at ? 'bg-green-500/10 border-green-500/30' : 'bg-yellow-500/10 border-yellow-500/30' }}">

@@ -5,7 +5,6 @@
 @section('content')
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Back Button -->
         <a href="{{ route('transactions.show', $transaction->id) }}" class="inline-flex items-center gap-2 text-tumbloo-accent hover:text-tumbloo-accent-light mb-6 transition">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -21,7 +20,6 @@
             </div>
         @endif
 
-        <!-- Product Info -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <div class="flex gap-4">
                 <div class="w-24 h-24 rounded-lg overflow-hidden bg-tumbloo-dark flex-shrink-0">
@@ -38,7 +36,6 @@
             </div>
         </div>
 
-        <!-- Review Form -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
             <form action="{{ route('reviews.store') }}" method="POST">
                 @csrf
@@ -46,7 +43,6 @@
                 <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
 
-                <!-- Rating -->
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-tumbloo-white mb-3">
                         Rating *
@@ -67,7 +63,6 @@
                     @enderror
                 </div>
 
-                <!-- Review Text -->
                 <div class="mb-6">
                     <label for="review" class="block text-sm font-medium text-tumbloo-white mb-2">
                         Ulasan Anda *
@@ -93,7 +88,6 @@
                     </div>
                 </div>
 
-                <!-- Review Tips -->
                 <div class="mb-6 p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent/30">
                     <h3 class="text-sm font-medium text-tumbloo-white mb-2">Tips Menulis Ulasan:</h3>
                     <ul class="space-y-1 text-xs text-tumbloo-gray">
@@ -104,7 +98,6 @@
                     </ul>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex gap-4">
                     <a href="{{ route('transactions.show', $transaction->id) }}" 
                        class="flex-1 text-center bg-tumbloo-dark hover:bg-tumbloo-accent/20 text-tumbloo-white border border-tumbloo-accent font-semibold py-3 px-6 rounded-lg transition">
@@ -120,7 +113,6 @@
             </form>
         </div>
 
-        <!-- Info -->
         <div class="mt-6 p-4 bg-tumbloo-black/50 border border-tumbloo-accent/30 rounded-lg">
             <div class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-tumbloo-accent mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,15 +138,12 @@ document.addEventListener('DOMContentLoaded', function() {
             charCount.textContent = this.value.length;
         });
         
-        // Set initial count
         charCount.textContent = reviewTextarea.value.length;
     }
 
-    // Interactive star rating
     const ratingInputs = document.querySelectorAll('input[name="rating"]');
     ratingInputs.forEach((input, index) => {
         input.addEventListener('change', function() {
-            // Update all previous stars
             ratingInputs.forEach((inp, i) => {
                 const svg = inp.nextElementSibling;
                 if (i <= index) {

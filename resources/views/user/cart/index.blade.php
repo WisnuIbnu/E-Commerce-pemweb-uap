@@ -32,12 +32,10 @@
             </div>
         @else
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Cart Items -->
                 <div class="lg:col-span-2 space-y-4">
                     @foreach($cartItems as $item)
                         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
                             <div class="flex gap-4">
-                                <!-- Product Image -->
                                 <div class="w-24 h-24 rounded-lg overflow-hidden bg-tumbloo-dark flex-shrink-0">
                                     @if($item->product->images->isNotEmpty())
                                         <img src="{{ asset($item->product->images->first()->image) }}" 
@@ -51,8 +49,6 @@
                                         </div>
                                     @endif
                                 </div>
-
-                                <!-- Product Info -->
                                 <div class="flex-1">
                                     <div class="flex justify-between mb-2">
                                         <div>
@@ -74,8 +70,6 @@
                                         <div class="text-blue-200 font-bold">
                                             Rp {{ number_format($item->product->price, 0, ',', '.') }}
                                         </div>
-
-                                        <!-- Quantity -->
                                         <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center gap-2">
                                             @csrf
                                             @method('PATCH')
@@ -111,7 +105,6 @@
                         </div>
                     @endforeach
 
-                    <!-- Clear Cart -->
                     <form action="{{ route('cart.clear') }}" method="POST" class="text-center">
                         @csrf
                         @method('DELETE')
@@ -121,7 +114,6 @@
                     </form>
                 </div>
 
-                <!-- Order Summary -->
                 <div class="lg:col-span-1">
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 sticky top-24">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-4">Ringkasan Pesanan</h2>

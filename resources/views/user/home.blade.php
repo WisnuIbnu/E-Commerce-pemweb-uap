@@ -3,16 +3,13 @@
 @section('title', 'Marketplace - Tumbloo')
 
 @section('content')
-<!-- Hero Section -->
 <div class="relative border-b border-tumbloo-accent w-full">
     
-    <!-- Background (punya opacity sendiri) -->
     <div 
         class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
         style="background-image: url('{{ asset('images/background.png') }}');">
     </div>
 
-    <!-- Overlay isi (tidak transparan) -->
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="text-center">
             <h1 class="text-4xl md:text-5xl font-bold text-tumbloo-black mb-4">
@@ -22,7 +19,6 @@
                 Marketplace terpercaya untuk membeli dan menjual tumbler terbaik
             </p>
 
-            <!-- Search Bar -->
             <form action="{{ route('search') }}" method="GET" class="max-w-2xl mx-auto">
                 <div class="flex gap-2">
                     <input 
@@ -49,7 +45,6 @@
     </div>
 </div>
 
-<!-- Categories Filter -->
 <div class="bg-tumbloo-dark border-b border-tumbloo-accent">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div class="flex items-center gap-4 overflow-x-auto">
@@ -71,7 +66,6 @@
     </div>
 </div>
 
-<!-- Products Grid -->
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @if($products->isEmpty())
@@ -101,7 +95,6 @@
                                     </div>
                                 @endif
                                 
-                                <!-- Stock Badge -->
                                 @if($product->stock < 5)
                                     <div class="absolute top-2 left-2 px-2 py-1 bg-red-500 text-white text-xs font-semibold rounded">
                                         Stok Terbatas
@@ -109,7 +102,6 @@
                                 @endif
                             </div>
 
-                            <!-- Product Info -->
                             <div class="p-4">
                                 <div class="text-xs text-tumbloo-gray mb-1">{{ $product->store->name }}</div>
                                 <h3 class="text-tumbloo-white font-semibold mb-2 line-clamp-2 group-hover:text-tumbloo-accent transition">
@@ -139,7 +131,6 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
             <div class="mt-12">
                 {{ $products->links() }}
             </div>

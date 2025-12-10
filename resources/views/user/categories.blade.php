@@ -30,12 +30,10 @@
                                 </svg>
                             </div>
 
-                            <!-- Category Name -->
                             <h3 class="text-xl font-bold text-tumbloo-white mb-2 group-hover:text-tumbloo-accent transition">
                                 {{ $category->name }}
                             </h3>
 
-                            <!-- Product Count -->
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-tumbloo-gray">
                                     {{ $category->products_count }} Produk
@@ -50,7 +48,6 @@
             </div>
         @endif
 
-        <!-- Back to Home -->
         <div class="text-center mt-12">
             <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-tumbloo-accent hover:text-tumbloo-accent-light transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

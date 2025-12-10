@@ -22,7 +22,6 @@
             <div class="alert alert-error fade-in mb-6">{{ session('error') }}</div>
         @endif
 
-        <!-- Products Table -->
         <div class="card p-6">
             @if($products->count() > 0)
                 <div class="overflow-x-auto">
@@ -101,7 +100,6 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
                 <div class="mt-6">
                     {{ $products->links() }}
                 </div>

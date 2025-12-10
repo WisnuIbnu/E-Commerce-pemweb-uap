@@ -5,7 +5,6 @@
 @section('content')
 <div class="bg-tumbloo-dark min-h-screen">
     
-    <!-- Header Section -->
     <div class="bg-tumbloo-black border-b border-tumbloo-accent">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="flex items-center justify-between">
@@ -23,7 +22,6 @@
                         @endif
                     </div>
 
-                    <!-- Store Info -->
                     <div>
                         <h1 class="text-3xl font-bold text-tumbloo-white mb-2">{{ $store->name }}</h1>
                         <div class="flex items-center gap-4">
@@ -47,7 +45,6 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="flex gap-3">
                     <a href="{{ route('store.profile.edit') }}" class="px-4 py-2 bg-tumbloo-dark hover:bg-tumbloo-darker text-tumbloo-white border border-tumbloo-accent rounded-lg transition font-medium">
                         Edit Profil
@@ -60,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Alert Messages -->
     @if(session('success'))
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
             <div class="bg-green-500 bg-opacity-10 border-l-4 border-green-500 text-green-400 px-6 py-4 rounded-lg">
@@ -77,11 +73,9 @@
         </div>
     @endif
 
-    <!-- Stats Grid -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             
-            <!-- Total Produk -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -94,7 +88,6 @@
                 <div class="text-sm text-tumbloo-gray">Total Produk</div>
             </div>
 
-            <!-- Produk Aktif -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-green-500 bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -107,7 +100,6 @@
                 <div class="text-sm text-tumbloo-gray">Produk Aktif</div>
             </div>
 
-            <!-- Total Pendapatan -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-yellow-500 bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -120,7 +112,6 @@
                 <div class="text-sm text-tumbloo-gray">Total Saldo</div>
             </div>
 
-            <!-- Pesanan Pending -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="w-12 h-12 bg-purple-500 bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -134,10 +125,8 @@
             </div>
         </div>
 
-        <!-- Quick Actions & Recent Products -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Quick Actions -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-tumbloo-white mb-4">Aksi Cepat</h2>
                 <div class="space-y-3">
@@ -179,7 +168,6 @@
                 </div>
             </div>
 
-            <!-- Recent Products -->
             <div class="lg:col-span-2 bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-semibold text-tumbloo-white">Produk Terbaru</h2>
@@ -216,7 +204,6 @@
                                     @endif
                                 </div>
 
-                                <!-- Product Info -->
                                 <div class="flex-1 min-w-0">
                                     <h3 class="text-tumbloo-white font-medium truncate group-hover:text-tumbloo-accent transition">
                                         {{ $product->name }}
@@ -227,7 +214,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Actions -->
                                 <div class="flex gap-2">
                                     <a href="{{ route('store.products.edit', $product->id) }}" class="p-2 bg-tumbloo-black hover:bg-tumbloo-accent text-tumbloo-gray hover:text-white rounded-lg transition">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -6,7 +6,6 @@
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Success Message -->
         <div class="text-center mb-8">
             <div class="w-20 h-20 bg-green-500 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-10 h-10 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -17,7 +16,6 @@
             <p class="text-tumbloo-gray">Terima kasih telah berbelanja di Tumbloo</p>
         </div>
 
-        <!-- Order Details -->
         <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Detail Pesanan</h2>
             
@@ -43,7 +41,6 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-3">
             @if(auth()->user()->role === 'customer')
                 <a href="{{ route('transactions.index') }}" 
@@ -58,7 +55,6 @@
             </a>
         </div>
 
-        <!-- Payment Instructions -->
         <div class="mt-8 bg-blue-500 bg-opacity-10 border border-blue-500 rounded-lg p-6">
             <h3 class="text-lg font-bold text-blue-400 mb-3">Instruksi Pembayaran</h3>
             <ol class="list-decimal list-inside space-y-2 text-sm text-tumbloo-gray">

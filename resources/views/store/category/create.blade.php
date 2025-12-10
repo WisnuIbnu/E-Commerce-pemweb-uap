@@ -3,7 +3,6 @@
 @section('content')
 <div class="min-h-screen bg-tumbloo-offwhite py-8">
     <div class="max-w-3xl mx-auto px-4">
-        <!-- Header -->
         <div class="mb-8">
             <a href="{{ route('store.categories.index') }}" class="text-tumbloo-gray hover:text-tumbloo-black mb-4 inline-block">
                 ← Kembali ke Kategori
@@ -12,12 +11,10 @@
             <p class="text-tumbloo-gray">Buat kategori produk baru</p>
         </div>
 
-        <!-- Form -->
         <div class="card p-8">
             <form action="{{ route('store.categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Category Name -->
                 <div class="mb-6">
                     <label class="label">Nama Kategori <span class="text-red-500">*</span></label>
                     <input type="text" name="name" 
@@ -29,7 +26,6 @@
                     @enderror
                 </div>
 
-                <!-- Parent Category -->
                 <div class="mb-6">
                     <label class="label">Parent Kategori (Opsional)</label>
                     <select name="parent_id" class="select-field @error('parent_id') border-red-500 @enderror">
@@ -46,7 +42,6 @@
                     @enderror
                 </div>
 
-                <!-- Image -->
                 <div class="mb-6">
                     <label class="label">Gambar Kategori (Opsional)</label>
                     <input type="file" name="image" 
@@ -58,7 +53,6 @@
                     @enderror
                 </div>
 
-                <!-- Tagline -->
                 <div class="mb-6">
                     <label class="label">Tagline (Opsional)</label>
                     <input type="text" name="tagline" 
@@ -70,7 +64,6 @@
                     @enderror
                 </div>
 
-                <!-- Description -->
                 <div class="mb-6">
                     <label class="label">Deskripsi (Opsional)</label>
                     <textarea name="description" rows="4"
@@ -81,7 +74,6 @@
                     @enderror
                 </div>
 
-                <!-- Submit -->
                 <div class="flex gap-3">
                     <button type="submit" class="btn-primary flex-1">
                         Simpan Kategori

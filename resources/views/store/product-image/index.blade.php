@@ -3,7 +3,6 @@
 @section('content')
 <div class="min-h-screen bg-tumbloo-offwhite py-8">
     <div class="container-custom">
-        <!-- Header -->
         <div class="mb-8">
             <a href="{{ route('store.products.index') }}" class="text-tumbloo-gray hover:text-tumbloo-black mb-4 inline-block">
                 ← Kembali ke Produk
@@ -16,7 +15,6 @@
             <div class="alert alert-success fade-in mb-6">{{ session('success') }}</div>
         @endif
 
-        <!-- Upload Form -->
         <div class="card p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-black mb-4">Upload Gambar Baru</h2>
             <form action="{{ route('store.product-images.store') }}" method="POST" enctype="multipart/form-data">
@@ -41,7 +39,6 @@
             </form>
         </div>
 
-        <!-- Images Grid -->
         <div class="card p-6">
             <h2 class="text-xl font-bold text-tumbloo-black mb-6">Gambar Produk</h2>
 
@@ -53,14 +50,12 @@
                             alt="Product Image" 
                             class="w-full h-48 object-cover rounded-lg">
                         
-                        <!-- Thumbnail Badge -->
                         @if($image->is_thumbnail)
                             <div class="absolute top-2 left-2">
                                 <span class="badge badge-success text-xs">Thumbnail</span>
                             </div>
                         @endif
 
-                        <!-- Actions -->
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <div class="flex gap-2">
                                 @if(!$image->is_thumbnail)

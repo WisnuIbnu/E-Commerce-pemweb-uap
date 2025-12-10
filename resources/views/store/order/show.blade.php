@@ -3,7 +3,6 @@
 @section('content')
 <div class="min-h-screen bg-tumbloo-offwhite py-8">
     <div class="container-custom">
-        <!-- Header -->
         <div class="mb-8">
             <a href="{{ route('store.orders.index') }}" class="text-tumbloo-gray hover:text-tumbloo-black mb-4 inline-block">
                 ← Kembali ke Pesanan
@@ -17,9 +16,7 @@
         @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Order Details -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Products -->
                 <div class="card p-6">
                     <h2 class="text-xl font-bold text-tumbloo-black mb-6">Produk</h2>
                     <div class="space-y-4">
@@ -50,7 +47,6 @@
                     </div>
                 </div>
 
-                <!-- Shipping Info -->
                 <div class="card p-6">
                     <h2 class="text-xl font-bold text-tumbloo-black mb-6">Informasi Pengiriman</h2>
                     <div class="space-y-3 text-sm">
@@ -80,9 +76,7 @@
                 </div>
             </div>
 
-            <!-- Sidebar -->
             <div class="space-y-6">
-                <!-- Customer Info -->
                 <div class="card p-6">
                     <h3 class="font-bold text-tumbloo-black mb-4">Pembeli</h3>
                     <div class="space-y-2 text-sm">
@@ -91,7 +85,6 @@
                     </div>
                 </div>
 
-                <!-- Order Summary -->
                 <div class="card p-6">
                     <h3 class="font-bold text-tumbloo-black mb-4">Ringkasan</h3>
                     <div class="space-y-3 text-sm mb-4">
@@ -127,7 +120,6 @@
                     </div>
                 </div>
 
-                <!-- Update Status -->
                 @if($order->payment_status != 'delivered' && $order->payment_status != 'cancelled')
                 <div class="card p-6">
                     <h3 class="font-bold text-tumbloo-black mb-4">Update Status</h3>
@@ -145,7 +137,6 @@
                     </form>
                 </div>
 
-                <!-- Add Tracking -->
                 @if(!$order->tracking_number && in_array($order->payment_status, ['processing', 'pending']))
                 <div class="card p-6">
                     <h3 class="font-bold text-tumbloo-black mb-4">Tambah Tracking</h3>

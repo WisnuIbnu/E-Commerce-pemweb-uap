@@ -3,7 +3,6 @@
 @section('content')
 <div class= bg-tumbloo-dark min-h-screen>
     <div class="max-w-3xl mx-auto px-4">
-        <!-- Header -->
         <div class="mb-8">
             <a href="{{ route('store.products.index') }}" class="text-gray-400 hover:text-white mb-4 inline-block transition-colors">
                 ← Kembali ke Produk
@@ -12,12 +11,10 @@
             <p class="text-gray-400">Tambahkan produk baru ke toko Anda</p>
         </div>
 
-        <!-- Form -->
         <div class="bg-zinc-900 rounded-xl p-8 border border-zinc-800">
             <form action="{{ route('store.products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Product Image -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Foto Produk <span class="text-red-400">*</span>
@@ -41,7 +38,6 @@
                     @enderror
                 </div>
 
-                <!-- Product Name -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Nama Produk <span class="text-red-400">*</span>
@@ -54,8 +50,6 @@
                         <p class="text-red-400 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <!-- Category -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Kategori <span class="text-red-400">*</span>
@@ -80,7 +74,6 @@
                     @enderror
                 </div>
 
-                <!-- Description -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Deskripsi Produk <span class="text-red-400">*</span>
@@ -93,7 +86,6 @@
                     @enderror
                 </div>
 
-                <!-- Condition -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Kondisi <span class="text-red-400">*</span>
@@ -109,7 +101,6 @@
                     @enderror
                 </div>
 
-                <!-- Price and Weight -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                         <label class="text-sm font-medium text-gray-300 block mb-2">
@@ -138,7 +129,6 @@
                     </div>
                 </div>
 
-                <!-- Stock -->
                 <div class="mb-6">
                     <label class="text-sm font-medium text-gray-300 block mb-2">
                         Stok <span class="text-red-400">*</span>
@@ -152,14 +142,12 @@
                     @enderror
                 </div>
 
-                <!-- Info Box -->
                 <div class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mb-6">
                     <p class="text-sm text-blue-400">
                         💡 <strong>Tips:</strong> Upload foto produk yang jelas dan menarik untuk meningkatkan penjualan!
                     </p>
                 </div>
 
-                <!-- Submit -->
                 <div class="flex gap-3">
                     <button type="submit" class="flex-1 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
                         Simpan Produk
@@ -173,7 +161,6 @@
     </div>
 </div>
 
-<!-- Modal Tambah Kategori -->
 <div id="categoryModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
     <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-8 max-w-md w-full mx-4">
         <div class="flex justify-between items-center mb-6">

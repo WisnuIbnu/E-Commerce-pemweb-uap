@@ -6,7 +6,6 @@
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Header -->
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bold text-tumbloo-white mb-4">
                 Mulai Berjualan di Tumbloo
@@ -16,7 +15,6 @@
             </p>
         </div>
 
-        <!-- Alert Messages -->
         @if(session('success'))
             <div class="alert-success mb-6">
                 {{ session('success') }}
@@ -39,18 +37,15 @@
             </div>
         @endif
 
-        <!-- Registration Form -->
         <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-8">
             <form action="{{ route('store.register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
-                <!-- Informasi Toko -->
                 <div>
                     <h2 class="text-xl font-semibold text-tumbloo-white mb-4 pb-2 border-b border-tumbloo-accent">
                         Informasi Toko
                     </h2>
 
-                    <!-- Nama Toko -->
                     <div class="mb-6">
                         <label for="name" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Nama Toko <span class="text-red-500">*</span>
@@ -68,7 +63,6 @@
                         </p>
                     </div>
 
-                    <!-- Logo Toko -->
                     <div class="mb-6">
                         <label for="logo" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Logo Toko
@@ -91,7 +85,6 @@
                         </div>
                     </div>
 
-                    <!-- Deskripsi Toko -->
                     <div class="mb-6">
                         <label for="about" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Deskripsi Toko <span class="text-red-500">*</span>
@@ -109,13 +102,11 @@
                     </div>
                 </div>
 
-                <!-- Kontak & Lokasi -->
                 <div>
                     <h2 class="text-xl font-semibold text-tumbloo-white mb-4 pb-2 border-b border-tumbloo-accent">
                         Kontak & Lokasi
                     </h2>
 
-                    <!-- Nomor Telepon -->
                     <div class="mb-6">
                         <label for="phone" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Nomor Telepon <span class="text-red-500">*</span>
@@ -130,7 +121,6 @@
                             required>
                     </div>
 
-                    <!-- Kota -->
                     <div class="mb-6">
                         <label for="city" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Kota <span class="text-red-500">*</span>
@@ -145,7 +135,6 @@
                             required>
                     </div>
 
-                    <!-- Alamat Lengkap -->
                     <div class="mb-6">
                         <label for="address" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Alamat Lengkap <span class="text-red-500">*</span>
@@ -159,7 +148,6 @@
                             required>{{ old('address') }}</textarea>
                     </div>
 
-                    <!-- Kode Pos -->
                     <div class="mb-6">
                         <label for="postal_code" class="block text-sm font-semibold text-tumbloo-white mb-2">
                             Kode Pos <span class="text-red-500">*</span>
@@ -175,7 +163,6 @@
                     </div>
                 </div>
 
-                <!-- Syarat dan Ketentuan -->
                 <div class="bg-tumbloo-dark border border-tumbloo-accent rounded-lg p-6">
                     <div class="flex items-start gap-3">
                         <input 
@@ -190,7 +177,6 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex gap-4 pt-4">
                     <button 
                         type="submit" 
@@ -206,7 +192,6 @@
             </form>
         </div>
 
-        <!-- Info Box -->
         <div class="mt-8 bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
             <h3 class="text-lg font-semibold text-tumbloo-white mb-3">
                 Keuntungan Menjadi Seller di Tumbloo
@@ -243,7 +228,6 @@
 
 @push('scripts')
 <script>
-    // Logo Preview
     document.getElementById('logo').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {

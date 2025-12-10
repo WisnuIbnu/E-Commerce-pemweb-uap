@@ -7,7 +7,6 @@
             <p class="text-gray-400">Lihat dan update pesanan masuk</p>
         </div>
 
-        <!-- Filter -->
         <div class="bg-zinc-900 rounded-xl p-6 mb-6 border border-zinc-800">
             <form action="{{ route('store.orders.index') }}" method="GET" class="flex flex-wrap gap-4 items-end">
                 <div class="flex-1 min-w-[200px]">
@@ -30,7 +29,6 @@
             </form>
         </div>
 
-        <!-- Orders Table -->
         <div class="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
             @if($orders->count() > 0)
                 <div class="overflow-x-auto">

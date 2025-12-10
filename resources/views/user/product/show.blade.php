@@ -6,7 +6,6 @@
 <div class="bg-tumbloo-dark min-h-screen py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Breadcrumb -->
         <nav class="mb-6">
             <ol class="flex items-center gap-2 text-sm text-tumbloo-gray">
                 <li><a href="{{ route('dashboard') }}" class="hover:text-tumbloo-accent">Home</a></li>
@@ -17,7 +16,6 @@
             </ol>
         </nav>
 
-        <!-- Alert Messages -->
         @if(session('success'))
             <div class="bg-green-500 bg-opacity-10 border-l-4 border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
                 {{ session('success') }}
@@ -30,10 +28,8 @@
             </div>
         @endif
 
-        <!-- Product Detail -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             
-            <!-- Product Images -->
             <div>
                 <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg overflow-hidden mb-4">
                     <div id="mainImage" class="aspect-square">
@@ -51,7 +47,6 @@
                     </div>
                 </div>
 
-                <!-- Image Thumbnails -->
                 @if($product->images->count() > 1)
                     <div class="grid grid-cols-4 gap-3">
                         @foreach($product->images as $image)
@@ -64,14 +59,11 @@
                 @endif
             </div>
 
-            <!-- Product Info -->
             <div>
                 <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                     
-                    <!-- Product Name -->
                     <h1 class="text-3xl font-bold text-tumbloo-white mb-4">{{ $product->name }}</h1>
 
-                    <!-- Rating & Reviews -->
                     <div class="flex items-center gap-4 mb-6">
                         @if($product->reviews_count > 0)
                             <div class="flex items-center gap-2">
@@ -90,7 +82,6 @@
                         @endif
                     </div>
 
-                    <!-- Price -->
                     <div class="mb-6">
                         <div class="text-4xl font-bold text-blue-600 mb-2">
                             Rp {{ number_format($product->price, 0, ',', '.') }}
@@ -101,7 +92,6 @@
                         </span>
                     </div>
 
-                    <!-- Stock -->
                     <div class="mb-6 pb-6 border-b border-tumbloo-accent">
                         <div class="flex items-center gap-2 text-tumbloo-gray">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +109,6 @@
                         @endif
                     </div>
 
-                    <!-- Quantity Selector -->
                     <form action="{{ route('cart.add', $product->id) }}" method="POST" id="buyForm">
                         @csrf
                         <div class="mb-6">
@@ -145,7 +134,6 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
                         <div class="flex gap-3">
                             @auth
                                 @php
@@ -200,7 +188,6 @@
                         </div>
                     </form>
 
-                    <!-- Store Info -->
                     <div class="mt-6 pt-6 border-t border-tumbloo-accent">
                         <a href="#" class="flex items-center gap-4 p-4 bg-tumbloo-dark hover:bg-tumbloo-darker rounded-lg transition group">
                             <div class="w-12 h-12 rounded-full overflow-hidden bg-tumbloo-black border-2 border-tumbloo-accent flex-shrink-0">
@@ -237,10 +224,8 @@
             </div>
         </div>
 
-        <!-- Product Description & Reviews -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             
-            <!-- Description -->
             <div class="lg:col-span-2">
                 <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                     <h2 class="text-2xl font-bold text-tumbloo-white mb-4">Deskripsi Produk</h2>
@@ -249,7 +234,6 @@
                     </div>
                 </div>
 
-                <!-- Reviews -->
                 <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6 mt-6">
                     <h2 class="text-2xl font-bold text-tumbloo-white mb-4">Ulasan Pembeli</h2>
                     
@@ -285,7 +269,6 @@
                 </div>
             </div>
 
-            <!-- Sidebar - Category & Related -->
             <div class="space-y-6">
                 <!-- Category -->
                 <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
@@ -299,7 +282,6 @@
                     </a>
                 </div>
 
-                <!-- Related Products -->
                 @if($relatedProducts->isNotEmpty())
                     <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                         <h3 class="text-lg font-bold text-tumbloo-white mb-4">Produk Terkait</h3>
@@ -336,12 +318,10 @@
 </div>
 
 <script>
-// Change main image
 function changeImage(imageUrl) {
     document.querySelector('#mainImage img').src = imageUrl;
 }
 
-// Quantity controls
 function incrementQty() {
     const input = document.getElementById('quantity');
     const max = parseInt(input.max);
@@ -360,24 +340,20 @@ function decrementQty() {
     }
 }
 
-// Buy now - langsung ke checkout
 function buyNow() {
     const form = document.getElementById('buyForm');
     const quantity = document.getElementById('quantity').value;
     
-    // Create temporary form to checkout
     const checkoutForm = document.createElement('form');
     checkoutForm.method = 'POST';
     checkoutForm.action = '{{ route("checkout.index") }}';
     
-    // Add CSRF token
     const csrfInput = document.createElement('input');
     csrfInput.type = 'hidden';
     csrfInput.name = '_token';
     csrfInput.value = '{{ csrf_token() }}';
     checkoutForm.appendChild(csrfInput);
     
-    // Add product data
     const productInput = document.createElement('input');
     productInput.type = 'hidden';
     productInput.name = 'product_id';

@@ -6,38 +6,30 @@
 <div class="bg-tumbloo-dark min-h-screen py-12">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- Success Message -->
         @if(session('success'))
             <div class="bg-green-500 bg-opacity-10 border-l-4 border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6 animate-fadeIn">
                 {{ session('success') }}
             </div>
         @endif
 
-        <!-- Pending Card -->
         <div class="bg-tumbloo-black rounded-xl border border-tumbloo-accent p-8 md:p-12 text-center">
             
-            <!-- Icon -->
             <div class="w-24 h-24 mx-auto mb-6 bg-yellow-500 bg-opacity-20 rounded-full flex items-center justify-center">
                 <svg class="w-12 h-12 text-yellow-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
 
-            <!-- Title -->
             <h1 class="text-3xl md:text-4xl font-bold text-tumbloo-white mb-4">
                 Toko Anda Sedang Diverifikasi
             </h1>
 
-            <!-- Description -->
             <p class="text-tumbloo-gray text-lg mb-8 max-w-2xl mx-auto">
                 Terima kasih telah mendaftar sebagai seller di Tumbloo! Tim kami sedang meninjau informasi toko Anda. 
                 Proses verifikasi biasanya memakan waktu <span class="text-tumbloo-white font-semibold">1-3 hari kerja</span>.
             </p>
-
-            <!-- Store Info -->
             <div class="bg-tumbloo-dark border border-tumbloo-accent rounded-lg p-6 mb-8 max-w-xl mx-auto">
                 <div class="flex items-start gap-4">
-                    <!-- Logo -->
                     <div class="w-16 h-16 rounded-lg overflow-hidden bg-tumbloo-black border border-tumbloo-accent flex-shrink-0">
                         @if($store->logo)
                             <img src="{{ asset($store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
@@ -50,7 +42,6 @@
                         @endif
                     </div>
 
-                    <!-- Info -->
                     <div class="text-left flex-1">
                         <h3 class="text-lg font-semibold text-tumbloo-white mb-1">{{ $store->name }}</h3>
                         <div class="space-y-1 text-sm text-tumbloo-gray">
@@ -78,7 +69,6 @@
                 </div>
             </div>
 
-            <!-- Status Badge -->
             <div class="inline-flex items-center gap-2 px-6 py-3 bg-yellow-500 bg-opacity-10 border border-yellow-500 rounded-full text-yellow-400 font-semibold mb-8">
                 <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -125,7 +115,6 @@
                 </ul>
             </div>
 
-            <!-- Actions -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('dashboard') }}" 
                    class="px-8 py-3 bg-tumbloo-accent hover:bg-tumbloo-accent-light text-white font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
@@ -138,10 +127,8 @@
             </div>
         </div>
 
-        <!-- Info Boxes -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             
-            <!-- Tips Card -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-start gap-3 mb-4">
                     <div class="w-10 h-10 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -175,7 +162,6 @@
                 </div>
             </div>
 
-            <!-- Need Help Card -->
             <div class="bg-tumbloo-black border border-tumbloo-accent rounded-lg p-6">
                 <div class="flex items-start gap-3 mb-4">
                     <div class="w-10 h-10 bg-purple-500 bg-opacity-20 rounded-lg flex items-center justify-center flex-shrink-0">

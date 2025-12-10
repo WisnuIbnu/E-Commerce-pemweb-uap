@@ -7,7 +7,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold text-tumbloo-white mb-8">Checkout</h1>
 
-        <!-- Alert Messages -->
         @if(session('success'))
             <div class="bg-green-500 bg-opacity-10 border-l-4 border-green-500 text-green-400 px-6 py-4 rounded-lg mb-6">
                 {{ session('success') }}
@@ -30,9 +29,7 @@
             @endif
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Shipping Information -->
                 <div class="lg:col-span-2 space-y-6">
-                    <!-- Address -->
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-4">Alamat Pengiriman</h2>
                         
@@ -94,7 +91,6 @@
                         </div>
                     </div>
 
-                    <!-- Shipping Method -->
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-4">Metode Pengiriman</h2>
                         
@@ -137,7 +133,6 @@
                         @enderror
                     </div>
 
-                    <!-- Order Items -->
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-4">Produk yang Dibeli</h2>
                         
@@ -171,7 +166,6 @@
                     </div>
                 </div>
 
-                <!-- Order Summary -->
                 <div class="lg:col-span-1">
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 sticky top-24">
                         <h2 class="text-xl font-bold text-tumbloo-white mb-4">Ringkasan Pesanan</h2>
@@ -217,7 +211,6 @@
                             </a>
                         @endif
 
-                        <!-- Payment Info -->
                         <div class="mt-6 p-4 bg-tumbloo-dark rounded-lg border border-tumbloo-accent/30">
                             <div class="flex items-start gap-2">
                                 <svg class="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

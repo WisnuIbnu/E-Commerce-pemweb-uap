@@ -21,7 +21,6 @@
             </div>
         @endif
 
-        <!-- Transaction Info -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
@@ -79,7 +78,6 @@
             @endif
         </div>
 
-        <!-- Shipping Address -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Alamat Pengiriman</h2>
             <div class="text-tumbloo-gray">
@@ -96,7 +94,6 @@
             </div>
         </div>
 
-        <!-- Order Items -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6 mb-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Produk yang Dibeli</h2>
             <div class="space-y-4">
@@ -131,7 +128,6 @@
             </div>
         </div>
 
-        <!-- Payment Summary -->
         <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent p-6">
             <h2 class="text-xl font-bold text-tumbloo-white mb-4">Rincian Pembayaran</h2>
             <div class="space-y-3">
@@ -156,7 +152,6 @@
             </div>
         </div>
 
-        <!-- Actions -->
         @if($transaction->payment_status === 'pending')
             <div class="mt-6 flex gap-4">
                 <form action="{{ route('transactions.cancel', $transaction->id) }}" method="POST" class="flex-1">

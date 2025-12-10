@@ -28,7 +28,6 @@
             <div class="space-y-4">
                 @foreach($transactions as $transaction)
                     <div class="bg-tumbloo-black rounded-lg border border-tumbloo-accent overflow-hidden">
-                        <!-- Transaction Header -->
                         <div class="bg-tumbloo-dark px-6 py-4 border-b border-tumbloo-accent">
                             <div class="flex flex-wrap items-center justify-between gap-4">
                                 <div class="flex items-center gap-4">
@@ -74,7 +73,6 @@
                             </div>
                         </div>
 
-                        <!-- Transaction Body -->
                         <div class="p-6">
                             <!-- Products -->
                             <div class="space-y-4 mb-4">
@@ -136,7 +134,6 @@
                 @endforeach
             </div>
 
-            <!-- Pagination -->
             <div class="mt-8">
                 {{ $transactions->links() }}
             </div>
