@@ -22,8 +22,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/store', [StoreController::class, 'create'])->name('store.create');
-    Route::post('/store', [StoreController::class, 'store'])->name('store.store');
+    Route::get('/createstore', [StoreController::class, 'create'])->name('store.create');
+    Route::post('/createstore', [StoreController::class, 'store'])->name('store.store');
+    
+    Route::middleware('store.verified')->group(function () {
+        Route::get('/store', [StoreController::class, 'edit'])->name('store.edit');
+        Route::patch('/store', [StoreController::class, 'update'])->name('store.update');
+    });
 });
 
 require __DIR__.'/auth.php';

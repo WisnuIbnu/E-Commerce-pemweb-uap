@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Tabel users
         Schema::create('users', function (Blueprint $table) {
-            $table->id(); // otomatis PRIMARY KEY dan autoincrement
+            $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
