@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductCategory;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        return view('home.index', [
-            'categories' => ProductCategory::all(),
-            'products' => Product::latest()->take(12)->get(),
-        ]);
+        $products = Product::with('thumbnail')
+            ->where('stock', '>', 0)
+            ->latest()
+            ->get();
+
+        return view('customer.home', compact('products'));
     }
 }

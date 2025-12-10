@@ -1,54 +1,102 @@
 <x-app-layout>
-
     <x-slot name="header">
-        <h1 class="text-2xl font-bold">Create Product</h1>
+        <h2 class="font-semibold text-xl">Add Product</h2>
     </x-slot>
 
-    <div class="container mx-auto max-w-2xl py-4">
+    <div class="p-6">
 
-        <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('seller.products.store') }}" 
+              method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="mb-4">
-                <label class="font-semibold">Category</label>
-                <select name="product_category_id" class="w-full border p-2 rounded">
-                    @foreach($categories as $c)
-                        <option value="{{ $c->id }}">{{ $c->name }}</option>
-                    @endforeach
-                </select>
+            <div class="grid grid-cols-2 gap-4">
+
+                <div>
+                    <label>Product Name</label>
+                    <input type="text" name="name" class="border p-2 w-full" required>
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-semibold">Category</label>
+
+                    <select name="product_category_id" class="border p-2 w-full" required>
+
+                        <!-- ELEKTRONIK (kategori wajib muncul sebagai optgroup) -->
+                        <optgroup label="Elektronik">
+                            @foreach ($categories->whereIn('name', [
+                                'Mesin Cuci',
+                                'Kulkas',
+                                'Televisi',
+                                'AC / Pendingin',
+                                'Laptop',
+                                'Handphone',
+                                'Kamera',
+                                'Speaker',
+                            ]) as $category)
+                                <option value="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+
+                        <!-- KATEGORI LAIN DARI DATABASE -->
+                        <optgroup label="Kategori dari Database">
+                            @foreach ($categories->whereNotIn('name', [
+                                'Mesin Cuci',
+                                'Kulkas',
+                                'Televisi',
+                                'AC / Pendingin',
+                                'Laptop',
+                                'Handphone',
+                                'Kamera',
+                                'Speaker',
+                            ]) as $category)
+                                <option value="{{ $category->id }}">
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </optgroup>
+
+                    </select>
+                </div>
+
+                <div>
+                    <label>Condition</label>
+                    <select name="condition" class="border p-2 w-full" required>
+                        <option value="new">New</option>
+                        <option value="second">Second</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Price</label>
+                    <input type="text" name="price" class="border p-2 w-full" required>
+                </div>
+
+                <div>
+                    <label>Weight (grams)</label>
+                    <input type="number" name="weight" class="border p-2 w-full" required>
+                </div>
+
+                <div>
+                    <label>Stock</label>
+                    <input type="number" name="stock" class="border p-2 w-full" required>
+                </div>
+
+                <div class="col-span-2">
+                    <label>Description</label>
+                    <textarea name="description" class="border p-2 w-full" required></textarea>
+                </div>
+
+                <div class="col-span-2">
+                    <label>Images (can upload multiple)</label>
+                    <input type="file" name="images[]" multiple class="border p-2 w-full">
+                </div>
+
             </div>
 
-            <div class="mb-4">
-                <label class="font-semibold">Name</label>
-                <input name="name" class="w-full border p-2 rounded" />
-            </div>
-
-            <div class="mb-4">
-                <label class="font-semibold">Description</label>
-                <textarea name="description" class="w-full border p-2 rounded"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <label class="font-semibold">Condition</label>
-                <select name="condition" class="w-full border p-2 rounded">
-                    <option value="new">New</option>
-                    <option value="second">Second</option>
-                </select>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 mb-4">
-                <input name="price" type="number" placeholder="Price" class="border p-2 rounded" />
-                <input name="weight" type="number" placeholder="Weight (gram)" class="border p-2 rounded" />
-                <input name="stock" type="number" placeholder="Stock" class="border p-2 rounded" />
-            </div>
-
-            <div class="mb-4">
-                <label class="font-semibold">Images (multiple)</label>
-                <input type="file" name="images[]" multiple class="w-full" />
-            </div>
-
-            <button class="bg-green-600 text-white px-4 py-2 rounded">
-                Save
+            <button class="bg-blue-600 text-white px-4 py-2 rounded mt-4">
+                Save Product
             </button>
         </form>
 

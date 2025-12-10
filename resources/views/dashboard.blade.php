@@ -116,7 +116,7 @@
                     @component('components.dashboard-card', [
                         'title' => 'Manage Products',
                         'icon'  => 'tags',
-                        'link'  => route('products.index')
+                        'link'  => route('seller.products.index')
                     ])
                         Add, update, or delete products.
                     @endcomponent
