@@ -26,10 +26,11 @@ use App\Http\Controllers\Seller\SellerStoreController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminStoreController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\Admin\AdminWithdrawalController;
 
 
+// -------------------------------------------------
+// ROOT REDIRECT
+// -------------------------------------------------
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
@@ -38,6 +39,9 @@ Route::get('/', function () {
 });
 
 
+// -------------------------------------------------
+// AUTH + VERIFIED GROUP
+// -------------------------------------------------
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // ROLE REDIRECT
@@ -103,70 +107,89 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // ============================================
-    // SELLER ROUTES (Member with Verified Store)
+    // SELLER ROUTES
     // ============================================
-    Route::prefix('seller')->name('seller.')->middleware(['role:seller'])->group(function () {
+    Route::prefix('seller')
+        ->name('seller.')
+        ->middleware(['role:seller'])
+        ->group(function () {
 
-        Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
 
-        // STORE PROFILE MANAGEMENT
-        Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
-        Route::put('/store/update', [SellerStoreController::class, 'update'])->name('store.update');
+            // STORE PROFILE
+            Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
+            Route::put('/store/update', [SellerStoreController::class, 'update'])->name('store.update');
 
-        // PRODUCTS
-        Route::resource('products', SellerProductController::class);
-        
-        // CATEGORIES
-        Route::resource('categories', SellerCategoryController::class);
-        
-        // PRODUCT IMAGES
-        Route::prefix('products/{product}/images')->name('products.images.')->group(function () {
-            Route::get('/', [SellerProductImageController::class, 'index'])->name('index');
-            Route::get('/create', [SellerProductImageController::class, 'create'])->name('create');
-            Route::post('/', [SellerProductImageController::class, 'store'])->name('store');
-            Route::delete('/{image}', [SellerProductImageController::class, 'destroy'])->name('destroy');
+            // PRODUCTS
+            Route::resource('products', SellerProductController::class);
+
+            // CATEGORIES
+            Route::resource('categories', SellerCategoryController::class);
+
+            // PRODUCT IMAGES
+            Route::prefix('products/{product}/images')->name('products.images.')->group(function () {
+                Route::get('/', [SellerProductImageController::class, 'index'])->name('index');
+                Route::get('/create', [SellerProductImageController::class, 'create'])->name('create');
+                Route::post('/', [SellerProductImageController::class, 'store'])->name('store');
+                Route::delete('/{image}', [SellerProductImageController::class, 'destroy'])->name('destroy');
+            });
+
+            // ORDERS
+            Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
+            Route::get('/orders/{id}', [SellerOrderController::class, 'show'])->name('orders.show');
+            Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.update-status');
+
+            // BALANCE
+            Route::get('/balance', [SellerBalanceController::class, 'index'])->name('balance.index');
+
+            // WITHDRAW
+            Route::get('/withdraw', [SellerWithdrawController::class, 'index'])->name('withdraw.index');
+            Route::post('/withdraw', [SellerWithdrawController::class, 'store'])->name('withdraw.store');
+            Route::get('/withdraw/history', [SellerWithdrawController::class, 'history'])->name('withdraw.history');
         });
 
-        // ORDERS
-        Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{id}', [SellerOrderController::class, 'show'])->name('orders.show');
-        Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.update-status');
-
-        // BALANCE
-        Route::get('/balance', [SellerBalanceController::class, 'index'])->name('balance.index');
-        
-        // WITHDRAW
-        Route::get('/withdraw', [SellerWithdrawController::class, 'index'])->name('withdraw.index');
-        Route::post('/withdraw', [SellerWithdrawController::class, 'store'])->name('withdraw.store');
-        Route::get('/withdraw/history', [SellerWithdrawController::class, 'history'])->name('withdraw.history');
-    });
 
 
     // ============================================
-    // ADMIN ROUTES
+    // ADMIN ROUTES (UPDATED + FIXED)
     // ============================================
     Route::prefix('admin')->name('admin.')->middleware(['role:admin'])->group(function () {
 
+        // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        // STORES VERIFICATION
-        Route::get('/stores', [AdminStoreController::class, 'index'])->name('stores.index');
-        Route::get('/stores/{id}', [AdminStoreController::class, 'show'])->name('stores.show');
-        Route::post('/stores/{id}/verify', [AdminStoreController::class, 'verify'])->name('stores.verify');
-        Route::post('/stores/{id}/reject', [AdminStoreController::class, 'reject'])->name('stores.reject');
-        Route::delete('/stores/{id}', [AdminStoreController::class, 'destroy'])->name('stores.destroy');
+        // STORES
+        Route::prefix('stores')->name('stores.')->group(function () {
+            Route::get('/', [AdminStoreController::class, 'index'])->name('index');
+            Route::get('/create', [AdminStoreController::class, 'create'])->name('create');
+            Route::post('/', [AdminStoreController::class, 'store'])->name('store');
+            Route::get('/{id}', [AdminStoreController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [AdminStoreController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [AdminStoreController::class, 'update'])->name('update');
+            Route::post('/{id}/verify', [AdminStoreController::class, 'verify'])->name('verify');
+            Route::post('/{id}/reject', [AdminStoreController::class, 'reject'])->name('reject');
+            Route::delete('/{id}', [AdminStoreController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/restore', [AdminStoreController::class, 'restore'])->name('restore');
+        });
 
-        // USERS
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+        // USERS (self-delete MUST be first)
         Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
         Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+
+        Route::get('/users/{id}/confirm-delete', [AdminUserController::class, 'confirmDelete'])->name('users.confirmDelete');
+        Route::delete('/users/{id}/destroy-self', [AdminUserController::class, 'destroySelf'])->name('users.destroySelf');
+
+        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
         Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-
     });
+
 });
 
 
+// -------------------------------------------------
+// AUTH ROUTES
+// -------------------------------------------------
 require __DIR__ . '/auth.php';
