@@ -21,6 +21,7 @@ class TransactionDetailSeeder extends Seeder
                 'id' => 2,
                 'transaction_id' => 5,
                 'product_id' => 62, 
+                'qty' => 1,
                 'subtotal' => 385000.00,
             ],
             [

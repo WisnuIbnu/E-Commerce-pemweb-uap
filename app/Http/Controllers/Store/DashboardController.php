@@ -25,7 +25,6 @@ class DashboardController extends Controller
             return redirect()->route('store.pending');
         }
 
-        // Load relasi yang dibutuhkan
         $store->load(['products', 'balance']);
 
         // Statistik toko

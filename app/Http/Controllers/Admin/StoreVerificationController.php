@@ -29,8 +29,6 @@ class StoreVerificationController extends Controller
         $store = Store::findOrFail($id);
         
         $store->update(['is_verified' => true]);
-
-        // Optionally send notification to seller
         
         return redirect()->route('admin.store-verification.index')
             ->with('success', 'Store verified successfully');
@@ -44,7 +42,6 @@ class StoreVerificationController extends Controller
 
         $store = Store::findOrFail($id);
         
-        // Optionally store rejection reason and send notification
         
         $store->delete();
 

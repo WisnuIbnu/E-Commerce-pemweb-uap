@@ -28,7 +28,6 @@ class CategoryManagementController extends Controller
 
     public function store(Request $request)
     {
-        // Check if this is an AJAX request (from the modal in product create form)
         if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
             $request->validate([
                 'name' => 'required|string|max:255|unique:product_categories,name',
@@ -53,7 +52,6 @@ class CategoryManagementController extends Controller
             ]);
         }
 
-        // Regular form submission
         $request->validate([
             'name' => 'required|string|max:255|unique:product_categories,name',
             'parent_id' => 'nullable|exists:product_categories,id',
@@ -132,12 +130,10 @@ class CategoryManagementController extends Controller
     {
         $category = ProductCategory::findOrFail($id);
 
-        // Check if category has products
         if ($category->products()->count() > 0) {
             return back()->with('error', 'Cannot delete category with products');
         }
 
-        // Delete image
         if ($category->image) {
             Storage::disk('public')->delete($category->image);
         }

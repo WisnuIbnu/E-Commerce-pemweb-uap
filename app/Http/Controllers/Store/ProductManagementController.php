@@ -62,7 +62,6 @@ class ProductManagementController extends Controller
             'stock' => $request->stock,
         ]);
 
-        // Upload and save image to product_images table
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
@@ -71,7 +70,7 @@ class ProductManagementController extends Controller
             ProductImage::create([
                 'product_id' => $product->id,
                 'image' => $imagePath,
-                'is_thumbnail' => 1, // Set as thumbnail since it's the first/only image
+                'is_thumbnail' => 1,
             ]);
         }
 
@@ -116,7 +115,6 @@ class ProductManagementController extends Controller
             'stock' => $request->stock,
         ]);
 
-        // If new image uploaded, replace the old one
         if ($request->hasFile('image')) {
             // Delete old images
             foreach ($product->images as $oldImage) {
@@ -124,7 +122,6 @@ class ProductManagementController extends Controller
                 $oldImage->delete();
             }
 
-            // Upload new image
             $image = $request->file('image');
             $imageName = time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('images/stores', $imageName, 'public');
@@ -145,7 +142,6 @@ class ProductManagementController extends Controller
         $store = auth()->user()->store;
         $product = $store->products()->findOrFail($id);
 
-        // Delete all product images
         foreach ($product->images as $image) {
             Storage::disk('public')->delete($image->image);
             $image->delete();

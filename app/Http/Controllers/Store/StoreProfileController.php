@@ -21,7 +21,7 @@ class StoreProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stores,name,' . $store->id,
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'about' => 'required|string|min:50', // TAMBAHKAN min:50
+            'about' => 'required|string|min:50',
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
             'city' => 'required|string|max:100',
@@ -40,23 +40,19 @@ class StoreProfileController extends Controller
 
         try {
             $data = $request->except('logo');
-            $logoPath = $store->logo; // Keep old logo
+            $logoPath = $store->logo;
 
-            // Handle logo upload ke public/images/stores
             if ($request->hasFile('logo')) {
                 $uploadPath = public_path('images/stores');
                 
-                // Buat folder jika belum ada
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
                 }
 
-                // Hapus logo lama jika ada
                 if ($store->logo && file_exists(public_path($store->logo))) {
                     unlink(public_path($store->logo));
                 }
 
-                // Upload logo baru
                 $logo = $request->file('logo');
                 $logoName = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
                 $logo->move($uploadPath, $logoName);
@@ -75,7 +71,6 @@ class StoreProfileController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Hapus logo baru jika upload berhasil tapi ada error
             if (isset($logoPath) && $logoPath !== $store->logo && file_exists(public_path($logoPath))) {
                 unlink(public_path($logoPath));
             }
@@ -90,7 +85,6 @@ class StoreProfileController extends Controller
     {
         $store = auth()->user()->store;
 
-        // Check if store has pending orders
         $hasPendingOrders = $store->transactions()
             ->whereIn('payment_status', ['pending', 'processing', 'shipped'])
             ->exists();
@@ -102,14 +96,12 @@ class StoreProfileController extends Controller
         DB::beginTransaction();
 
         try {
-            // Delete logo dari public/images/stores
             if ($store->logo && file_exists(public_path($store->logo))) {
                 unlink(public_path($store->logo));
             }
 
             $store->delete();
 
-            // Update user role back to customer
             auth()->user()->update(['role' => 'customer']);
 
             DB::commit();

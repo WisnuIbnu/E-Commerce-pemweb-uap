@@ -36,13 +36,10 @@
             <div>
                 <h4 class="text-sm font-semibold text-tumbloo-white uppercase tracking-wider mb-4">Platform</h4>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('marketplace') }}"
-                            class="text-sm hover:text-tumbloo-white transition">Marketplace</a></li>
-                    <li><a href="{{ route('how-it-works') }}" class="text-sm hover:text-tumbloo-white transition">Cara
-                            Kerja</a></li>
+                    <li><a href="{{ route('marketplace') }}" class="text-sm hover:text-tumbloo-white transition">Marketplace</a></li>
                     <li><a href="{{ route('pricing') }}" class="text-sm hover:text-tumbloo-white transition">Harga</a>
                     </li>
-                    <li><a href="{{ route('sell') }}" class="text-sm hover:text-tumbloo-white transition">Jual Blog</a>
+                    <li><a href="{{ route('sell') }}" class="text-sm hover:text-tumbloo-white transition">Jual Brand</a>
                     </li>
                     <li><a href="{{ route('faq') }}" class="text-sm hover:text-tumbloo-white transition">FAQ</a></li>
                 </ul>

@@ -27,10 +27,6 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
-    // ============================================
-    // RELATIONSHIPS
-    // ============================================
-
     public function store()
     {
         return $this->belongsTo(Store::class);
@@ -69,31 +65,20 @@ class Product extends Model
         return $this->hasOne(ProductImage::class)->where('is_thumbnail', 1);
     }
 
-    // ============================================
-    // ACCESSORS & HELPERS
-    // ============================================
-
     /**
      * Get the product image URL (thumbnail or first image)
-     * PENTING: Sesuaikan dengan lokasi penyimpanan gambar Anda
+     * Sesuaikan dengan lokasi penyimpanan gambar
      */
     public function getImageUrlAttribute()
     {
-        // Jika pakai Storage::disk('public')
-        // $thumbnail = $this->thumbnail;
-        // if ($thumbnail) {
-        //     return asset('storage/' . $thumbnail->image);
-        // }
-
-        // Jika pakai public/images/products (seperti kode sebelumnya)
         $thumbnail = $this->thumbnail;
         if ($thumbnail) {
-            return asset($thumbnail->image); // Karena sudah include 'images/products/'
+            return asset($thumbnail->image); 
         }
 
         $firstImage = $this->images()->first();
         if ($firstImage) {
-            return asset($firstImage->image); // Sudah include path lengkap
+            return asset($firstImage->image);
         }
 
         return asset('images/placeholder.png');
@@ -156,10 +141,6 @@ class Product extends Model
     {
         return $this->reviews()->count();
     }
-
-    // ============================================
-    // SCOPES
-    // ============================================
 
     /**
      * Scope untuk produk yang in stock

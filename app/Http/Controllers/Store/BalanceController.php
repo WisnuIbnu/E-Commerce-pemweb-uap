@@ -12,7 +12,6 @@ class BalanceController extends Controller
         $store = auth()->user()->store;
         $balance = $store->balance;
 
-        // Get balance history
         $history = Transaction::where('store_id', $store->id)
             ->where('payment_status', 'delivered')
             ->latest()

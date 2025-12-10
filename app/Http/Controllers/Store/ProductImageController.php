@@ -37,7 +37,7 @@ class ProductImageController extends Controller
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image' => $path,
-                    'is_thumbnail' => $product->images()->count() == 0, // First image is thumbnail
+                    'is_thumbnail' => $product->images()->count() == 0,
                 ]);
                 
                 $uploaded++;
@@ -57,11 +57,9 @@ class ProductImageController extends Controller
             abort(403);
         }
 
-        // Remove thumbnail from other images
         ProductImage::where('product_id', $image->product_id)
             ->update(['is_thumbnail' => false]);
 
-        // Set this image as thumbnail
         $image->update(['is_thumbnail' => true]);
 
         return back()->with('success', 'Thumbnail updated successfully');

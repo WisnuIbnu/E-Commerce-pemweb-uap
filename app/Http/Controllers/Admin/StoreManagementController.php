@@ -13,7 +13,6 @@ class StoreManagementController extends Controller
     {
         $query = Store::with('user');
 
-        // Filter verified/unverified
         if ($request->has('verified')) {
             if ($request->verified === 'verified') {
                 $query->where('is_verified', true);
@@ -22,7 +21,6 @@ class StoreManagementController extends Controller
             }
         }
 
-        // Search
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where('name', 'like', "%{$search}%");
@@ -76,7 +74,6 @@ class StoreManagementController extends Controller
     {
         $store = Store::findOrFail($id);
 
-        // Check if store has pending orders
         $hasPendingOrders = $store->transactions()
             ->whereIn('payment_status', ['pending', 'processing', 'shipped'])
             ->exists();
@@ -85,7 +82,6 @@ class StoreManagementController extends Controller
             return back()->with('error', 'Cannot delete store with pending orders');
         }
 
-        // Delete all products and their images
         foreach ($store->products as $product) {
             foreach ($product->images as $image) {
                 Storage::disk('public')->delete($image->image);
@@ -94,14 +90,12 @@ class StoreManagementController extends Controller
             $product->delete();
         }
 
-        // Delete store logo
         if ($store->logo) {
             Storage::disk('public')->delete($store->logo);
         }
 
         $store->delete();
 
-        // Update user role back to customer
         $store->user->update(['role' => 'customer']);
 
         return redirect()->route('admin.stores.index')

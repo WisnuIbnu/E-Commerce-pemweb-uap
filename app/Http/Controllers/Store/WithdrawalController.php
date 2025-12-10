@@ -14,20 +14,17 @@ class WithdrawalController extends Controller
     {
         $store = auth()->user()->store;
         
-        // Ambil atau buat balance (gunakan store_id di StoreBalance)
         $storeBalance = StoreBalance::firstOrCreate(
-            ['store_id' => $store->id],  // ✅ Ini untuk cari/buat record di store_balances
+            ['store_id' => $store->id], 
             ['balance' => 0]
         );
         
         $balance = $storeBalance->balance;
         
-        // Query withdrawal berdasarkan store_balance_id
-        $withdrawals = Withdrawal::where('store_balance_id', $storeBalance->id)  // ✅ Gunakan ID dari store_balance
+        $withdrawals = Withdrawal::where('store_balance_id', $storeBalance->id)  
             ->latest()
             ->paginate(10);
 
-        // History transaksi
         $history = Transaction::whereHas('transactionDetails.product', function($query) use ($store) {
                 $query->where('store_id', $store->id);
             })
@@ -50,7 +47,6 @@ class WithdrawalController extends Controller
 
         $store = auth()->user()->store;
         
-        // Ambil/buat store balance
         $storeBalance = StoreBalance::firstOrCreate(
             ['store_id' => $store->id],
             ['balance' => 0]
@@ -63,7 +59,7 @@ class WithdrawalController extends Controller
         }
 
         $withdrawal = Withdrawal::create([
-            'store_balance_id' => $storeBalance->id,  // ✅ Gunakan ID dari store_balance, bukan store
+            'store_balance_id' => $storeBalance->id,  
             'amount' => $request->amount,
             'bank_account_name' => $request->bank_account_name,
             'bank_account_number' => $request->bank_account_number,
@@ -71,7 +67,6 @@ class WithdrawalController extends Controller
             'status' => 'pending',
         ]);
 
-        // Deduct balance dengan history
         $storeBalance->deductBalance(
             $request->amount,
             'App\Models\Withdrawal',

@@ -29,14 +29,12 @@ class SettingsController extends Controller
 
         $user = Auth::user();
 
-        // Check if current password is correct
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'Password saat ini tidak sesuai.'
             ]);
         }
 
-        // Update password
         $user->update([
             'password' => Hash::make($request->password)
         ]);
@@ -56,17 +54,14 @@ class SettingsController extends Controller
 
         $user = Auth::user();
 
-        // Verify password
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'password' => 'Password tidak sesuai.'
             ]);
         }
 
-        // Logout user
         Auth::logout();
-        
-        // Delete user account
+
         $user->delete();
 
         $request->session()->invalidate();

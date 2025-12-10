@@ -17,7 +17,6 @@ class StoreRegistrationController extends Controller
      */
     public function create()
     {
-        // Check apakah user sudah punya toko
         if (Store::hasStore(Auth::id())) {
             return redirect()->route('store.dashboard')
                 ->with('info', 'Anda sudah memiliki toko.');
@@ -50,13 +49,11 @@ class StoreRegistrationController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi apakah user sudah punya toko
         if (Store::hasStore(Auth::id())) {
             return redirect()->route('store.dashboard')
                 ->with('error', 'Anda sudah memiliki toko.');
         }
 
-        // Validasi input
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stores,name',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -79,7 +76,6 @@ class StoreRegistrationController extends Controller
         DB::beginTransaction();
         
         try {
-            // Handle logo upload
             $logoPath = null;
             if ($request->hasFile('logo')) {
                 $logo = $request->file('logo');
@@ -87,8 +83,6 @@ class StoreRegistrationController extends Controller
                 $logo->move(public_path('images/stores'), $logoName);
                 $logoPath = 'images/stores/' . $logoName;
             }
-
-            // Create store
             $store = Store::create([
                 'user_id' => Auth::id(),
                 'name' => $validated['name'],
@@ -98,10 +92,9 @@ class StoreRegistrationController extends Controller
                 'city' => $validated['city'],
                 'address' => $validated['address'],
                 'postal_code' => $validated['postal_code'],
-                'is_verified' => false, // Default belum terverifikasi
+                'is_verified' => false,
             ]);
 
-            // Create store balance dengan saldo awal 0
             StoreBalance::create([
                 'store_id' => $store->id,
                 'balance' => 0,
@@ -115,7 +108,6 @@ class StoreRegistrationController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             
-            // Hapus logo jika upload berhasil tapi ada error di proses lain
             if ($logoPath && file_exists(public_path($logoPath))) {
                 unlink(public_path($logoPath));
             }
@@ -138,15 +130,13 @@ class StoreRegistrationController extends Controller
                 ->with('info', 'Anda belum memiliki toko. Daftar sekarang!');
         }
 
-        // Load relasi yang dibutuhkan
         $store->load(['products', 'balance']);
 
-        // Statistik toko
         $stats = [
             'total_products' => $store->products()->count(),
             'active_products' => $store->products()->where('stock', '>', 0)->count(),
             'total_revenue' => $store->balance->balance ?? 0,
-            'pending_orders' => 0, // Bisa ditambahkan logika order nanti
+            'pending_orders' => 0, 
         ];
 
         return view('store.dashboard', compact('store', 'stats'));

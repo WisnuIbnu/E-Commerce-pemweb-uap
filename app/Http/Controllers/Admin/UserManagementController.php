@@ -13,12 +13,10 @@ class UserManagementController extends Controller
     {
         $query = User::query();
 
-        // Filter by role
         if ($request->has('role') && $request->role != '') {
             $query->where('role', $request->role);
         }
 
-        // Search
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -75,12 +73,10 @@ class UserManagementController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // Prevent deleting admin accounts
         if ($user->isAdmin()) {
             return back()->with('error', 'Cannot delete admin account');
         }
 
-        // Check if user has pending transactions
         $hasPendingTransactions = $user->transactions()
             ->whereIn('payment_status', ['pending', 'processing', 'shipped'])
             ->exists();

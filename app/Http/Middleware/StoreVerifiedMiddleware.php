@@ -18,7 +18,6 @@ class StoreVerifiedMiddleware
     {
         $store = Store::where('user_id', auth()->id())->first();
 
-        // Jika belum punya toko
         if (!$store) {
             return redirect()->route('store.register')
                 ->with('info', 'Silakan daftarkan toko Anda terlebih dahulu.');
