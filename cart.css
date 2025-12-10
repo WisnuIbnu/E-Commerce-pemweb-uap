@@ -1,0 +1,57 @@
+/* FILE: cart.css */
+
+/* Gaya Khusus Cart */
+.cart-list { 
+    max-width: 800px; 
+    margin: 40px auto; 
+    padding: 30px; 
+    background: #eeebeb;
+    border: 1px solid #f5f3f3; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.cart-item { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    border-bottom: 1px solid #333; 
+    padding: 15px 0; 
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.item-info { 
+    flex-grow: 1; 
+}
+
+.item-info h4 {
+    color: #00bcd4;
+    margin: 0 0 5px 0;
+    font-size: 1.2em;
+}
+
+.item-info p {
+    color: #bbb;
+}
+
+.checkout-btn { 
+    background-color: #00bcd4; /* Cyan */
+    color: #1e1e1e; 
+    padding: 12px 25px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    margin-top: 25px;
+    width: 100%;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.checkout-btn:hover {
+    background-color: #008fa3;
+    transform: translateY(-2px);
+}

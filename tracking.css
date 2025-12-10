@@ -1,0 +1,50 @@
+/* FILE: tracking.css */
+
+/* Gaya Khusus Tracking */
+.order-list { 
+    max-width: 900px; 
+    margin: 40px auto; 
+    padding: 20px; 
+}
+
+.order-card { 
+    background: #ffffff;
+    border: 1px solid #000000; 
+    padding: 20px; 
+    margin-bottom: 20px; 
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.order-card h4 {
+    color: #000000;
+    margin-top: 0;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.order-card p {
+    margin: 8px 0;
+}
+
+.status-msg { 
+    font-weight: bold; 
+    /* Menggunakan warna berbeda berdasarkan status */
+    /* Anda bisa menggunakan PHP untuk menambahkan class spesifik */
+    color: #00bcd4; /* Default: Cyan (Diproses/Dalam Pengiriman) */
+}
+
+/* Contoh penambahan jika Anda ingin warna berbeda (perlu PHP): */
+/* .status-diproses { color: #f39c12; } */ /* Kuning/Orange */
+/* .status-dikirim { color: #00bcd4; } */ /* Cyan */
+/* .status-selesai { color: #28a745; } */ /* Hijau */
+
+.empty-msg {
+    text-align: center;
+    color: #bbb;
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px dashed #333;
+    border-radius: 5px;
+}

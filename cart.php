@@ -1,14 +1,18 @@
-// FILE: cart.php
 <?php
+// FILE: cart.php
 session_start();
 // CEK LOGIN
 if (!isset($_SESSION["user"])) {
-    header("Location: login.php");
+    header("Location: Login.php"); 
     exit;
 }
 $current_user = $_SESSION["user"]; 
-// Data Keranjang (Simulasi Session Cart)
+// Data Keranjang (Ambil dari Session Cart)
 $cart_items = $_SESSION['cart'] ?? []; 
+$cart_count = count($cart_items);
+
+// BARU: Inisialisasi dan Hitung Total Harga
+$total_price = 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -18,14 +22,8 @@ $cart_items = $_SESSION['cart'] ?? [];
     <title>Keranjang - GM'Mart</title>
     
     <link rel="stylesheet" href="dashboard.css">
-    <style> /* CSS Sederhana untuk Cart */
-        .cart-list { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .cart-item { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
-        .cart-item img { width: 60px; height: 60px; object-fit: cover; margin-right: 15px; }
-        .item-info { flex-grow: 1; }
-        .checkout-btn { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; float: right; }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cart.css"> <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <script>
         function toggleMenu() {
             document.querySelector(".nav-menu").classList.toggle("active");
@@ -33,15 +31,14 @@ $cart_items = $_SESSION['cart'] ?? [];
     </script>
 </head>
 <body>
+
 <header class="navbar">
     <div class="logo-title">
         <img src="Logo.jpg" class="logo">
         <h1 class="brand"><span class="cyan">GM'</span>Mart</h1>
     </div>
     <div class="menu-toggle" onclick="toggleMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
+        <div></div> <div></div> <div></div>
     </div>
     <nav class="nav-menu">
         <a href="dashboard.php">Dashboard</a>
@@ -49,7 +46,8 @@ $cart_items = $_SESSION['cart'] ?? [];
         <a href="market.php">Market</a>
         <a href="tracking.php">Tracking</a>
         <a href="History.php">History</a>
-        <a href="cart.php" class="active-link">Cart (<?= count($cart_items) ?>)</a> </nav>
+        <a href="cart.php" class="active-link">Cart (<?= $cart_count ?>)</a> 
+    </nav>
     <form action="Logout.php" method="POST">
         <button class="logout">Log out</button>
     </form>
@@ -59,15 +57,29 @@ $cart_items = $_SESSION['cart'] ?? [];
     <h2 class="page-title">Keranjang Pemesanan</h2>
     <div class="cart-list">
         <?php if (!empty($cart_items)): ?>
-            <?php foreach ($cart_items as $item): ?>
+            <?php foreach ($cart_items as $item): 
+                $clean_price = str_replace('.', '', $item['price']);
+                $subtotal = (int)$clean_price * (int)$item['quantity'];
+                // BARU: Akumulasi total
+                $total_price += $subtotal;
+            ?>
                 <div class="cart-item">
                     <div class="item-info">
                         <h4><?= htmlspecialchars($item['name']); ?></h4>
-                        <p>Jumlah: <?= htmlspecialchars($item['quantity']); ?> x Rp <?= htmlspecialchars($item['price']); ?></p>
+                        <p>Jumlah: <?= htmlspecialchars($item['quantity']); ?> | Harga Satuan: Rp <?= htmlspecialchars($item['price']); ?></p>
+                        <p>Subtotal: Rp <?= number_format($subtotal, 0, ',', '.'); ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
-            <button class="checkout-btn">Lanjut ke Pembayaran</button>
+            
+            <div class="cart-summary" style="margin-top: 20px; text-align: right; font-size: 1.3em; color: #00FFE1;">
+                <strong>TOTAL HARGA BARANG: Rp <?= number_format($total_price, 0, ',', '.'); ?></strong>
+            </div>
+
+            <form action="checkout.php" method="POST">
+                <button type="submit" class="checkout-btn">Lanjut ke Pembayaran</button>
+            </form>
+
         <?php else: ?>
             <p style="text-align: center;">Keranjang Anda kosong. Yuk, belanja!</p>
         <?php endif; ?>
@@ -75,7 +87,8 @@ $cart_items = $_SESSION['cart'] ?? [];
 </main>
 
 <footer class="footer">
-    © 2025 <span>GM'Mart</span>. All rights reserved.
+    © 2025 GM'Mart. All rights reserved.
 </footer>
+
 </body>
 </html>
