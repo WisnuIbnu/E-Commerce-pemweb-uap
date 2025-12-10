@@ -107,8 +107,34 @@ class SellerController extends Controller
 
     public function balance()
     {
-        $balance = auth()->user()->store->transactions()->where('payment_status', 'paid')->sum('grand_total') * 0.95;
-        return view('seller.balance', compact('balance'));
+        $store = auth()->user()->store;
+        
+        if (!$store) {
+            return redirect()->route('seller.setup');
+        }
+
+        // Calculate available balance logic (same as withdrawal)
+        $totalEarnings = $store->transactions()
+            ->where('payment_status', 'paid')
+            ->sum('grand_total') * 0.95; 
+        
+        $storeBalance = \App\Models\StoreBalance::firstOrCreate(
+            ['store_id' => $store->id],
+            ['balance' => 0]
+        );
+        
+        $totalWithdrawn = $storeBalance->withdrawals()
+            ->where('status', 'approved')
+            ->sum('amount');
+        
+        $balance = $totalEarnings - $totalWithdrawn;
+
+        // Get withdrawal history
+        $withdrawals = $storeBalance->withdrawals()
+            ->latest()
+            ->get();
+
+        return view('seller.balance', compact('balance', 'withdrawals'));
     }
 
     public function categories()

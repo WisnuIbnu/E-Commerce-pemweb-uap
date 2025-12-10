@@ -5,48 +5,54 @@
 @push('styles')
 <style>
     body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: var(--dark);
     }
     
     .container {
-        padding: 3rem 2rem;
-        max-width: 1000px;
+        padding: 2rem;
+        max-width: 900px;
         margin: 0 auto;
     }
     
     .card {
-        background: white;
-        border-radius: 20px;
+        background: var(--darkl);
+        border-radius: 16px;
         padding: 2.5rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255,255,255,0.05);
         margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     
     .card h1 {
-        color: #003459;
-        font-size: 2rem;
-        margin-bottom: 2rem;
+        color: white;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .balance-display {
-        background: linear-gradient(135deg, #00C49A 0%, #00a882 100%);
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.2) 0%, rgba(255, 69, 0, 0.1) 100%);
         color: white;
         padding: 2rem;
-        border-radius: 15px;
+        border-radius: 12px;
         text-align: center;
         margin-bottom: 2rem;
+        border: 1px solid rgba(255, 69, 0, 0.3);
     }
     
     .balance-display p {
-        font-size: 1rem;
+        font-size: 0.9rem;
         margin-bottom: 0.5rem;
-        opacity: 0.9;
+        color: var(--text-muted);
     }
     
     .balance-display h2 {
         font-size: 2.5rem;
         font-weight: 800;
         margin: 0;
+        color: var(--primary);
     }
     
     .alert {
@@ -56,13 +62,15 @@
     }
     
     .alert-success {
-        background: #d4edda;
-        color: #155724;
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.3);
     }
     
     .alert-error {
-        background: #f8d7da;
-        color: #721c24;
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
     }
     
     .form-group {
@@ -73,21 +81,33 @@
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 600;
-        color: #003459;
+        color: white;
     }
     
     input, select {
         width: 100%;
         padding: 0.8rem;
-        border: 2px solid #E1E5EA;
+        border: 1px solid rgba(255,255,255,0.1);
         border-radius: 8px;
         font-family: 'Sora', sans-serif;
         font-size: 1rem;
+        background: rgba(0,0,0,0.3);
+        color: white;
     }
     
     input:focus, select:focus {
         outline: none;
-        border-color: #00C49A;
+        border-color: var(--primary);
+        background: rgba(0,0,0,0.4);
+    }
+    
+    input::placeholder {
+        color: var(--text-muted);
+    }
+    
+    select option {
+        background: #1e293b;
+        color: white;
     }
     
     .btn {
@@ -103,13 +123,24 @@
     }
     
     .btn-primary {
-        background: linear-gradient(135deg, #00C49A 0%, #00a882 100%);
+        background: var(--primary);
         color: white;
     }
     
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0, 196, 154, 0.4);
+        box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
+    }
+    
+    .btn-secondary {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.1);
+        text-decoration: none;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(255,255,255,0.15);
     }
     
     table {
@@ -121,17 +152,17 @@
     th, td {
         padding: 1rem;
         text-align: left;
-        border-bottom: 1px solid #E1E5EA;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     
     th {
-        background: #00C49A;
-        color: white;
+        background: rgba(255, 69, 0, 0.1);
+        color: var(--primary);
         font-weight: 700;
     }
     
     tr:hover {
-        background: #f5f7fa;
+        background: rgba(255,255,255,0.02);
     }
     
     .badge {
@@ -143,28 +174,36 @@
     }
     
     .badge-pending {
-        background: #ffc107;
-        color: #000;
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
     }
     
     .badge-approved {
-        background: #00C49A;
-        color: white;
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
     }
     
     .badge-rejected {
-        background: #dc3545;
-        color: white;
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
     }
     
     small {
         display: block;
         margin-top: 0.3rem;
+        color: var(--text-muted);
     }
 </style>
 @endpush
 
 @section('content')
+<div class="header-actions" style="margin-bottom: 1.5rem;">
+    <a href="{{ route('seller.balance') }}" class="btn btn-secondary" style="width: fit-content; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; font-size: 0.9rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Kembali ke Balance
+    </a>
+</div>
+
 <div class="container">
     <div class="card">
         <h1>💸 Tarik Saldo Toko</h1>
@@ -197,7 +236,7 @@
                 <label for="amount">Jumlah Penarikan (Rp)</label>
                 <input type="number" name="amount" id="amount" required min="50000" 
                        placeholder="Masukkan jumlah penarikan" value="{{ old('amount') }}">
-                <small style="color:#666;">Minimal penarikan: Rp 50.000</small>
+                <small>Minimal penarikan: Rp 50.000</small>
             </div>
 
             <div class="form-group">
@@ -246,11 +285,11 @@
                 @forelse($withdrawals as $w)
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($w['created_at'])->format('d M Y H:i') }}</td>
-                        <td style="font-weight: 700; color: #00C49A;">Rp {{ number_format($w['amount'], 0, ',', '.') }}</td>
+                        <td style="font-weight: 700; color: var(--primary);">Rp {{ number_format($w['amount'], 0, ',', '.') }}</td>
                         <td>{{ $w['bank_name'] }}</td>
                         <td>
-                            <div style="font-weight: 600;">{{ $w['bank_account_name'] }}</div>
-                            <small style="color: #666;">{{ $w['bank_account_number'] }}</small>
+                            <div style="font-weight: 600; color: white;">{{ $w['bank_account_name'] }}</div>
+                            <small>{{ $w['bank_account_number'] }}</small>
                         </td>
                         <td>
                             @if($w['status'] === 'pending')
@@ -264,7 +303,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="text-align:center; padding:2rem; color:#666;">
+                        <td colspan="5" style="text-align:center; padding:2rem; color:var(--text-muted);">
                             Belum ada riwayat penarikan.
                         </td>
                     </tr>
