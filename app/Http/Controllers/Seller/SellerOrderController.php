@@ -12,32 +12,25 @@ class SellerOrderController extends Controller
     public function index()
     {
         $store = Store::where('user_id', auth()->id())
-                      ->where('is_verified', 1)
-                      ->first();
+            ->where('is_verified', 1)
+            ->firstOrFail();
 
         $orders = Transaction::where('store_id', $store->id)
             ->with(['buyer'])
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('seller.orders.index', compact('orders', 'store'));
     }
 
     public function show($id)
     {
-        // FIX: tidak pakai helper
         $store = Store::where('user_id', auth()->id())
-                      ->where('is_verified', 1)
-                      ->first();
+            ->where('is_verified', 1)
+            ->firstOrFail();
 
-        // FIX: relasi yg benar = transactionDetails
         $order = Transaction::where('store_id', $store->id)
-            ->whereHas('transactionDetails', function ($q) use ($store) {
-                $q->whereHas('product', function ($q2) use ($store) {
-                    $q2->where('store_id', $store->id);
-                });
-            })
-            ->with(['buyer', 'transactionDetails.product'])
+            ->with(['buyer', 'details.product'])
             ->findOrFail($id);
 
         return view('seller.orders.show', compact('order', 'store'));
