@@ -15,11 +15,13 @@ class Store extends Model
         'logo',
         'about',
         'phone',
-        'address',
+        'address_id',
         'city',
         'address',
         'postal_code',
         'is_verified',
+        'status',
+        'reason',
     ];
 
     // relationships one store has one owner (user)

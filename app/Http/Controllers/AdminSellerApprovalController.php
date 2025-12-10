@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminSellerApprovalController extends Controller
@@ -13,10 +12,7 @@ class AdminSellerApprovalController extends Controller
     {
         $stores = Store::with('user')->get();
 
-        // jika sudah ada view pakai ini:
-        // return view('admin.stores.index', compact('stores'));
-        // jika belum ada view, ubah jadi:
-        return response()->json($stores);
+        return view('admin.stores.index', compact('stores'));
     }
 
     // SETUJUI SELLER
@@ -24,13 +20,14 @@ class AdminSellerApprovalController extends Controller
     {
         $store = Store::findOrFail($id);
 
-        // Validasi agar tidak approve ulang
-        if ($store->is_verified) {
-            return back()->with('error', 'Store sudah diverifikasi.');
+        if ($store->status === 'approved') {
+            return back()->with('error', 'Store sudah disetujui sebelumnya.');
         }
 
         $store->update([
-            'is_verified' => true
+            'is_verified' => true,
+            'status'      => 'approved',
+            'reason'      => null,
         ]);
 
         return back()->with('success', 'Seller berhasil disetujui.');
@@ -46,9 +43,11 @@ class AdminSellerApprovalController extends Controller
         $store = Store::findOrFail($id);
 
         $store->update([
-            'is_verified' => false
+            'is_verified' => false,
+            'status'      => 'rejected',
+            'reason'      => $request->reason
         ]);
 
-        return back()->with('success', 'Seller ditolak.');
+        return back()->with('success', 'Seller berhasil ditolak.');
     }
 }

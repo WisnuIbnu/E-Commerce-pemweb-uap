@@ -150,14 +150,24 @@ Route::middleware(['auth', 'role:admin'])
         })->name('dashboard');
 
         // Store Verification
-        Route::get('/stores', [AdminSellerApprovalController::class, 'listStores'])->name('stores.index');
-        Route::post('/stores/{storeId}/approve', [AdminSellerApprovalController::class, 'approve'])->name('stores.approve');
-        Route::post('/stores/{storeId}/reject', [AdminSellerApprovalController::class, 'reject'])->name('stores.reject');
+        Route::get('/stores', [AdminSellerApprovalController::class, 'listStores'])
+            ->name('stores.index');
+
+        Route::post('/stores/{id}/approve', [AdminSellerApprovalController::class, 'approve'])
+            ->name('stores.approve');
+
+        Route::post('/stores/{id}/reject', [AdminSellerApprovalController::class, 'reject'])
+            ->name('stores.reject');
 
         // User Management
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-        Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
-        Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/users', [AdminUserController::class, 'index'])
+            ->name('users.index');
+
+        Route::get('/users/{id}', [AdminUserController::class, 'show'])
+            ->name('users.show');
+
+        Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])
+            ->name('users.destroy');
     });
 
 // Breeze Auth
