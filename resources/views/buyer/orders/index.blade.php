@@ -84,14 +84,14 @@
                         
                         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                             @if($order->payment_status == 'unpaid')
-                                <form action="{{ route('buyer.orders.payment', $order->id) }}" method="POST" style="flex: 1;">
+                                <form action="{{ route('buyer.orders.payment', $order->id) }}" method="POST" style="flex: 1; min-width: 120px;">
                                     @csrf
                                     <button type="submit" 
                                             style="width: 100%; background: var(--accent); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
                                         Bayar Sekarang
                                     </button>
                                 </form>
-                                <form action="{{ route('buyer.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Batalkan pesanan ini?')" style="flex: 1;">
+                                <form action="{{ route('buyer.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Batalkan pesanan ini?')" style="flex: 1; min-width: 120px;">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" 
@@ -100,7 +100,7 @@
                                     </button>
                                 </form>
                             @elseif($order->payment_status == 'shipped')
-                                <form action="{{ route('buyer.orders.confirm', $order->id) }}" method="POST" style="flex: 1;">
+                                <form action="{{ route('buyer.orders.confirm', $order->id) }}" method="POST" style="flex: 1; min-width: 120px;">
                                     @csrf
                                     @method('POST')
                                     <button type="submit" 
@@ -108,10 +108,15 @@
                                         Terima Pesanan
                                     </button>
                                 </form>
+                            @elseif($order->payment_status == 'completed')
+                                <a href="{{ route('buyer.review.create', $order->id) }}" 
+                                   style="flex: 1; min-width: 120px; background: var(--warning); color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    ★ Rating & Review
+                                </a>
                             @endif
                             
                             <a href="{{ route('buyer.orders.show', $order->id) }}" 
-                               style="flex: 1; background: white; color: var(--accent); border: 2px solid var(--accent-light); padding: 12px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: block; text-align: center;">
+                               style="flex: 1; min-width: 120px; background: white; color: var(--accent); border: 2px solid var(--accent-light); padding: 12px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
                                 Detail Pesanan
                             </a>
                         </div>
@@ -147,6 +152,11 @@ a[href*="products"]:hover {
     box-shadow: var(--shadow-md);
 }
 
+a[href*="review.create"]:hover {
+    background: #d97706 !important;
+    transform: translateY(-2px);
+}
+
 button[type="submit"]:hover {
     opacity: 0.9;
 }
@@ -163,6 +173,12 @@ a:hover {
     
     div[style*="flex: 1"] {
         flex: none !important;
+        min-width: 0 !important;
+    }
+
+    form[style*="flex: 1"],
+    a[style*="flex: 1"] {
+        width: 100%;
     }
 }
 </style>
