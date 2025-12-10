@@ -10,6 +10,7 @@ use App\Http\Controllers\Buyer\BuyerCheckoutController;
 use App\Http\Controllers\Buyer\BuyerOrderController;
 use App\Http\Controllers\Buyer\BuyerProfileController;
 use App\Http\Controllers\Buyer\BuyerStoreController;
+use App\Http\Controllers\Buyer\BuyerReviewController;
 
 // SELLER
 use App\Http\Controllers\Seller\SellerDashboardController;
@@ -88,6 +89,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/store/create', [BuyerStoreController::class, 'create'])->name('store.create');
         Route::post('/store', [BuyerStoreController::class, 'store'])->name('store.store');
         Route::get('/store/status', [BuyerStoreController::class, 'status'])->name('store.status');
+
+        // REVIEW ROUTES
+        Route::prefix('review')->name('review.')->group(function () {
+            Route::get('/create/{transactionId}', [BuyerReviewController::class, 'create'])->name('create');
+            Route::post('/{transactionId}', [BuyerReviewController::class, 'store'])->name('store');
+            Route::delete('/{reviewId}', [BuyerReviewController::class, 'destroy'])->name('destroy');
+            Route::get('/product/{productId}', [BuyerReviewController::class, 'productReviews'])->name('product-reviews');
+        });
     });
 
 
@@ -149,7 +158,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
     });
 });
-
 
 
 require __DIR__ . '/auth.php';
