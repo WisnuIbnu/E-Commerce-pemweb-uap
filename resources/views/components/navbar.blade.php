@@ -12,16 +12,16 @@
                 <!-- Menu Desktop -->
                 <div class="hidden md:ml-10 md:flex md:space-x-8">
                     <a href="{{ route('home') }}"
-                        class="text-tumbloo-white hover:text-tumbloo-gray-light px-3 py-2 text-sm font-medium transition">
+                        class="{{ request()->routeIs('home') ? 'text-tumbloo-white' : 'text-tumbloo-gray hover:text-tumbloo-white' }} px-3 py-2 text-sm font-medium transition">
                         Hot Product
                     </a>
                     <a href="{{ route('marketplace') }}"
-                        class="text-tumbloo-gray hover:text-tumbloo-white px-3 py-2 text-sm font-medium transition">
+                        class="{{ request()->routeIs('marketplace') ? 'text-tumbloo-white' : 'text-tumbloo-gray hover:text-tumbloo-white' }} px-3 py-2 text-sm font-medium transition">
                         Marketplace
                     </a>
                     <a href="{{ route('transaction.index') }}"
-                        class="text-tumbloo-gray hover:text-tumbloo-white px-3 py-2 text-sm font-medium transition">
-                        Riwayat Pembelian
+                        class="{{ request()->routeIs('transaction.*') ? 'text-tumbloo-white' : 'text-tumbloo-gray hover:text-tumbloo-white' }} px-3 py-2 text-sm font-medium transition">
+                        Riwayat Transaksi
                     </a>
                 </div>
             </div>
@@ -38,16 +38,33 @@
                         Daftar Sekarang
                     </a>
                 @else
-                    {{-- ========================================
-                         🔥 PERUBAHAN 1: SMART LINK "JUAL BLOG"
-                         ======================================== --}}
+                    <!-- Cart Link -->
+                    <a href="{{ route('cart.index') }}" 
+                       class="relative flex items-center space-x-1 {{ request()->routeIs('cart.*') ? 'text-tumbloo-white' : 'text-tumbloo-gray hover:text-tumbloo-white' }} px-3 py-2 text-sm font-medium transition group">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <span class="hidden lg:inline">Keranjang</span>
+                        
+                        @php
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->count();
+                        @endphp
+                        
+                        @if($cartCount > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 animate-pulse">
+                                {{ $cartCount > 99 ? '99+' : $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+
                     @php
                         $userStore = \App\Models\Store::where('user_id', auth()->id())->first();
                     @endphp
 
                     @if($userStore)
                         @if($userStore->is_verified)
-                            {{-- Toko sudah terverifikasi → Ke Dashboard Toko --}}
                             <a href="{{ route('store.dashboard') }}"
                                 class="flex items-center space-x-2 text-blue-300 hover:text-blue-600 px-4 py-2 text-sm font-medium transition">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +73,6 @@
                                 <span>Dashboard Toko</span>
                             </a>
                         @else
-                            {{-- Toko belum terverifikasi → Ke Status Pending --}}
                             <a href="{{ route('store.pending') }}"
                                 class="flex items-center space-x-2 text-yellow-400 hover:text-yellow-300 px-4 py-2 text-sm font-medium transition">
                                 <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,22 +82,19 @@
                             </a>
                         @endif
                     @else
-                        {{-- Belum punya toko → Ke Registrasi --}}
                         <a href="{{ route('store.register') }}"
                             class="flex items-center space-x-2 text-tumbloo-gray hover:text-tumbloo-white px-4 py-2 text-sm font-medium transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Jual Blog</span>
+                            <span>Jual Brand</span>
                         </a>
                     @endif
-                    {{-- ======================================== --}}
                     
                     <!-- Profile Dropdown -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false"
                             class="flex items-center space-x-2 text-tumbloo-white hover:text-tumbloo-gray-light focus:outline-none transition">
-                            <!-- Avatar dengan Inisial -->
                             <div class="h-9 w-9 rounded-full bg-tumbloo-accent flex items-center justify-center text-sm font-semibold">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
@@ -91,7 +104,6 @@
                             </svg>
                         </button>
 
-                        <!-- Dropdown Menu -->
                         <div x-show="open"
                             x-transition:enter="transition ease-out duration-200"
                             x-transition:enter-start="opacity-0 scale-95"
@@ -149,16 +161,16 @@
     <div id="mobile-menu" class="hidden md:hidden bg-tumbloo-dark border-t border-tumbloo-accent">
         <div class="px-2 pt-2 pb-3 space-y-1">
             <a href="{{ route('home') }}"
-                class="block text-tumbloo-white hover:bg-tumbloo-accent px-3 py-2 rounded-md text-base font-medium transition">
+                class="block {{ request()->routeIs('home') ? 'text-tumbloo-white bg-tumbloo-accent' : 'text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white' }} px-3 py-2 rounded-md text-base font-medium transition">
                 Hot Product
             </a>
             <a href="{{ route('marketplace') }}"
-                class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
+                class="block {{ request()->routeIs('marketplace') ? 'text-tumbloo-white bg-tumbloo-accent' : 'text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white' }} px-3 py-2 rounded-md text-base font-medium transition">
                 Marketplace
             </a>
             <a href="{{ route('transaction.index') }}"
-                class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
-                Riwayat Pembelian
+                class="block {{ request()->routeIs('transaction.*') ? 'text-tumbloo-white bg-tumbloo-accent' : 'text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white' }} px-3 py-2 rounded-md text-base font-medium transition">
+                Riwayat Transaksi
             </a>
 
             @guest
@@ -174,7 +186,27 @@
                 </div>
             @else
                 <div class="pt-2 border-t border-tumbloo-accent">
-                    <!-- Profile Section Mobile -->
+                    <!-- Cart Link Mobile -->
+                    <a href="{{ route('cart.index') }}"
+                        class="flex items-center justify-between text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            <span>Keranjang</span>
+                        </div>
+                        @php
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->count();
+                        @endphp
+                        @if($cartCount > 0)
+                            <span class="bg-red-500 text-white text-xs font-bold rounded-full min-w-[24px] h-6 flex items-center justify-center px-2">
+                                {{ $cartCount > 99 ? '99+' : $cartCount }}
+                            </span>
+                        @endif
+                    </a>
+
                     <div class="px-3 py-2 mb-2">
                         <div class="flex items-center space-x-3">
                             <div class="h-10 w-10 rounded-full bg-tumbloo-accent flex items-center justify-center text-sm font-semibold text-tumbloo-white">
@@ -187,16 +219,12 @@
                         </div>
                     </div>
 
-                    {{-- ========================================
-                         🔥 PERUBAHAN 2: SMART LINK MOBILE
-                         ======================================== --}}
                     @php
                         $userStore = \App\Models\Store::where('user_id', auth()->id())->first();
                     @endphp
 
                     @if($userStore)
                         @if($userStore->is_verified)
-                            {{-- Toko sudah terverifikasi → Dashboard Toko --}}
                             <a href="{{ route('store.dashboard') }}"
                                 class="flex items-center space-x-2 text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +233,6 @@
                                 <span>Dashboard Toko</span>
                             </a>
                         @else
-                            {{-- Toko belum terverifikasi → Status Pending --}}
                             <a href="{{ route('store.pending') }}"
                                 class="flex items-center space-x-2 text-yellow-400 hover:bg-tumbloo-accent hover:text-yellow-300 px-3 py-2 rounded-md text-base font-medium transition">
                                 <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,16 +242,14 @@
                             </a>
                         @endif
                     @else
-                        {{-- Belum punya toko → Registrasi --}}
                         <a href="{{ route('store.register') }}"
                             class="flex items-center space-x-2 text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
-                            <span>Jual Blog</span>
+                            <span>Jual Brand</span>
                         </a>
                     @endif
-                    {{-- ======================================== --}}
 
                     <a href="{{ route('profile') }}"
                         class="block text-tumbloo-gray hover:bg-tumbloo-accent hover:text-tumbloo-white px-3 py-2 rounded-md text-base font-medium transition">

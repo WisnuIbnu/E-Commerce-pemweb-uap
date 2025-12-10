@@ -26,11 +26,6 @@ use App\Http\Controllers\Admin\StoreVerificationController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\StoreManagementController;
 
-// ============================================
-// PUBLIC ROUTES (Guest & Authenticated)
-// ============================================
-
-// Landing Page untuk guest, atau redirect ke dashboard jika sudah login
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
@@ -38,7 +33,6 @@ Route::get('/', function () {
     return view('pages.index');
 })->name('home');
 
-// Static Pages
 Route::view('/marketplace', 'pages.marketplace')->name('marketplace');
 Route::view('/how-it-works', 'pages.how')->name('how-it-works');
 Route::view('/pricing', 'pages.pricing')->name('pricing');
@@ -57,40 +51,25 @@ Route::view('/cookies', 'pages.cookies')->name('cookies');
 Route::view('/sitemap', 'pages.sitemap')->name('sitemap');
 Route::view('/seller-guide', 'pages.seller-guide')->name('seller.guide');
 
-// Product & Category Routes (Public)
 Route::get('/marketplace', [HomeController::class, 'marketplace'])->name('marketplace');
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::get('/categories', [HomeController::class, 'categories'])->name('categories');
 Route::get('/category/{slug}', [HomeController::class, 'category'])->name('category.show');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 
-// ============================================
-// AUTHENTICATED ROUTES (All Users)
-// ============================================
-
 Route::middleware('auth')->group(function () {
-
-    // Dashboard (Customer, Seller, Admin)
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
-    // Profile Management
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
     Route::delete('/settings/account', [SettingsController::class, 'deleteAccount'])->name('settings.account.delete');
 
-    // Logout
     Route::post('/logout', [ProfileController::class, 'logout'])->name('logout');
-
-    // ============================================
-    // CART & CHECKOUT (Customer & Seller)
-    // Seller bisa beli produk seller lain
-    // ============================================
 
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -105,54 +84,37 @@ Route::middleware('auth')->group(function () {
         Route::post('/process', [CheckoutController::class, 'process'])->name('process');
     });
 
-    // Payment Routes
     Route::prefix('payment')->name('payment.')->group(function () {
         Route::get('/{code}', [CheckoutController::class, 'payment'])->name('show');
         Route::post('/{code}/confirm', [CheckoutController::class, 'confirmPayment'])->name('confirm');
     });
 
-    // Order Success Page (untuk semua role setelah checkout)
     Route::get('/order/success', [CheckoutController::class, 'success'])->name('order.success');
 });
 
-// ============================================
-// CUSTOMER-ONLY ROUTES
-// ============================================
-
 Route::middleware(['auth', 'customer'])->group(function () {
-
-    // Transactions (Order History for Customer)
     Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::get('/', [TransactionController::class, 'index'])->name('index');
         Route::get('/{id}', [TransactionController::class, 'show'])->name('show');
         Route::post('/{id}/cancel', [TransactionController::class, 'cancel'])->name('cancel');
+        Route::post('/{id}/confirm-payment', [TransactionController::class, 'confirmPayment'])->name('confirm-payment');
+        Route::post('/{id}/confirm-received', [TransactionController::class, 'confirmReceived'])->name('confirm-received');
     });
 
-    // Product Reviews
     Route::prefix('reviews')->name('reviews.')->group(function () {
         Route::get('/create/{transactionId}/{productId}', [ReviewController::class, 'create'])->name('create');
         Route::post('/store', [ReviewController::class, 'store'])->name('store');
     });
 });
 
-// ============================================
-// SELLER ROUTES
-// ============================================
-
 Route::middleware(['auth', 'seller'])->prefix('store')->name('store.')->group(function () {
-
-    // Store Registration
     Route::get('/register', [StoreRegistrationController::class, 'create'])->name('register');
     Route::post('/register', [StoreRegistrationController::class, 'store'])->name('register.submit');
     Route::get('/pending', [StoreRegistrationController::class, 'pending'])->name('pending');
 
-    // Verified Store Routes
     Route::middleware('store.verified')->group(function () {
-
-        // Store Dashboard
         Route::get('/dashboard', [StoreDashboard::class, 'index'])->name('dashboard');
 
-        // Orders Management
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');
             Route::get('/{id}', [OrderController::class, 'show'])->name('show');
@@ -160,23 +122,20 @@ Route::middleware(['auth', 'seller'])->prefix('store')->name('store.')->group(fu
             Route::patch('/{id}/tracking', [OrderController::class, 'updateTracking'])->name('update-tracking');
         });
 
-        // Balance & Withdrawal
         Route::get('/balance', [BalanceController::class, 'index'])->name('balance.index');
 
         Route::prefix('withdrawal')->name('withdrawal.')->group(function () {
             Route::get('/', [WithdrawalController::class, 'index'])->name('index');
-            Route::post('/request', [WithdrawalController::class, 'store'])->name('request');
-            Route::patch('/bank-account', [WithdrawalController::class, 'updateBankAccount'])->name('update-bank');
+            Route::post('/', [WithdrawalController::class, 'store'])->name('store');
+            Route::post('/bank-account', [WithdrawalController::class, 'updateBankAccount'])->name('updateBankAccount');
         });
 
-        // Store Profile
         Route::prefix('profile')->name('profile.')->group(function () {
             Route::get('/edit', [StoreProfileController::class, 'edit'])->name('edit');
             Route::put('/update', [StoreProfileController::class, 'update'])->name('update');
             Route::delete('/delete', [StoreProfileController::class, 'destroy'])->name('destroy');
         });
 
-        // Products Management
         Route::prefix('products')->name('products.')->group(function () {
             Route::get('/', [ProductManagementController::class, 'index'])->name('index');
             Route::get('/create', [ProductManagementController::class, 'create'])->name('create');
@@ -186,7 +145,6 @@ Route::middleware(['auth', 'seller'])->prefix('store')->name('store.')->group(fu
             Route::delete('/{id}', [ProductManagementController::class, 'destroy'])->name('destroy');
         });
 
-        // Categories Management
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get('/', [CategoryManagementController::class, 'index'])->name('index');
             Route::get('/create', [CategoryManagementController::class, 'create'])->name('create');
@@ -196,7 +154,6 @@ Route::middleware(['auth', 'seller'])->prefix('store')->name('store.')->group(fu
             Route::delete('/{id}', [CategoryManagementController::class, 'destroy'])->name('destroy');
         });
 
-        // Product Images Management
         Route::prefix('products/{productId}/images')->name('product-images.')->group(function () {
             Route::get('/', [ProductImageController::class, 'index'])->name('index');
             Route::post('/', [ProductImageController::class, 'store'])->name('store');
@@ -206,16 +163,13 @@ Route::middleware(['auth', 'seller'])->prefix('store')->name('store.')->group(fu
     });
 });
 
-// ============================================
-// ADMIN ROUTES
-// ============================================
-
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Admin Dashboard
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
-    // Store Verification
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::get('/', [AdminDashboard::class, 'transactions'])->name('index');
+    });
+
     Route::prefix('store-verification')->name('store-verification.')->group(function () {
         Route::get('/', [StoreVerificationController::class, 'index'])->name('index');
         Route::get('/{id}', [StoreVerificationController::class, 'show'])->name('show');
@@ -223,7 +177,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/{id}/reject', [StoreVerificationController::class, 'reject'])->name('reject');
     });
 
-    // User Management
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserManagementController::class, 'index'])->name('index');
         Route::get('/{id}', [UserManagementController::class, 'show'])->name('show');
@@ -232,7 +185,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::delete('/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
     });
 
-    // Store Management
     Route::prefix('stores')->name('stores.')->group(function () {
         Route::get('/', [StoreManagementController::class, 'index'])->name('index');
         Route::get('/{id}', [StoreManagementController::class, 'show'])->name('show');
@@ -242,5 +194,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     });
 });
 
-// Auth Routes (Login, Register, Password Reset)
 require __DIR__ . '/auth.php';
