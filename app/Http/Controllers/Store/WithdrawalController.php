@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Withdrawal;
+use App\Models\Transaction;
+use App\Models\StoreBalance;
 use Illuminate\Http\Request;
 
 class WithdrawalController extends Controller
@@ -11,13 +13,30 @@ class WithdrawalController extends Controller
     public function index()
     {
         $store = auth()->user()->store;
-        $balance = $store->balance->balance ?? 0;
         
-        $withdrawals = Withdrawal::where('store_id', $store->id)
+        // Ambil atau buat balance (gunakan store_id di StoreBalance)
+        $storeBalance = StoreBalance::firstOrCreate(
+            ['store_id' => $store->id],  // ✅ Ini untuk cari/buat record di store_balances
+            ['balance' => 0]
+        );
+        
+        $balance = $storeBalance->balance;
+        
+        // Query withdrawal berdasarkan store_balance_id
+        $withdrawals = Withdrawal::where('store_balance_id', $storeBalance->id)  // ✅ Gunakan ID dari store_balance
             ->latest()
             ->paginate(10);
 
-        return view('store.withdrawal.index', compact('balance', 'withdrawals'));
+        // History transaksi
+        $history = Transaction::whereHas('transactionDetails.product', function($query) use ($store) {
+                $query->where('store_id', $store->id);
+            })
+            ->whereIn('payment_status', ['paid', 'delivered'])
+            ->with(['buyer', 'transactionDetails'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10, ['*'], 'history_page');
+
+        return view('store.withdrawal.index', compact('balance', 'withdrawals', 'history'));
     }
 
     public function store(Request $request)
@@ -30,14 +49,21 @@ class WithdrawalController extends Controller
         ]);
 
         $store = auth()->user()->store;
-        $balance = $store->balance->balance ?? 0;
+        
+        // Ambil/buat store balance
+        $storeBalance = StoreBalance::firstOrCreate(
+            ['store_id' => $store->id],
+            ['balance' => 0]
+        );
+        
+        $balance = $storeBalance->balance;
 
         if ($request->amount > $balance) {
             return back()->with('error', 'Insufficient balance');
         }
 
-        Withdrawal::create([
-            'store_id' => $store->id,
+        $withdrawal = Withdrawal::create([
+            'store_balance_id' => $storeBalance->id,  // ✅ Gunakan ID dari store_balance, bukan store
             'amount' => $request->amount,
             'bank_account_name' => $request->bank_account_name,
             'bank_account_number' => $request->bank_account_number,
@@ -45,8 +71,13 @@ class WithdrawalController extends Controller
             'status' => 'pending',
         ]);
 
-        // Deduct balance
-        $store->balance->decrement('balance', $request->amount);
+        // Deduct balance dengan history
+        $storeBalance->deductBalance(
+            $request->amount,
+            'App\Models\Withdrawal',
+            $withdrawal->id,
+            'Withdrawal request #' . $withdrawal->id
+        );
 
         return redirect()->route('store.withdrawal.index')
             ->with('success', 'Withdrawal request submitted successfully');
@@ -60,7 +91,6 @@ class WithdrawalController extends Controller
             'bank_name' => 'required|string|max:100',
         ]);
 
-        // Store in session or database as needed
         session()->put('bank_account', [
             'name' => $request->bank_account_name,
             'number' => $request->bank_account_number,
