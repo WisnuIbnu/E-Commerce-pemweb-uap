@@ -584,10 +584,6 @@
                         <i class="fas fa-user-circle"></i>
                         <span>Edit Profile</span>
                     </a>
-                    <a href="#" class="profile-dropdown-item">
-                        <i class="fas fa-cog"></i>
-                        <span>Pengaturan</span>
-                    </a>
                     <div class="profile-dropdown-divider"></div>
                     <a href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
