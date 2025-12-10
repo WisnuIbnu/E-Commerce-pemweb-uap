@@ -149,6 +149,7 @@ class BuyerCheckoutController extends Controller
                     'code' => 'TRX-' . Str::upper(Str::random(10)),
                     'buyer_id' => $buyer->id,
                     'store_id' => $storeId,
+                    'address_id' => '', // Set kosong dulu
                     'address' => $validated['shipping_address'],
                     'city' => $validated['city'],
                     'postal_code' => $validated['postal_code'],

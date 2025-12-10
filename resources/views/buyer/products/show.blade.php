@@ -149,34 +149,75 @@
             const qty = document.getElementById('qtyInput').value;
             const productId = document.getElementById('productId').value;
             
+            // Validasi quantity
+            if (!qty || parseInt(qty) < 1) {
+                alert('⚠️ Masukkan jumlah yang valid');
+                return;
+            }
+
+            // Buat form dan submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route('buyer.cart.add') }}';
+            
+            // CSRF Token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            // Product ID
+            const productInput = document.createElement('input');
+            productInput.type = 'hidden';
+            productInput.name = 'product_id';
+            productInput.value = productId;
+            form.appendChild(productInput);
+
+            // Quantity
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'hidden';
+            qtyInput.name = 'quantity';
+            qtyInput.value = qty;
+            form.appendChild(qtyInput);
+
+            document.body.appendChild(form);
+
+            // Submit form dengan fetch untuk handle response JSON
             fetch('{{ route('buyer.cart.add') }}', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    qty: qty
-                })
+                body: new FormData(form)
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('✅ Produk berhasil ditambahkan ke keranjang!');
+                    alert('✅ ' + data.message);
+                    // Reset quantity
+                    document.getElementById('qtyInput').value = 1;
                 } else {
-                    alert('❌ Gagal menambahkan ke keranjang');
+                    alert('❌ ' + (data.message || 'Gagal menambahkan ke keranjang'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('❌ Terjadi kesalahan');
+            })
+            .finally(() => {
+                form.remove();
             });
         }
 
         function buyNow() {
             const qty = document.getElementById('qtyInput').value;
             const productId = document.getElementById('productId').value;
+
+            // Validasi quantity
+            if (!qty || parseInt(qty) < 1) {
+                alert('⚠️ Masukkan jumlah yang valid');
+                return;
+            }
+
+            // Redirect ke checkout dengan product_id dan qty
             window.location.href = `{{ route('buyer.checkout.index') }}?product_id=${productId}&qty=${qty}`;
         }
     </script>
