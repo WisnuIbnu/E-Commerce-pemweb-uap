@@ -13,10 +13,9 @@
             font-family: 'Poppins', sans-serif;
             background: #f8f8f8;
             display: flex;
-            min-height: 100vh;      /* <- wajib, biar minimal setinggi layar */
+            min-height: 100vh;     
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 260px;
             background: #FF7A00;
@@ -57,7 +56,7 @@
             border-radius: 8px;
             font-weight: 500;
             transition: 0.2s;
-            width: 100%;              /* <-- tambah ini */
+            width: 100%;
             box-sizing: border-box;
         }
 
@@ -93,11 +92,10 @@
         }
 
         .sidebar.collapsed a {
-            justify-content: center;   /* ikon ke tengah horizontal */
-            padding: 10px 0;           /* hilangkan padding kiri/kanan */
+            justify-content: center;  
+            padding: 10px 0;          
         }
 
-        /* CONTENT */
         .content {
             flex: 1;
             padding: 30px;
@@ -111,7 +109,6 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
         }
 
-        /* Toggle Button di dalam sidebar */
         .toggle-btn {
             background: transparent;
             color: white;
@@ -120,6 +117,40 @@
             cursor: pointer;
             padding: 0;
             margin-bottom: 15px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-pill.pending {
+            background: #fff7ed;   
+            color: #ea580c;        
+            border: 1px solid #fed7aa;
+        }
+
+        .status-pill.waiting_confirmation {
+            background: #eff6ff;   
+            color: #1d4ed8;      
+            border: 1px solid #bfdbfe;
+        }
+
+        .status-pill.paid {
+            background: #ecfdf3;   
+            color: #16a34a;        
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-pill.failed {
+            background: #fef2f2;   
+            color: #b91c1c;        
+            border: 1px solid #fecaca;
         }
     </style>
 </head>
