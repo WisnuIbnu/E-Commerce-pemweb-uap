@@ -16,10 +16,11 @@ use App\Http\Controllers\Buyer\BuyerReviewController;
 use App\Http\Controllers\Seller\SellerDashboardController;
 use App\Http\Controllers\Seller\SellerProductController;
 use App\Http\Controllers\Seller\SellerCategoryController;
-use App\Http\Controllers\Seller\SellerImageController;
+use App\Http\Controllers\Seller\SellerProductImageController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Seller\SellerBalanceController;
 use App\Http\Controllers\Seller\SellerWithdrawController;
+use App\Http\Controllers\Seller\SellerStoreController;
 
 // ADMIN
 use App\Http\Controllers\Admin\AdminDashboardController;
@@ -86,6 +87,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/profile/edit', [BuyerProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile/update', [BuyerProfileController::class, 'update'])->name('profile.update');
 
+        // STORE APPLICATION
         Route::get('/store/create', [BuyerStoreController::class, 'create'])->name('store.create');
         Route::post('/store', [BuyerStoreController::class, 'store'])->name('store.store');
         Route::get('/store/status', [BuyerStoreController::class, 'status'])->name('store.status');
@@ -101,23 +103,42 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     // ============================================
-    // SELLER ROUTES
+    // SELLER ROUTES (Member with Verified Store)
     // ============================================
-    Route::prefix('seller')->name('seller.')->middleware(['verified_store'])->group(function () {
+    Route::prefix('seller')->name('seller.')->middleware(['role:seller'])->group(function () {
 
         Route::get('/dashboard', [SellerDashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('products', SellerProductController::class);
-        Route::resource('categories', SellerCategoryController::class);
-        Route::resource('images', SellerImageController::class);
+        // STORE PROFILE MANAGEMENT
+        Route::get('/store/edit', [SellerStoreController::class, 'edit'])->name('store.edit');
+        Route::put('/store/update', [SellerStoreController::class, 'update'])->name('store.update');
 
+        // PRODUCTS
+        Route::resource('products', SellerProductController::class);
+        
+        // CATEGORIES
+        Route::resource('categories', SellerCategoryController::class);
+        
+        // PRODUCT IMAGES
+        Route::prefix('products/{product}/images')->name('products.images.')->group(function () {
+            Route::get('/', [SellerProductImageController::class, 'index'])->name('index');
+            Route::get('/create', [SellerProductImageController::class, 'create'])->name('create');
+            Route::post('/', [SellerProductImageController::class, 'store'])->name('store');
+            Route::delete('/{image}', [SellerProductImageController::class, 'destroy'])->name('destroy');
+        });
+
+        // ORDERS
         Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [SellerOrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.update-status');
 
+        // BALANCE
         Route::get('/balance', [SellerBalanceController::class, 'index'])->name('balance.index');
+        
+        // WITHDRAW
         Route::get('/withdraw', [SellerWithdrawController::class, 'index'])->name('withdraw.index');
         Route::post('/withdraw', [SellerWithdrawController::class, 'store'])->name('withdraw.store');
+        Route::get('/withdraw/history', [SellerWithdrawController::class, 'history'])->name('withdraw.history');
     });
 
 
@@ -128,13 +149,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-        // STORES
+        // STORES VERIFICATION
         Route::get('/stores', [AdminStoreController::class, 'index'])->name('stores.index');
         Route::get('/stores/{id}', [AdminStoreController::class, 'show'])->name('stores.show');
-        Route::post('/stores/{id}/approve', [AdminStoreController::class, 'approve'])->name('stores.approve');
         Route::post('/stores/{id}/verify', [AdminStoreController::class, 'verify'])->name('stores.verify');
         Route::post('/stores/{id}/reject', [AdminStoreController::class, 'reject'])->name('stores.reject');
-        Route::post('/stores/{id}/restore', [AdminStoreController::class, 'restore'])->name('stores.restore');
         Route::delete('/stores/{id}', [AdminStoreController::class, 'destroy'])->name('stores.destroy');
 
         // USERS
@@ -146,16 +165,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
-        // ORDERS
-        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-        Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
-        Route::post('/orders/{order}/verify-payment', [AdminOrderController::class, 'verifyPayment'])->name('orders.verify-payment');
-
-        // WITHDRAWALS
-        Route::get('/withdrawals', [AdminWithdrawalController::class, 'index'])->name('withdrawals.index');
-        Route::get('/withdrawals/{withdrawal}', [AdminWithdrawalController::class, 'show'])->name('withdrawals.show');
-        Route::post('/withdrawals/{withdrawal}/approve', [AdminWithdrawalController::class, 'approve'])->name('withdrawals.approve');
-        Route::post('/withdrawals/{withdrawal}/reject', [AdminWithdrawalController::class, 'reject'])->name('withdrawals.reject');
     });
 });
 
