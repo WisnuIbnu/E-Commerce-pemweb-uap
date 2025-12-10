@@ -16,10 +16,11 @@ class Store extends Model
         'is_verified' => 'boolean',
     ];
 
-    public function user()
+   public function buyer()
     {
-        return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'buyer_id', 'id');
     }
+
 
     public function products()
     {

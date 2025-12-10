@@ -17,8 +17,9 @@ class User extends Authenticatable
         return $this->hasOne(Buyer::class);
     }
 
-    public function store()
-    {
-        return $this->hasOne(Store::class);
-    }
+   public function store()
+{
+    return $this->hasOne(Store::class, 'buyer_id', 'id');
+}
+
 }
