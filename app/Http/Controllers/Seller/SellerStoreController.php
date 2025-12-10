@@ -9,9 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class SellerStoreController extends Controller
 {
+    private function sellerStore()
+    {
+        return Store::where('user_id', auth()->id())
+            ->where('is_verified', 1)
+            ->first();
+    }
+
     public function edit()
     {
-        $store = getSellerStore();
+        $store = $this->sellerStore();
+
+        if (!$store) {
+            return redirect()->route('buyer.store.create')
+                ->with('error', 'Toko belum tersedia atau belum diverifikasi.');
+        }
+
         return view('seller.store.edit', compact('store'));
     }
 
@@ -25,8 +38,8 @@ class SellerStoreController extends Controller
             'logo' => 'nullable|image|max:2048',
         ]);
 
-        $store = getSellerStore();
-        
+        $store = $this->sellerStore();
+
         if (!$store) {
             return redirect()->route('buyer.store.create')
                 ->with('error', 'Toko tidak ditemukan.');
@@ -34,12 +47,11 @@ class SellerStoreController extends Controller
 
         $data = $request->only(['name', 'description', 'address', 'phone']);
 
-        // Handle logo upload
         if ($request->hasFile('logo')) {
-            // Delete old logo
             if ($store->logo) {
                 Storage::disk('public')->delete($store->logo);
             }
+
             $data['logo'] = $request->file('logo')->store('stores', 'public');
         }
 
