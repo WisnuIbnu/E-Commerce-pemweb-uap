@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mx-auto mt-6">
-    <h1 class="text-3xl font-bold mb-6">Seller Dashboard</h1>
+    <h1 class="text-xl font-bold mb-6">Seller Dashboard</h1>
 
     <!-- Statistik Toko: Total Produk, Total Pesanan, Status Toko -->
     <div class="grid grid-cols-3 gap-6 mb-6">
