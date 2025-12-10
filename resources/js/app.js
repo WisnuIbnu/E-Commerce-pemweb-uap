@@ -1,4 +1,5 @@
 import '../css/app.css';
+import './landing.js';
 
 import Alpine from 'alpinejs';
 

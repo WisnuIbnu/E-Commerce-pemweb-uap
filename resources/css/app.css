@@ -2,23 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth animation for UI elements */
-* {
-  transition: all .25s ease;
+@import './pages/landing.css';
+
+/* ============================
+   SWEETMART GLOBAL DESIGN
+   Typography, spacing, cards,
+   buttons, helpers
+============================ */
+:root {
+    --primary: theme(colors.sweet.400);
+    --primary-dark: theme(colors.sweet.500);
+    --text-dark: #1B1B1B;
+    --soft-gray: #FAFAFA;
+    --pink-accent: #FDE2E4;
 }
 
-/* Sweet hover */
-.hover-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.06);
+/* GLOBAL PAGE WRAPPER */
+.page-wrapper {
+    @apply min-h-screen bg-softgray;
 }
 
-/* Gradient section */
-.sweet-gradient {
-  background: linear-gradient(180deg, #F7FBFF 0%, #FFFFFF 100%);
+/* SECTION SPACING */
+.section {
+    @apply max-w-7xl mx-auto px-6 py-16;
 }
 
-/* Floating subtle shadow */
-.sweet-shadow {
-  box-shadow: 0 10px 30px rgba(162,210,255,0.25);
+/* TEXT TITLE */
+.section-title {
+    @apply text-3xl font-bold text-textdark mb-8;
 }
+
+/* AESTHETIC CARD */
+.card {
+    @apply bg-white border rounded-xl shadow-sm p-5;
+}
+
+.card-hover {
+    @apply hover:shadow-soft-lg transition;
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+    @apply px-6 py-3 bg-sweet-400 text-white font-semibold rounded-xl shadow-soft-lg hover:bg-sweet-500 transition;
+}
+
+/* OUTLINE BUTTON */
+.btn-outline {
+    @apply px-6 py-3 border border-sweet-400 text-sweet-400 rounded-xl hover:bg-sweet-50 transition;
+}
+
+/* TEXT BUTTON */
+.btn-text {
+    @apply text-sweet-400 hover:text-sweet-500 transition;
+}
+
+/* RESPONSIVE GRID PRODUCT */
+.product-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-8;
+}
+
+/* CATEGORY CARD */
+.category-card {
+    @apply bg-white p-5 rounded-xl border shadow-sm hover:shadow-soft-lg transition text-center;
+}
+
+/* PRODUCT CARD */
+.product-card {
+    @apply bg-softgray p-4 rounded-xl border hover:shadow-soft-lg transition;
+}
+
+p { color: blue !important; }

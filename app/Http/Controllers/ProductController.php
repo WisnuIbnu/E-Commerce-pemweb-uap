@@ -10,108 +10,94 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-
-// CONTROLLER USER SIDE
-    /**
-     * Homepage (public), menampilkan produk terbaru & kategori
-     */
+    // --- PUBLIC METHODS ---
     public function publicHome()
-    {
-        // Ambil 12 produk terbaru dengan kategori + gambar
-        $products = Product::with(['category', 'images'])
-            ->latest()
-            ->take(8)
-            ->get();
+        {
+            // Ambil 4 kategori teratas
+            $categories = \App\Models\ProductCategory::take(6)->get();
+            
+            // Ambil 8 produk terbaru dengan gambarnya
+            $products = \App\Models\Product::with('images')->latest()->take(8)->get();
 
-        // Ambil semua kategori untuk ditampilkan di homepage
-        $categories = ProductCategory::all();
+            return view('landing', compact('categories', 'products'));
+        }
+    // public function publicHome()
+    // {
+    //     // Task 1: 8 Produk terbaru dengan Eager Loading (N+1 Solution)
+    //     $products = Product::with(['category', 'images'])
+    //         ->latest()
+    //         ->take(8)
+    //         ->get();
+        
+    //     $categories = ProductCategory::all();
 
-        // Kirim ke view
-        return view('landing', compact('products', 'categories'));
-    }
+    //     return view('landing', compact('products', 'categories'));
+    // }
 
-    /**
-     * List semua produk (public)
-     */
     public function index()
     {
-        // dengan category & images agar lebih efisien (avoid n+1)
+        // Task 1: List Produk dengan Pagination
         $products = Product::with(['category', 'images'])
+            ->latest()
             ->paginate(12);
-
-        $categories = ProductCategory::all();
-
-        return view('user.products.index', compact('products', 'categories'));
+            
+        return view('user.products.index', compact('products'));
     }
 
-    /**
-     * Detail produk
-     */
     public function show($id)
     {
-        $product = Product::with(['images', 'category', 'store'])->findOrFail($id);
+        // Task 2: Detail Produk
+        $product = Product::with(['images', 'category', 'store'])
+            ->findOrFail($id);
 
         return view('user.products.show', compact('product'));
     }
 
-    // // GET /products
-    // public function index()
-    // {
-    //     return response()->json(
-    //         Product::with(['store','productCategory'])->get(),
-    //         200
-    //     );
-    // }
+    // --- SELLER METHODS (Task 7) ---
 
-    // // GET /products/{id}
-    // public function show($id)
-    // {
-    //     $product = Product::with([
-    //         'store','productCategory','productImages','productReviews'
-    //     ])->findOrFail($id);
+    public function sellerIndex()
+    {
+        $storeId = Auth::user()->store->id;
+        $products = Product::where('store_id', $storeId)
+            ->with(['category', 'images'])
+            ->latest()
+            ->paginate(10);
 
-    //     return response()->json($product, 200);
-    // }
+        return view('seller.products.index', compact('products'));
+    }
 
+    public function create()
+    {
+        $categories = ProductCategory::all();
+        return view('seller.products.create', compact('categories'));
+    }
 
-    // ADMIN & SELLER ONLY
     public function store(Request $request)
     {
         $user = Auth::user();
-
-        // Jika bukan admin atau seller → blokir
-        if (!in_array($user->role, ['admin', 'seller'])) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        // Jika seller → gunakan store_id miliknya
-        if ($user->role === 'seller') {
-            $request->merge([
-                'store_id' => $user->store->id
-            ]);
-        }
+        
+        // Ensure Seller logic
+        $storeId = $user->store->id;
 
         $request->validate([
-            'store_id' => 'required|exists:stores,id',
             'product_category_id' => 'required|exists:product_categories,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'condition' => 'required|in:new,second',
-            'price' => 'required|numeric',
-            'weight' => 'required|integer',
-            'stock' => 'required|integer'
+            'price' => 'required|numeric|min:0',
+            'weight' => 'required|integer|min:0',
+            'stock' => 'required|integer|min:0',
         ]);
 
-        // generate slug unik
+        // Generate Unique Slug
         $slug = Str::slug($request->name);
-        $counter = 1;
-        $originalSlug = $slug;
-        while (Product::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter++;
+        $count = Product::where('slug', $slug)->count();
+        if($count > 0) {
+            $slug = $slug . '-' . time();
         }
 
-        $product = Product::create([
-            'store_id' => $request->store_id,
+        Product::create([
+            'store_id' => $storeId,
             'product_category_id' => $request->product_category_id,
             'name' => $request->name,
             'slug' => $slug,
@@ -119,86 +105,54 @@ class ProductController extends Controller
             'condition' => $request->condition,
             'price' => $request->price,
             'weight' => $request->weight,
-            'stock' => $request->stock
+            'stock' => $request->stock,
         ]);
 
-        return response()->json([
-            'message' => 'Product created successfully',
-            'data' => $product
-        ], 201);
+        return redirect()->route('seller.products.index')->with('success', 'Produk berhasil dibuat.');
     }
 
+    public function edit($id)
+    {
+        $product = Product::where('store_id', Auth::user()->store->id)->findOrFail($id);
+        $categories = ProductCategory::all();
+        return view('seller.products.edit', compact('product', 'categories'));
+    }
 
-    // ADMIN & SELLER ONLY
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        $product = Product::findOrFail($id);
-
-        // Seller hanya boleh ubah produk milik tokonya
-        if ($user->role === 'seller' && $product->store_id !== $user->store->id) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
-        // Member tidak boleh update
-        if ($user->role === 'member') {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        // Otorisasi Ketat: Hanya produk milik toko user yang bisa diedit
+        $product = Product::where('store_id', Auth::user()->store->id)->findOrFail($id);
 
         $request->validate([
-            'product_category_id' => 'sometimes|exists:product_categories,id',
-            'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'condition' => 'sometimes|in:new,second',
-            'price' => 'sometimes|numeric',
-            'weight' => 'sometimes|integer',
-            'stock' => 'sometimes|integer'
+            'product_category_id' => 'required|exists:product_categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'condition' => 'required|in:new,second',
+            'price' => 'required|numeric',
+            'weight' => 'required|integer',
+            'stock' => 'required|integer',
         ]);
 
-        // Jika nama berubah, update slug
-        if ($request->has('name')) {
+        $data = $request->except(['slug', 'store_id']); // Protect critical fields
+
+        // Update Slug jika nama berubah
+        if ($request->name !== $product->name) {
             $slug = Str::slug($request->name);
-            $counter = 1;
-            $originalSlug = $slug;
-
-            while (Product::where('slug', $slug)->where('id', '!=', $id)->exists()) {
-                $slug = $originalSlug . '-' . $counter++;
-            }
-
-            $product->slug = $slug;
+            $count = Product::where('slug', $slug)->where('id', '!=', $id)->count();
+            if($count > 0) $slug .= '-' . time();
+            $data['slug'] = $slug;
         }
 
-        $product->update($request->except('name'));
-        if ($request->has('name')) {
-            $product->name = $request->name;
-            $product->save();
-        }
+        $product->update($data);
 
-        return response()->json([
-            'message' => 'Product updated successfully',
-            'data' => $product
-        ]);
+        return redirect()->route('seller.products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-
-    // ADMIN & SELLER ONLY
     public function destroy($id)
     {
-        $user = Auth::user();
-        $product = Product::findOrFail($id);
-
-        // Seller hanya boleh delete produk miliknya
-        if ($user->role === 'seller' && $product->store_id !== $user->store->id) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
-        // Member tidak boleh delete
-        if ($user->role === 'member') {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+        $product = Product::where('store_id', Auth::user()->store->id)->findOrFail($id);
+        // Hapus gambar jika perlu (logic di ProductImageController lebih spesifik)
         $product->delete();
-
-        return response()->json(['message' => 'Product deleted successfully']);
+        return back()->with('success', 'Produk dihapus.');
     }
 }

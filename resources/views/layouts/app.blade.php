@@ -14,9 +14,12 @@
 </head>
 
 <body class="font-sans antialiased">
+    <p style="color:red;">TEST CSS</p>
+
     <div class="min-h-screen bg-gray-100">
 
         @include('layouts.navigation')
+        @include('layouts.footer')
 
         <main class="py-6">
 

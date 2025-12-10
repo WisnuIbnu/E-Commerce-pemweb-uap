@@ -1,56 +1,93 @@
-<nav x-data="{ open: false }" class="bg-white border-b">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex justify-between h-16 items-center">
-      <div class="flex items-center gap-6">
-        <a href="{{ route('home') }}" class="flex items-center gap-3">
-          <x-application-logo class="h-8 w-8" />
-          <span class="font-semibold text-textdark">SweetMart</span>
-        </a>
-        <div class="hidden md:flex items-center gap-4">
-          <a href="{{ route('products.index') }}" class="text-gray-600 hover:text-textdark">Shop</a>
-          <a href="{{ route('categories.index') }}" class="text-gray-600 hover:text-textdark">Categories</a>
-        </div>
-      </div>
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
 
-      <div class="flex items-center gap-4">
-        <!-- Cart link (simple) -->
-        <a href="{{ route('cart.index') }}" class="text-gray-600 hover:text-textdark">
-          🛒 Cart
-        </a>
+            {{-- LEFT : LOGO --}}
+            <div class="flex items-center gap-2">
+                <img src="{{ asset('logo.png') }}" alt="SweetMart Logo" class="h-8 w-8 object-contain">
 
-        @guest
-          <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-textdark">Login</a>
-          <a href="{{ route('register') }}" class="ml-2 bg-sweet-400 text-white px-3 py-1 rounded text-sm">Register</a>
-        @endguest
-
-        @auth
-          <div class="relative" x-data="{ openMenu:false }">
-            <button @click="openMenu = !openMenu" class="flex items-center gap-2 text-gray-700">
-              <span>{{ Auth::user()->name }}</span>
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M5.23 7.21a1 1 0 011.4-.02L10 10.58l3.37-3.39a1 1 0 111.42 1.41l-4.07 4.1a1 1 0 01-1.42 0L5.25 8.6a1 1 0 01-.02-1.39z"/>
-              </svg>
-            </button>
-
-            <div x-show="openMenu" @click.outside="openMenu=false" class="absolute right-0 mt-2 w-44 bg-white border rounded shadow-sm">
-              <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm hover:bg-gray-50">Profile</a>
-
-              @if(Auth::user()->role === 'seller')
-                <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 text-sm hover:bg-gray-50">Seller Dashboard</a>
-              @endif
-
-              @if(Auth::user()->role === 'admin')
-                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm hover:bg-gray-50">Admin</a>
-              @endif
-
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50">Logout</button>
-              </form>
+                <a href="{{ route('landing') }}" 
+                   class="text-xl font-bold text-sweet-400 tracking-wide">
+                    SweetMart
+                </a>
             </div>
-          </div>
-        @endauth
-      </div>
+
+            {{-- CENTER : MENU --}}
+            <div class="hidden md:flex gap-6 text-[15px] font-medium text-textdark">
+                <a href="{{ route('landing') }}" class="hover:text-sweet-400 transition">Home</a>
+                <a href="{{ route('categories.index') }}" class="hover:text-sweet-400 transition">Categories</a>
+                <a href="{{ route('products.index') }}" class="hover:text-sweet-400 transition">Products</a>
+
+                @auth
+                <a href="{{ route('cart.index') }}" class="hover:text-sweet-400 transition">Cart</a>
+                @endauth
+            </div>
+
+            {{-- RIGHT: AUTH BUTTONS --}}
+            <div class="hidden md:flex items-center gap-4">
+
+                {{-- CART --}}
+                @auth
+                    <a href="{{ route('cart.index') }}"
+                       class="relative inline-flex items-center justify-center">
+                        <svg class="w-6 h-6 text-textdark hover:text-sweet-400 transition"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l1.293 5.293
+                                  a1 1 0 01-.948 1.207H5a1 1 0 01-1-1m4 0h6m0 0l1.293-5.293M17 18a2 2 0 11-4 0m6 0a2 2 0 11-4 0">
+                            </path>
+                        </svg>
+                    </a>
+                @endauth
+
+                {{-- USER --}}
+                @auth
+                    <a href="{{ route('profile.edit') }}"
+                       class="px-4 py-2 bg-sweet-400 text-white rounded-lg hover:bg-sweet-500 transition">
+                        {{ auth()->user()->name }}
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 bg-sweet-400 text-white rounded-lg hover:bg-sweet-500 transition">
+                       Login
+                    </a>
+
+                    <a href="{{ route('register') }}"
+                       class="px-4 py-2 border border-sweet-400 text-sweet-400 rounded-lg hover:bg-sweet-50 transition">
+                       Register
+                    </a>
+                @endauth
+            </div>
+
+            {{-- MOBILE MENU BUTTON --}}
+            <div class="md:hidden flex items-center">
+                <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-7 h-7 text-textdark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-width="2"
+                              d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
     </div>
-  </div>
+
+    {{-- MOBILE MENU --}}
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4">
+        <div class="flex flex-col gap-3 text-textdark">
+
+            <a href="{{ route('landing') }}" class="py-2 border-b">Home</a>
+            <a href="{{ route('categories.index') }}" class="py-2 border-b">Categories</a>
+            <a href="{{ route('products.index') }}" class="py-2 border-b">Products</a>
+
+            @auth
+                <a href="{{ route('cart.index') }}" class="py-2 border-b">Cart</a>
+                <a href="{{ route('profile.edit') }}" class="py-2 border-b">My Account</a>
+            @else
+                <a href="{{ route('login') }}" class="py-2 border-b">Login</a>
+                <a href="{{ route('register') }}" class="py-2 border-b">Register</a>
+            @endauth
+
+        </div>
+    </div>
 </nav>

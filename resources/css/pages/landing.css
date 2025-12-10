@@ -1,0 +1,142 @@
+/* ===============================================
+   LANDING PAGE — SWEETMART
+================================================ */
+
+/* ------------------ HERO ------------------ */
+.hero-section {
+    background: white;
+}
+
+.hero-container {
+    @apply max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16 items-center;
+}
+
+.hero-title {
+    @apply text-5xl font-extrabold leading-tight text-textdark;
+}
+
+.hero-subtitle {
+    @apply text-gray-600 text-lg mt-4 max-w-md;
+}
+
+.hero-cta-group {
+    @apply flex gap-4 mt-8;
+}
+
+/* Benefit Items */
+.hero-benefits {
+    @apply grid grid-cols-3 gap-4 mt-10;
+}
+
+.benefit-item {
+    @apply bg-softgray p-5 rounded-xl border shadow-sm text-center;
+}
+
+.benefit-item h4 {
+    @apply font-semibold text-textdark mb-1;
+}
+
+.benefit-item p {
+    @apply text-gray-500 text-sm;
+}
+
+/* ------------------ MOCKUP ------------------ */
+.mockup-wrapper {
+    @apply flex justify-center;
+}
+
+.mockup-box {
+    @apply w-full max-w-sm bg-white border rounded-3xl shadow-xl overflow-hidden;
+}
+
+.mockup-header {
+    @apply flex justify-between items-center px-5 py-4 bg-softgray border-b;
+}
+
+.mockup-brand {
+    @apply flex items-center gap-2;
+}
+
+.mockup-logo {
+    @apply w-7 h-7 bg-sweet-400 rounded;
+}
+
+.mockup-version {
+    @apply text-xs text-gray-500;
+}
+
+.mockup-body {
+    @apply p-5 space-y-5;
+}
+
+.mockup-image img {
+    @apply w-full h-48 object-cover rounded-xl bg-softgray;
+}
+
+.mockup-text h3 {
+    @apply font-semibold text-textdark text-lg;
+}
+.mockup-text p {
+    @apply text-gray-600;
+}
+
+.mockup-actions {
+    @apply flex gap-3 items-center;
+}
+
+.mockup-icon-btn {
+    @apply h-12 w-12 bg-white border rounded-xl flex justify-center items-center;
+}
+
+.mockup-footer {
+    @apply text-center text-gray-500 text-xs py-3 border-t;
+}
+
+/* ------------------ CATEGORY GRID ------------------ */
+.category-grid {
+    @apply grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-6;
+}
+
+.category-card {
+    @apply bg-white p-6 rounded-xl border shadow-sm hover:shadow-soft-lg transition text-center;
+}
+
+.category-icon {
+    @apply h-14 w-14 mx-auto mb-2 object-contain rounded-lg;
+}
+
+.category-name {
+    @apply font-medium text-textdark text-sm;
+}
+
+/* ------------------ FEATURED PRODUCTS ------------------ */
+.section-header {
+    @apply flex justify-between items-center mb-8;
+}
+
+.see-all {
+    @apply text-sweet-400 hover:text-sweet-500 text-sm;
+}
+
+.featured-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-8;
+}
+
+.product-card {
+    @apply bg-softgray p-4 rounded-xl border hover:shadow-soft-lg transition;
+}
+
+.product-thumbnail {
+    @apply w-full h-40 object-cover rounded-lg mb-3;
+}
+
+.no-image {
+    @apply w-full h-40 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500;
+}
+
+.product-name {
+    @apply font-semibold text-textdark;
+}
+.product-price {
+    @apply text-gray-600 text-sm mt-1;
+}

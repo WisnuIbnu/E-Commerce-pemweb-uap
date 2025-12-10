@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
-use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class HomeController extends Controller 
 {
-    public function index()
+    public function landing()
     {
-        // Ambil semua kategori
-        $categories = ProductCategory::whereNull('parent_id')->get();
-
-        // Ambil 8 produk terbaru (sesuai kebutuhan home)
+        $categories = ProductCategory::take(6)->get();
         $products = Product::latest()->take(8)->get();
+        return view('landing', compact('categories','products'));
+    }
 
-        return view('home', compact('categories', 'products'));
+    public function home()
+    {
+        $products = Product::latest()->paginate(12);
+        return view('user.home.index', compact('products'));
     }
 }
