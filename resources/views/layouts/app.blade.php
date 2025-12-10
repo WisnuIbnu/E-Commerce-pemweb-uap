@@ -11,7 +11,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
-    @include('components.header-buyer')
+    @if(auth()->check() && auth()->user()->isAdmin())
+        @include('components.header-admin')
+    @else
+        @include('components.header-buyer')
+    @endif
     
     <main>
         @yield('content')

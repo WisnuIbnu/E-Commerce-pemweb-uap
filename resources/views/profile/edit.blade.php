@@ -90,7 +90,7 @@
 @endsection
 
 @section('content')
-    <div class="py-12">
+    <div class="py-12" style="padding-top: 6rem;">
         <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
             
             <!-- Profile Header -->
