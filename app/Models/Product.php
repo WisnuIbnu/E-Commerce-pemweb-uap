@@ -9,17 +9,18 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'store_id',
-        'product_category_id',
-        'name',
-        'slug',
-        'about',
-        'condition',
-        'price',
-        'weight',
-        'stock',
-    ];
+   protected $fillable = [
+    'store_id',
+    'category_id',
+    'name',
+    'slug',
+    'description',
+    'price',
+    'stock',
+    'sku',
+    'season',
+];
+
 
     // Relationships
     public function store()
@@ -29,7 +30,7 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    return $this->belongsTo(ProductCategory::class, 'category_id');
     }
 
     public function images()
