@@ -4,65 +4,77 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductImage;
+use App\Models\Store;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SellerProductImageController extends Controller
 {
-    public function index($productId)
+    public function index($product)
     {
-        $store = getSellerStore();
-        $product = Product::where('store_id', $store->id)->findOrFail($productId);
-        $images = $product->images;
-        
-        return view('seller.images.index', compact('product', 'images', 'store'));
+        $store = Store::where('user_id', auth()->id())
+            ->where('is_verified', 1)
+            ->firstOrFail();
+
+        $product = Product::where('store_id', $store->id)
+            ->findOrFail($product);
+
+        $images = $product->images()->paginate(12);
+
+        return view('seller.product-images.index', compact('product', 'images', 'store'));
     }
 
-    public function create($productId)
+    public function create($product)
     {
-        $store = getSellerStore();
-        $product = Product::where('store_id', $store->id)->findOrFail($productId);
-        
-        return view('seller.images.create', compact('product', 'store'));
+        $store = Store::where('user_id', auth()->id())
+            ->where('is_verified', 1)
+            ->firstOrFail();
+
+        $product = Product::where('store_id', $store->id)
+            ->findOrFail($product);
+
+        return view('seller.product-images.create', compact('product', 'store'));
     }
 
-    public function store(Request $request, $productId)
+    public function store(Request $request, $product)
     {
-        $request->validate([
-            'images.*' => 'required|image|max:2048',
+        $store = Store::where('user_id', auth()->id())
+            ->where('is_verified', 1)
+            ->firstOrFail();
+
+        $product = Product::where('store_id', $store->id)
+            ->findOrFail($product);
+
+        $validated = $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $store = getSellerStore();
-        $product = Product::where('store_id', $store->id)->findOrFail($productId);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => $path,
-                ]);
-            }
+        foreach ($validated['images'] as $image) {
+            $path = $image->store('products', 'public');
+            $product->images()->create(['image_path' => $path]);
         }
 
-        return redirect()->route('seller.products.images.index', $productId)
-            ->with('success', 'Gambar berhasil diupload.');
+        return redirect()->route('seller.products.images.index', $product->id)
+            ->with('success', 'Gambar berhasil ditambahkan');
     }
 
-    public function destroy($productId, $imageId)
+    public function destroy($product, $image)
     {
-        $store = getSellerStore();
-        $product = Product::where('store_id', $store->id)->findOrFail($productId);
-        $image = ProductImage::where('product_id', $product->id)->findOrFail($imageId);
+        $store = Store::where('user_id', auth()->id())
+            ->where('is_verified', 1)
+            ->firstOrFail();
 
-        // Delete from storage
-        Storage::disk('public')->delete($image->image_path);
-        
+        $product = Product::where('store_id', $store->id)
+            ->findOrFail($product);
+
+        $image = $product->images()->findOrFail($image);
+
+        if (\Storage::disk('public')->exists($image->image_path)) {
+            \Storage::disk('public')->delete($image->image_path);
+        }
+
         $image->delete();
 
-        return redirect()->route('seller.products.images.index', $productId)
-            ->with('success', 'Gambar berhasil dihapus.');
+        return redirect()->back()->with('success', 'Gambar berhasil dihapus');
     }
 }
