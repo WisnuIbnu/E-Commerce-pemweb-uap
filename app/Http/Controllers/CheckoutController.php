@@ -97,8 +97,8 @@ class CheckoutController extends Controller
             
             DB::commit();
             
-            return redirect()->route('transactions.show', $transaction->id)
-                ->with('success', 'Order placed successfully!');
+            return redirect('/transactions/' . $transaction->id)
+                ->with('success', 'Order placed successfully! Your order is being processed.');
                 
         } catch (\Exception $e) {
             DB::rollBack();

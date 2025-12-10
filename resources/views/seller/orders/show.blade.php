@@ -66,3 +66,15 @@
                 <p class="mb-0"><strong>Phone:</strong> {{ $order->buyer->phone_number ?? '-' }}</p>
             </div>
         </div>
+        
+        <div class="card">
+            <div class="card-header"><h5>Shipping Address</h5></div>
+            <div class="card-body">
+                <p>{{ $order->address }}</p>
+                <p>{{ $order->city }}, {{ $order->postal_code }}</p>
+                <p class="mb-0"><strong>Method:</strong> {{ ucfirst($order->shipping_type) }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

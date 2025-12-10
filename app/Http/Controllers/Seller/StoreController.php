@@ -23,6 +23,11 @@ class StoreController extends Controller
     
     public function register(Request $request)
     {
+        if (Auth::user()->store) {
+            return redirect('/seller/dashboard')
+                ->with('info', 'You already have a store');
+        }
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:stores,name',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -49,7 +54,7 @@ class StoreController extends Controller
         ]);
         
         return redirect('/seller/dashboard')
-            ->with('success', 'Store registered! Waiting for admin verification.');
+            ->with('success', 'Store registered successfully! Waiting for admin verification.');
     }
     
     public function edit()

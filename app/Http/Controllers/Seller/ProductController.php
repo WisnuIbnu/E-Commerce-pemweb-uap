@@ -125,6 +125,23 @@ class ProductController extends Controller
         return back()->with('success', 'Product deleted successfully!');
     }
     
+    // Delete single image
+    public function deleteImage($id)
+    {
+        $image = ProductImage::findOrFail($id);
+        
+        // Check ownership through product
+        $product = $image->product;
+        if ($product->store_id !== Auth::user()->store->id) {
+            abort(403);
+        }
+        
+        Storage::disk('public')->delete($image->image);
+        $image->delete();
+        
+        return response()->json(['success' => true]);
+    }
+    
     // Category Management
     public function categories()
     {

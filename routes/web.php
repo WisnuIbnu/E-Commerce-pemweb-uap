@@ -45,18 +45,18 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 // Buyer Routes
 Route::middleware(['auth'])->group(function () {
     // Profile
-    Route::get('/profile', [ProfileController::class, 'index']);
-    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     
     // Checkout (Buyer only)
     Route::middleware('role:buyer')->group(function () {
-        Route::get('/checkout', [CheckoutController::class, 'index']);
-        Route::post('/checkout/process', [CheckoutController::class, 'process']);
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+        Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
         
         // Transactions
-        Route::get('/transactions', [TransactionController::class, 'index']);
+        Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
         Route::get('/transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
-        Route::post('/transactions/{id}/review', [TransactionController::class, 'review']);
+        Route::post('/transactions/{id}/review', [TransactionController::class, 'review'])->name('transactions.review');
     });
 });
 
@@ -78,6 +78,7 @@ Route::middleware(['auth', 'role:seller'])->prefix('seller')->group(function () 
     Route::get('/products/{id}/edit', [SellerProductController::class, 'edit']);
     Route::put('/products/{id}', [SellerProductController::class, 'update']);
     Route::delete('/products/{id}', [SellerProductController::class, 'destroy']);
+    Route::delete('/products/images/{id}', [SellerProductController::class, 'deleteImage']);
     
     // Category Management
     Route::get('/categories', [SellerProductController::class, 'categories']);

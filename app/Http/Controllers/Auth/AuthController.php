@@ -36,13 +36,22 @@ class AuthController extends Controller
             
             // Redirect based on role
             if ($user->role === 'admin') {
-                return redirect()->intended('/admin/dashboard')
+                return redirect('/admin/dashboard')
                     ->with('success', 'Welcome back, Admin!');
             } elseif ($user->role === 'seller') {
-                return redirect()->intended('/seller/dashboard')
+                // Check if seller has store
+                if (!$user->store) {
+                    return redirect('/seller/store/register')
+                        ->with('info', 'Please complete your store registration.');
+                }
+                return redirect('/seller/dashboard')
                     ->with('success', 'Welcome back to your store!');
             } else {
-                return redirect()->intended('/')
+                // Buyer - create buyer profile if not exists
+                if (!$user->buyer) {
+                    \App\Models\Buyer::create(['user_id' => $user->id]);
+                }
+                return redirect('/')
                     ->with('success', 'Welcome back!');
             }
         }
@@ -78,15 +87,9 @@ class AuthController extends Controller
             'role' => $validated['role'],
         ]);
         
-        Auth::login($user);
-        
-        if ($user->role === 'seller') {
-            return redirect('/seller/store/register')
-                ->with('success', 'Account created! Please complete your store registration.');
-        }
-        
-        return redirect('/')
-            ->with('success', 'Account created successfully! Welcome to SORAE.');
+        // Don't auto login, redirect to login page
+        return redirect('/login')
+            ->with('success', 'Account created successfully! Please login to continue.');
     }
     
     // Handle logout
