@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Store;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -10,54 +11,35 @@ class SellerOrderController extends Controller
 {
     public function index()
     {
-        $store = getSellerStore();
-        
-        $orders = Transaction::whereHas('details', function($q) use ($store) {
-            $q->whereHas('product', function($q2) use ($store) {
-                $q2->where('store_id', $store->id);
-            });
-        })->with(['user', 'details.product'])
-        ->latest()
-        ->paginate(20);
-        
+        $store = Store::where('user_id', auth()->id())
+                      ->where('is_verified', 1)
+                      ->first();
+
+        $orders = Transaction::where('store_id', $store->id)
+            ->with(['buyer'])
+            ->latest()
+            ->get();
+
         return view('seller.orders.index', compact('orders', 'store'));
     }
 
     public function show($id)
     {
-        $store = getSellerStore();
-        
-        $order = Transaction::whereHas('details', function($q) use ($store) {
-            $q->whereHas('product', function($q2) use ($store) {
-                $q2->where('store_id', $store->id);
-            });
-        })->with(['user', 'details.product'])
-        ->findOrFail($id);
-        
+        // FIX: tidak pakai helper
+        $store = Store::where('user_id', auth()->id())
+                      ->where('is_verified', 1)
+                      ->first();
+
+        // FIX: relasi yg benar = transactionDetails
+        $order = Transaction::where('store_id', $store->id)
+            ->whereHas('transactionDetails', function ($q) use ($store) {
+                $q->whereHas('product', function ($q2) use ($store) {
+                    $q2->where('store_id', $store->id);
+                });
+            })
+            ->with(['buyer', 'transactionDetails.product'])
+            ->findOrFail($id);
+
         return view('seller.orders.show', compact('order', 'store'));
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:processing,shipped,delivered',
-            'tracking_number' => 'nullable|string',
-        ]);
-
-        $store = getSellerStore();
-        
-        $order = Transaction::whereHas('details', function($q) use ($store) {
-            $q->whereHas('product', function($q2) use ($store) {
-                $q2->where('store_id', $store->id);
-            });
-        })->findOrFail($id);
-
-        $order->update([
-            'status' => $request->status,
-            'tracking_number' => $request->tracking_number,
-        ]);
-
-        return redirect()->route('seller.orders.show', $id)
-            ->with('success', 'Status pesanan berhasil diperbarui.');
     }
 }
