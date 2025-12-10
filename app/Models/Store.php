@@ -9,6 +9,8 @@ class Store extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'stores';
+
     protected $fillable = [
         'user_id',
         'name',
@@ -23,43 +25,62 @@ class Store extends Model
     ];
 
     protected $casts = [
-        'is_verified' => 'boolean'
+        'is_verified' => 'boolean',
+        'created_at'  => 'datetime',
+        'updated_at'  => 'datetime',
+        'deleted_at'  => 'datetime',
     ];
 
-    // Relasi ke User
+    /* ============================================
+       RELASI
+    ============================================ */
+
+    // User pemilik toko
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke Product
+    // Produk toko
     public function products()
     {
         return $this->hasMany(Product::class);
     }
 
-    // Relasi ke Store Balance
+    // Saldo toko
     public function storeBalance()
     {
         return $this->hasOne(StoreBalance::class);
     }
 
-    // Relasi ke Transaction
+    // Transaksi toko
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
-    
+
+    // Withdrawals (has many through store_balance)
+    public function withdrawals()
+    {
+        return $this->hasManyThrough(
+            \App\Models\Withdrawal::class,
+            \App\Models\StoreBalance::class,
+            'store_id',
+            'store_balance_id',
+            'id',
+            'id'
+        );
+    }
+
+    /* ============================================
+       ACCESSOR STATUS (auto)
+    ============================================ */
     public function getStatusAttribute()
     {
-        if ($this->deleted_at) {
+        if ($this->deleted_at !== null) {
             return 'rejected';
         }
 
-        if ($this->is_verified) {
-            return 'approved';
-        }
-
-        return 'pending';
+        return $this->is_verified ? 'approved' : 'pending';
     }
 }
