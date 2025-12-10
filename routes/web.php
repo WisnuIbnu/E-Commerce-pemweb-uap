@@ -117,6 +117,9 @@ Route::middleware(['auth', 'role:seller'])
             ->except(['show']);
     });
 
+Route::get('/public-path', function () {
+    return public_path();
+});
 
 
 require __DIR__ . '/auth.php';

@@ -13,9 +13,10 @@ use Illuminate\Support\Str;
 class CheckoutController extends Controller
 {
     // HALAMAN CHECKOUT
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $user    = Auth::user();
+        $storeId = $request->query('store_id'); // dari tombol "Checkout toko ini"
 
         $cartItems = CartItem::with('product.store')
             ->where('user_id', $user->id)
@@ -24,16 +25,48 @@ class CheckoutController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()
                 ->route('cart.index')
-                ->with('success', 'Keranjang masih kosong.');
+                ->with('error', 'Keranjang masih kosong.');
         }
 
-        $buyer = $user->buyer; // bisa null kalau belum punya row di buyers
+        // cek berapa toko di keranjang
+        $storesInCart = $cartItems->pluck('product.store')->filter()->unique('id');
 
-        $total = $cartItems->sum(function ($item) {
+        // kalau keranjang punya >1 toko dan user tidak kirim store_id → suruh pilih dulu
+        if (!$storeId) {
+            if ($storesInCart->count() > 1) {
+                return redirect()
+                    ->route('cart.index')
+                    ->with('error', 'Keranjang berisi produk dari beberapa toko. Silakan pilih dulu toko mana yang ingin di-checkout.');
+            }
+
+            // kalau cuma 1 toko, pilih otomatis
+            $storeId = optional($storesInCart->first())->id;
+        }
+
+        // filter item yang benar-benar dari toko yang dipilih
+        $checkoutItems = $cartItems->filter(function ($item) use ($storeId) {
+            return $item->product && $item->product->store_id == $storeId;
+        });
+
+        if ($checkoutItems->isEmpty()) {
+            return redirect()
+                ->route('cart.index')
+                ->with('error', 'Tidak ada produk dari toko yang dipilih di keranjang kamu.');
+        }
+
+        $buyer = $user->buyer;
+
+        $total = $checkoutItems->sum(function ($item) {
             return $item->product->price * $item->qty;
         });
 
-        return view('checkout.index', compact('cartItems', 'buyer', 'total'));
+        return view('checkout.index', [
+            'cartItems'     => $checkoutItems,
+            'buyer'         => $buyer,
+            'total'         => $total,
+            'storeId'       => $storeId,
+            'storesInCart'  => $storesInCart,
+        ]);
     }
 
     // PROSES CHECKOUT
@@ -45,10 +78,12 @@ class CheckoutController extends Controller
             'postal_code'    => 'required|string',
             'shipping'       => 'required|string',
             'shipping_type'  => 'required|string',
-            'payment_method' => 'required|string',
+            'payment_method' => 'nullable|string',
+            'store_id'       => 'required|integer',
         ]);
 
-        $user = Auth::user();
+        $user    = Auth::user();
+        $storeId = (int) $request->input('store_id');
 
         // Ambil buyer, kalau belum ada → buat otomatis
         $buyer = $user->buyer;
@@ -60,89 +95,82 @@ class CheckoutController extends Controller
             ]);
         }
 
-        $cartItems = CartItem::with('product.store')
+        $allCartItems = CartItem::with('product.store')
             ->where('user_id', $user->id)
             ->get();
 
-        if ($cartItems->isEmpty()) {
+        if ($allCartItems->isEmpty()) {
             return redirect()
                 ->route('cart.index')
-                ->with('success', 'Keranjang masih kosong.');
+                ->with('error', 'Keranjang masih kosong.');
         }
 
-        // Hitung ongkir berdasarkan jenis pengiriman (kisaran)
-        $shippingType = $request->shipping_type;
-        $shippingCost = match ($shippingType) {
-            'REG'      => 20000,
-            'EXPRESS'  => 35000,
-            'SDS'      => 50000,
-            default    => 20000,
-        };
-
-        // Group cart berdasarkan toko
-        $groupedByStore = $cartItems->groupBy(function ($item) {
-            return $item->product->store_id;
+        // item yang ikut checkout (hanya dari store_id yang dipilih)
+        $checkoutItems = $allCartItems->filter(function ($item) use ($storeId) {
+            return $item->product && $item->product->store_id == $storeId;
         });
 
-        $createdTransactions = [];
+        if ($checkoutItems->isEmpty()) {
+            return redirect()
+                ->route('cart.index')
+                ->with('error', 'Tidak ada produk dari toko yang dipilih di keranjang kamu.');
+        }
 
-        foreach ($groupedByStore as $storeId => $items) {
-            $subtotal = $items->sum(function ($item) {
-                return $item->product->price * $item->qty;
-            });
+        // hitung subtotal
+        $subtotal = $checkoutItems->sum(function ($item) {
+            return $item->product->price * $item->qty;
+        });
 
-            $tax        = 0;
-            $grandTotal = $subtotal + $shippingCost + $tax;
+        // ongkir dummy berdasarkan jenis pengiriman
+        $shippingCost = match ($request->shipping_type) {
+            'REG'   => 20000,
+            'EXP'   => 35000,
+            'SDS'   => 50000,
+            default => 20000,
+        };
 
-            $transaction = Transaction::create([
-                'code'            => 'TRX-' . Str::upper(Str::random(8)),
-                'buyer_id'        => $buyer->id,  // ID dari tabel buyers
-                'store_id'        => $storeId,
-                'address'         => $request->address,
-                'address_id'      => null,
-                'city'            => $request->city,
-                'postal_code'     => $request->postal_code,
-                'shipping'        => $request->shipping,
-                'shipping_type'   => $shippingType,
-                'shipping_cost'   => $shippingCost,
-                'tracking_number' => null,
-                'tax'             => $tax,
-                'grand_total'     => $grandTotal,
-                'payment_status'  => 'pending',
-                'payment_method'  => $request->payment_method,
+        $tax        = 0;
+        $grandTotal = $subtotal + $shippingCost + $tax;
+
+        // buat transaksi
+        $transaction = Transaction::create([
+            'code'            => 'TRX-' . Str::upper(Str::random(8)),
+            'buyer_id'        => $buyer->id,
+            'store_id'        => $storeId,
+            'address'         => $request->address,
+            'address_id'      => null,
+            'city'            => $request->city,
+            'postal_code'     => $request->postal_code,
+            'shipping'        => $request->shipping,
+            'shipping_type'   => $request->shipping_type,
+            'shipping_cost'   => $shippingCost,
+            'tracking_number' => null,
+            'tax'             => $tax,
+            'grand_total'     => $grandTotal,
+            'payment_status'  => Transaction::STATUS_PENDING,
+            'payment_method'  => $request->payment_method ?? null,
+        ]);
+
+        // simpan detail transaksi + kurangi stok + hapus item yang ikut checkout
+        foreach ($checkoutItems as $cartItem) {
+            $price = $cartItem->product->price;
+
+            TransactionDetail::create([
+                'transaction_id' => $transaction->id,
+                'product_id'     => $cartItem->product_id,
+                'qty'            => $cartItem->qty,
+                'price'          => $price,
+                'subtotal'       => $price * $cartItem->qty,
             ]);
 
-            foreach ($items as $cartItem) {
-                $price = $cartItem->product->price;  // ambil harga produk
-
-                TransactionDetail::create([
-                    'transaction_id' => $transaction->id,
-                    'product_id'     => $cartItem->product_id,
-                    'qty'            => $cartItem->qty,
-                    'price'          => $price,                               // simpan harga satuan
-                    'subtotal'       => $price * $cartItem->qty,
-                ]);
-
-                // kurangi stok
-                $cartItem->product->decrement('stock', $cartItem->qty);
-            }
-
-            $createdTransactions[] = $transaction;
+            $cartItem->product->decrement('stock', $cartItem->qty);
+            $cartItem->delete(); // hanya item dari toko ini yang dihapus
         }
 
-        // hapus cart setelah checkout
-        CartItem::where('user_id', $user->id)->delete();
-
-        if (!empty($createdTransactions)) {
-            $firstTransaction = $createdTransactions[0];
-
-            return redirect()
-                ->route('transactions.show', $firstTransaction->id)
-                ->with('success', 'Pesanan berhasil dibuat, silakan lakukan pembayaran.');
-        }
+        // item dari toko lain tetap ada di cart
 
         return redirect()
-            ->route('transactions.index')
-            ->with('success', 'Pesanan berhasil dibuat, silakan cek riwayat transaksi.');
+            ->route('transactions.show', $transaction->id)
+            ->with('success', 'Pesanan berhasil dibuat, silakan lakukan pembayaran. Produk dari toko lain tetap ada di keranjang kamu.');
     }
 }

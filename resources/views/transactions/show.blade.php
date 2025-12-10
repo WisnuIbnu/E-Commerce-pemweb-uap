@@ -131,72 +131,216 @@
 
                     <div class="space-y-2 text-sm text-gray-700">
 
+                        {{-- BCA VA --}}
                         @if ($method === 'BCA_VA')
                             <p>Metode pembayaran yang dipilih: <strong>BCA Virtual Account</strong></p>
-                            <p>Silakan transfer ke rekening berikut:</p>
-                            <ul class="list-disc ml-5 mb-2 text-gray-800">
-                                <li>
-                                    <strong>BCA Virtual Account</strong><br>
-                                    Kode VA:
-                                    <span class="font-mono text-orange-600">
-                                        8888-{{ $transaction->id }}
-                                    </span>
-                                </li>
-                            </ul>
-                            <p>Setelah melakukan transfer, klik tombol di bawah untuk konfirmasi bahwa Anda sudah membayar.</p>
 
+                            <div class="mt-3 p-4 border rounded-lg bg-gray-50 inline-block">
+                                <p class="text-sm">Silakan transfer ke nomor VA berikut:</p>
+
+                                <p class="mt-2 font-mono text-lg text-orange-600">
+                                    88012{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }}
+                                </p>
+
+                                <p class="text-xs text-gray-600 mt-1">
+                                    a.n <strong>Sembako Mart</strong>
+                                </p>
+                            </div>
+
+                        {{-- BNI VA --}}
                         @elseif ($method === 'BNI_VA')
                             <p>Metode pembayaran yang dipilih: <strong>BNI Virtual Account</strong></p>
-                            <p>Silakan transfer ke rekening berikut:</p>
-                            <ul class="list-disc ml-5 mb-2 text-gray-800">
-                                <li>
-                                    <strong>BNI Virtual Account</strong><br>
-                                    Kode VA:
-                                    <span class="font-mono text-orange-600">
-                                        8810-{{ $transaction->id }}
-                                    </span>
-                                </li>
-                            </ul>
-                            <p>Setelah melakukan transfer, klik tombol di bawah untuk konfirmasi bahwa Anda sudah membayar.</p>
 
+                            <div class="mt-3 p-4 border rounded-lg bg-gray-50 inline-block">
+                                <p class="text-sm">Nomor VA:</p>
+
+                                <p class="mt-2 font-mono text-lg text-orange-600">
+                                    82017{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }}
+                                </p>
+
+                                <p class="text-xs text-gray-600 mt-1">
+                                    a.n <strong>Sembako Mart</strong>
+                                </p>
+                            </div>
+
+                        {{-- BRI VA --}}
+                        @elseif ($method === 'BRI_VA')
+                            <p>Metode pembayaran yang dipilih: <strong>BRI Virtual Account</strong></p>
+
+                            <div class="mt-3 p-4 border rounded-lg bg-gray-50 inline-block">
+                                <p class="text-sm">Nomor VA:</p>
+
+                                <p class="mt-2 font-mono text-lg text-orange-600">
+                                    22551{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }}
+                                </p>
+
+                                <p class="text-xs text-gray-600 mt-1">
+                                    a.n <strong>Sembako Mart</strong>
+                                </p>
+                            </div>
+
+                        {{-- MANDIRI VA --}}
+                        @elseif ($method === 'MANDIRI_VA')
+                            <p>Metode pembayaran yang dipilih: <strong>Mandiri Virtual Account</strong></p>
+
+                            <div class="mt-3 p-4 border rounded-lg bg-gray-50 inline-block">
+                                <p class="text-sm">Nomor VA:</p>
+
+                                <p class="mt-2 font-mono text-lg text-orange-600">
+                                    89600{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }}
+                                </p>
+
+                                <p class="text-xs text-gray-600 mt-1">
+                                    a.n <strong>Sembako Mart</strong>
+                                </p>
+                            </div>
+
+                        {{-- QRIS --}}
                         @elseif ($method === 'QRIS')
-                            <p>Metode pembayaran yang dipilih: <strong>QRIS</strong>.</p>
-                            <p>Silakan scan kode QRIS yang disediakan untuk menyelesaikan pembayaran.</p>
-                            {{-- Nanti kalau sudah punya gambar QR, taruh di sini --}}
-                            {{-- <img src="{{ asset('images/qris-example.png') }}" class="w-40 h-40 mt-2"> --}}
-                            <p class="text-xs text-gray-500 mt-1">
-                                Setelah berhasil membayar, klik tombol di bawah untuk konfirmasi bahwa Anda sudah membayar.
-                            </p>
+                            <p>Metode pembayaran yang dipilih: <strong>QRIS</strong></p>
 
+                            {{-- CARD QRIS TENGAH --}}
+                            <div class="mt-4 flex justify-center">
+                                <div class="p-5 border rounded-xl bg-gray-50 shadow-sm text-center" style="width: 330px;">
+
+                                    {{-- Logo + Merchant --}}
+                                    <div class="flex flex-col items-center mb-3">
+                                        <img
+                                            src="{{ asset('images/qris-logo.png') }}"
+                                            alt="Logo QRIS"
+                                            class="h-8 mb-1 object-contain"
+                                        >
+                                        <p class="text-xs text-gray-600">
+                                            Nama Merchant:
+                                            <span class="font-semibold">Sembako Mart</span>
+                                        </p>
+                                    </div>
+
+                                    {{-- QR IMAGE --}}
+                                    <img
+                                        id="qris-image"
+                                        src="{{ asset('images/qris-dummy.png') }}"
+                                        alt="QRIS Dummy"
+                                        class="w-56 h-56 rounded-md mx-auto mb-3"
+                                    >
+
+                                    {{-- Countdown & Download --}}
+                                    <p class="text-sm mb-1">
+                                        Waktu pembayaran tersisa:
+                                        <span id="qris-countdown" class="font-mono text-orange-600">60:00</span>
+                                    </p>
+
+                                    <p class="text-xs text-gray-500 mb-2">
+                                        Ini QRIS dummy hanya untuk simulasi, tidak memproses transaksi nyata.
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        id="qris-download-btn"
+                                        class="px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium bg-white hover:bg-gray-100 transition"
+                                    >
+                                        Download QR
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Script QRIS: countdown & download --}}
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var countdownEl = document.getElementById('qris-countdown');
+                                    var remaining = 60 * 60; // 60 menit
+
+                                    function formatTime(sec) {
+                                        var m = Math.floor(sec / 60);
+                                        var s = sec % 60;
+                                        return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                                    }
+
+                                    function tick() {
+                                        if (!countdownEl) return;
+                                        countdownEl.textContent = formatTime(remaining);
+                                        if (remaining > 0) {
+                                            remaining--;
+                                        } else {
+                                            countdownEl.textContent = '00:00';
+                                            countdownEl.classList.remove('text-orange-600');
+                                            countdownEl.classList.add('text-red-600');
+                                            clearInterval(timer);
+                                        }
+                                    }
+
+                                    tick(); // set awal
+                                    var timer = setInterval(tick, 1000);
+
+                                    // Tombol download QR
+                                    var downloadBtn = document.getElementById('qris-download-btn');
+                                    var img = document.getElementById('qris-image');
+
+                                    if (downloadBtn && img) {
+                                        downloadBtn.addEventListener('click', function () {
+                                            var link = document.createElement('a');
+                                            link.href = img.src;
+                                            link.download = 'qris-{{ $transaction->id }}.png';
+                                            document.body.appendChild(link);
+                                            link.click();
+                                            document.body.removeChild(link);
+                                        });
+                                    }
+                                });
+                            </script>
+
+                        {{-- COD --}}
+                        @elseif ($method === 'COD')
+                            <p>Metode pembayaran yang dipilih: <strong>Bayar di Tempat (COD)</strong></p>
+
+                            <div class="mt-3 p-4 border rounded-lg bg-amber-50 inline-block">
+                                <p class="text-sm">
+                                    Silakan siapkan uang tunai sebesar:
+                                </p>
+                                <p class="mt-2 font-semibold text-lg">
+                                    Rp {{ number_format($transaction->grand_total, 0, ',', '.') }}
+                                </p>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    Bayar langsung ke kurir saat pesanan diterima.
+                                </p>
+                            </div>
+
+                        {{-- DEFAULT --}}
                         @else
                             <p>Metode pembayaran: <strong>{{ $method ?? 'Belum ditentukan' }}</strong></p>
                             <p>Ikuti instruksi pembayaran yang dikirim oleh admin.</p>
                         @endif
                     </div>
 
-                    <form action="{{ route('transactions.pay', $transaction->id) }}" method="POST" class="mt-4">
-                        @csrf
-                        <button
-                            class="px-4 py-2 bg-orange-500 hover:bg-orange-600 
-                                   text-white rounded-md font-semibold shadow transition"
+                    {{-- Tidak ada lagi tombol "Saya sudah bayar" --}}
+                    {{-- User hanya bisa melihat pesanan, verifikasi dilakukan admin --}}
+
+                    <div class="mt-4">
+                        <a
+                            href="{{ route('transactions.index') }}"
+                            class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 
+                                   text-white rounded-md font-semibold text-xs uppercase tracking-widest
+                                   shadow transition"
                         >
-                            Saya sudah bayar
-                        </button>
-                    </form>
+                            Lihat Pesanan
+                        </a>
+                    </div>
                 @else
                     <div class="rounded-md bg-green-100 px-4 py-3 text-sm text-green-700">
                         Pembayaran sudah diterima. Terima kasih! 🎉
                     </div>
-                @endif
 
-                <div class="mt-4">
-                    <a
-                        href="{{ route('transactions.index') }}"
-                        class="text-sm text-orange-500 hover:text-orange-600"
-                    >
-                        ← Kembali ke Riwayat Transaksi
-                    </a>
-                </div>
+                    <div class="mt-4">
+                        <a
+                            href="{{ route('transactions.index') }}"
+                            class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 
+                                   text-white rounded-md font-semibold text-xs uppercase tracking-widest
+                                   shadow transition"
+                        >
+                            Lihat Pesanan
+                        </a>
+                    </div>
+                @endif
             </div>
 
         </div>
