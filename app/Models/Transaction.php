@@ -33,13 +33,12 @@ class Transaction extends Model
     ];
 
     /**
-     * Relasi ke Buyer (User -> Buyer Profile)
-     * Kalau relasinya memang ke User, ini dibiarkan.
-     * Kalau harusnya ke model Buyer, tinggal ubah.
+     * 🔥 RELASI KE BUYER - DIPERBAIKI
+     * buyer_id merujuk ke tabel 'buyers', bukan 'users'
      */
     public function buyer()
     {
-        return $this->belongsTo(User::class, 'buyer_id', 'id');
+        return $this->belongsTo(Buyer::class, 'buyer_id', 'id');
     }
 
     /**
@@ -51,8 +50,7 @@ class Transaction extends Model
     }
 
     /**
-     * 🔥 Relasi ke TransactionDetail (PERBAIKAN WAJIB)
-     * Nama relasinya harus SAMA dengan yang kamu panggil di Controller: 'transactionDetails'
+     * Relasi ke TransactionDetail
      */
     public function transactionDetails()
     {
