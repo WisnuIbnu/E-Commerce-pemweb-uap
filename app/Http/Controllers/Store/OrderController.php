@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\StoreBalance;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -12,8 +13,12 @@ class OrderController extends Controller
     {
         $store = auth()->user()->store;
 
-        $query = Transaction::where('store_id', $store->id)
-            ->with(['buyer', 'details.product']);
+        $query = Transaction::whereHas('transactionDetails.product', function($q) use ($store) {
+            $q->where('store_id', $store->id);
+        })->with([
+            'buyer.user',
+            'transactionDetails.product'
+        ]);
 
         if ($request->has('status') && $request->status != '') {
             $query->where('payment_status', $request->status);
@@ -28,9 +33,13 @@ class OrderController extends Controller
     {
         $store = auth()->user()->store;
 
-        $order = Transaction::where('store_id', $store->id)
-            ->with(['buyer', 'details.product.images'])
-            ->findOrFail($id);
+        $order = Transaction::whereHas('transactionDetails.product', function($q) use ($store) {
+            $q->where('store_id', $store->id);
+        })->with([
+            'buyer.user',
+            'transactionDetails.product.images'
+        ])
+        ->findOrFail($id);
 
         return view('store.order.show', compact('order'));
     }
@@ -43,8 +52,20 @@ class OrderController extends Controller
 
         $store = auth()->user()->store;
 
-        $order = Transaction::where('store_id', $store->id)->findOrFail($id);
-        $order->update(['payment_status' => $request->status]);
+        $order = Transaction::whereHas('transactionDetails.product', function($q) use ($store) {
+            $q->where('store_id', $store->id);
+        })->findOrFail($id);
+
+        $oldStatus = $order->payment_status;
+        $newStatus = $request->status;
+
+        // Update status
+        $order->update(['payment_status' => $newStatus]);
+
+        // Jika status berubah menjadi paid atau delivered, tambahkan saldo
+        if (in_array($newStatus, ['paid', 'delivered']) && !in_array($oldStatus, ['paid', 'delivered'])) {
+            $this->addBalanceToStore($order, $store);
+        }
 
         return redirect()->back()->with('success', 'Order status updated successfully');
     }
@@ -57,12 +78,51 @@ class OrderController extends Controller
 
         $store = auth()->user()->store;
 
-        $order = Transaction::where('store_id', $store->id)->findOrFail($id);
+        $order = Transaction::whereHas('transactionDetails.product', function($q) use ($store) {
+            $q->where('store_id', $store->id);
+        })->findOrFail($id);
+
         $order->update([
             'tracking_number' => $request->tracking_number,
             'payment_status' => 'shipped',
         ]);
 
         return redirect()->back()->with('success', 'Tracking number added successfully');
+    }
+
+    /**
+     * Tambahkan saldo ke store ketika order paid/delivered
+     */
+    protected function addBalanceToStore($transaction, $store)
+    {
+        $storeEarning = 0;
+        
+        foreach ($transaction->transactionDetails as $detail) {
+            if ($detail->product && $detail->product->store_id == $store->id) {
+                $storeEarning += $detail->subtotal;
+            }
+        }
+
+        if ($storeEarning > 0) {
+            $balance = StoreBalance::firstOrCreate(
+                ['store_id' => $store->id],
+                ['balance' => 0]
+            );
+
+            $existingHistory = $balance->history()
+                ->where('reference_type', 'App\Models\Transaction')
+                ->where('reference_id', $transaction->id)
+                ->where('type', 'income')
+                ->exists();
+
+            if (!$existingHistory) {
+                $balance->addBalance(
+                    $storeEarning,
+                    'App\Models\Transaction',
+                    $transaction->id,
+                    'Order #' . $transaction->code . ' completed'
+                );
+            }
+        }
     }
 }
