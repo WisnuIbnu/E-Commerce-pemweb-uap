@@ -8,15 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class UserTransactionController extends Controller
 {
-    /**
-     * List transaksi milik user yang login
-     */
     public function index()
     {
         $user = Auth::user();
 
         // Ambil semua transaksi yang buyer-nya punya user_id = user yang login
-        $transactions = Transaction::with('transactionDetails.product.store', 'buyer')
+        $transactions = Transaction::with(['transactionDetails.product.store', 'buyer'])
             ->whereHas('buyer', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             })
@@ -26,15 +23,12 @@ class UserTransactionController extends Controller
         return view('transactions.index', compact('transactions'));
     }
 
-    /**
-     * Detail 1 transaksi (halaman pembayaran)
-     */
     public function show($id)
     {
         $user = Auth::user();
 
-        // Ambil transaksi berdasarkan ID
-        $transaction = Transaction::with('transactionDetails.product.store', 'buyer')
+        // Ambil transaksi + relasi
+        $transaction = Transaction::with(['transactionDetails.product.store', 'buyer', 'store'])
             ->findOrFail($id);
 
         // Cek kepemilikan: kalau buyer.user_id beda dengan user login → forbidden
@@ -46,26 +40,41 @@ class UserTransactionController extends Controller
     }
 
     /**
-     * Proses "Saya sudah bayar"
+     * Buyer klik "Saya sudah bayar"
+     * → status jadi waiting_confirmation (menunggu konfirmasi admin)
      */
     public function pay(Request $request, $id)
     {
         $user = Auth::user();
 
-        $transaction = Transaction::with('buyer')
-            ->findOrFail($id);
+        // Validasi optional payment_method
+        $data = $request->validate([
+            'payment_method' => ['nullable', 'string', 'max:50'],
+        ]);
 
+        // Ambil transaksi + buyer
+        $transaction = Transaction::with('buyer')->findOrFail($id);
+
+        // Cek kepemilikan
         if ($transaction->buyer && $transaction->buyer->user_id !== $user->id) {
             abort(403, 'Anda tidak punya akses ke transaksi ini.');
         }
 
+        // Hanya bisa konfirmasi kalau masih pending
+        if ($transaction->payment_status !== Transaction::STATUS_PENDING) {
+            return redirect()
+                ->route('transactions.show', $transaction->id)
+                ->with('error', 'Transaksi ini sudah tidak bisa dikonfirmasi (status: ' . $transaction->payment_status . ').');
+        }
+
+        // Ubah jadi menunggu konfirmasi admin
         $transaction->update([
-            'payment_status' => Transaction::STATUS_PAID,
-            'payment_method' => $request->payment_method ?? 'manual',
+            'payment_status' => Transaction::STATUS_WAITING_CONFIRMATION,
+            'payment_method' => $data['payment_method'] ?? ($transaction->payment_method ?? 'manual'),
         ]);
 
         return redirect()
             ->route('transactions.show', $transaction->id)
-            ->with('success', 'Pembayaran berhasil, terima kasih!');
+            ->with('success', 'Konfirmasi pembayaran dikirim. Menunggu verifikasi admin.');
     }
 }
