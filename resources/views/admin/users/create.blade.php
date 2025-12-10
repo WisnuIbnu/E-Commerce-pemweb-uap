@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="p-6 bg-[#d8e1e8] min-h-screen">
+<div class="p-6 bg-[#d8e1e8] min-h-screen rounded-xl">
 
     {{-- Judul --}}
     <h2 class="text-3xl font-bold mb-6 text-[#304674]">➕ Tambah User</h2>
@@ -34,8 +34,7 @@
                 <select name="role" 
                         class="w-full px-4 py-2 rounded-lg border border-[#304674] bg-[#d8e1e8] text-[#304674] focus:outline-none focus:ring-2 focus:ring-[#98bad5]">
                     <option value="admin">Admin</option>
-                    <option value="seller">Seller</option>
-                    <option value="user">User</option>
+                    <option value="member">Member</option>
                 </select>
             </div>
 
