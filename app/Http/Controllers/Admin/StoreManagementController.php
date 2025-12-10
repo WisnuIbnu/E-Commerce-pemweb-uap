@@ -30,7 +30,7 @@ class StoreManagementController extends Controller
 
         $stores = $query->latest()->paginate(15);
 
-        return view('admin.store.index', compact('stores'));
+        return view('admin.stores.index', compact('stores'));
     }
 
     public function show($id)
