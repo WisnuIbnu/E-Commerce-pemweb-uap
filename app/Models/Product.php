@@ -113,4 +113,5 @@ class Product extends Model
     {
         return $this->condition === 'new' ? 'Baru' : 'Bekas';
     }
+    
 }
