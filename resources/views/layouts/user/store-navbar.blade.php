@@ -11,9 +11,6 @@
                 <!-- Seller-specific Menu -->
                 <a href="{{ route('seller.dashboard') }}" class="hover:text-black {{ request()->routeIs('seller.dashboard') ? 'font-semibold' : '' }}">Dashboard</a>
                 <a href="{{ route('seller.products.index') }}" class="hover:text-black {{ request()->routeIs('seller.products.index') ? 'font-semibold' : '' }}">Produk</a>
-                <a href="{{ route('seller.orders.index') }}" class="hover:text-black {{ request()->routeIs('seller.orders.index') ? 'font-semibold' : '' }}">Orders</a>
-                <a href="{{ route('seller.balance.index') }}" class="hover:text-black {{ request()->routeIs('seller.balance.index') ? 'font-semibold' : '' }}">Balance</a>
-                <a href="{{ route('seller.withdrawals.index') }}" class="hover:text-black {{ request()->routeIs('seller.withdrawals.index') ? 'font-semibold' : '' }}">Withdrawal</a>
             @else
                 <!-- Regular User Menu -->
                 <a href="{{ route('dashboard') }}" class="hover:text-black {{ request()->routeIs('dashboard') ? 'font-semibold' : '' }}">Home</a>
@@ -25,17 +22,17 @@
 
     {{-- Right Icons --}}
     <div class="flex items-center gap-6">
-        {{-- Icon Bag --}}
-        <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
-            <img src="{{ asset('icons/checkout.png') }}" class="w-5 h-5" alt="bag">
-        </button>
-
         @auth
             {{-- If user is a seller, show the Seller Dashboard link --}}
             @if(Auth::user()->role === 'seller')
                 <a href="{{ route('seller.dashboard') }}" class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
                     <img src="{{ asset('icons/store.png') }}" class="w-5 h-5" alt="seller dashboard">
                 </a>
+            @else
+                {{-- Icon Checkout for regular user --}}
+                <button class="border-2 border-black rounded-full w-10 h-10 flex items-center justify-center">
+                    <img src="{{ asset('icons/checkout.png') }}" class="w-5 h-5" alt="bag">
+                </button>
             @endif
 
             {{-- Icon Profile --}}
