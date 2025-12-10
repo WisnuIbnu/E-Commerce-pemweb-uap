@@ -3,34 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
-
     protected $fillable = [
         'store_id',
-        'product_category_id',
+        'product_category_id', // <--- KITA UBAH KE INI
         'name',
         'slug',
-        'description',
-        'condition',
         'price',
-        'weight',
         'stock',
+        'about',
+        'thumbnail',
+        'condition',
+        'weight',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
     ];
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
     
-    public function productCategory()
+    // Nama fungsi tetap 'productCategory'
+    public function productCategory(): BelongsTo
     {
-    return $this->belongsTo(ProductCategory::class, 'product_category_id'); 
+        // Parameter kedua kita arahkan ke 'product_category_id'
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     public function productImages()
@@ -45,12 +44,7 @@ class Product extends Model
 
     public function productReviews()
     {
-    return $this->hasMany(ProductReview::class, 'product_id');
-    }
-
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class); 
+        return $this->hasMany(ProductReview::class, 'product_id');
     }
 
     public function variants()
@@ -58,4 +52,13 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function store(): BelongsTo
+    {
+        return $this->belongsTo(Store::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 }

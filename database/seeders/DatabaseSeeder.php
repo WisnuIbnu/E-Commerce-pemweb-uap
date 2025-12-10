@@ -8,7 +8,7 @@ use App\Models\Buyer;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
-use App\Models\ProductVariant; // Import Model Varian
+use App\Models\ProductVariant;
 use App\Models\StoreBalance;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // membuat user admin
+        $this->command->info('Memulai proses seeding...');
+
+        // 1. User Admin
         User::create([
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
@@ -25,35 +27,35 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // membuat user seller
+        // 2. User Seller (LANGSUNG ROLE SELLER AGAR BISA AKSES MENU TOKO)
         $seller = User::create([
             'name' => 'Noel',
             'email' => 'noel@gmail.com',
             'password' => Hash::make('seller'),
-            'role' => 'member', 
+            'role' => 'seller', 
         ]);
 
-        // membuat data toko untuk seller
+        // 3. Toko Seller
         $store = Store::create([
             'user_id' => $seller->id,
             'name' => 'Tech Store',
             'logo' => 'Tech-store.jpg',
             'about' => 'Toko elektronik terlengkap dan terpercaya.',
             'phone' => '085895311686',
-            'address_id' => '1',
+            'address_id' => 1, 
             'address' => 'Jl. Veteran No. 50', 
             'city' => 'Malang',
             'postal_code' => '121212',
             'is_verified' => true,
         ]);
 
-        // membuat saldo toko
+        // 4. Saldo Toko
         StoreBalance::create([
             'store_id' => $store->id,
             'balance' => 0,
         ]);
 
-        // membuat user buyer
+        // 5. User Buyer
         $buyer = User::create([
             'name' => 'Arkadian',
             'email' => 'arkadian@gmail.com',
@@ -61,40 +63,42 @@ class DatabaseSeeder extends Seeder
             'role' => 'member',
         ]);
 
-        // membuat data buyer
         Buyer::create([
             'user_id' => $buyer->id,
             'phone_number' => '085648128017',
         ]);
 
-        // membuat kategori produk
+        $this->command->info('User, Toko, dan Buyer berhasil dibuat.');
+
+        // 6. Kategori Produk
         $catElektronik = ProductCategory::create([
             'name' => 'Elektronik',
             'slug' => 'elektronik',
             'description' => 'Komputer, laptop, handphone, dan lainnya',
-            'image' => 'elektronik.jpg'
+            'image' => 'elektronik.jpg',
         ]);
 
         $catAccessories = ProductCategory::create([
-            'name' => 'Accesssories',
+            'name' => 'Accessories',
             'slug' => 'accessories',
-            'description' => 'Hedset, casing, charger, dan lainnya',
-            'image' => 'accessories.png'
+            'description' => 'Headset, casing, charger, dan lainnya',
+            'image' => 'accessories.png',
         ]);
 
         // ==========================================
-        // MEMBUAT PRODUK DAN VARIAN
+        // MEMBUAT PRODUK (MENGGUNAKAN product_category_id)
         // ==========================================
 
         // --- PRODUK 1: Lenovo ThinkPad ---
         $product1 = Product::create([
             'store_id' => $store->id,
-            'product_category_id' => $catElektronik->id,
+            'product_category_id' => $catElektronik->id, // <--- UBAH KE INI
             'name' => 'Lenovo ThinkPad X1 Carbon',
             'slug' => 'lenovo-thinkpad-x1-carbon',
-            'description' => 'Laptop bisnis tangguh dengan performa tinggi.',
+            'thumbnail' => 'thinkpad.jpg',
+            'about' => 'Laptop bisnis tangguh dengan performa tinggi.',
             'condition' => 'new',
-            'price' => 28000000, // Harga dasar
+            'price' => 28000000, 
             'weight' => 2500,
             'stock' => 10,
         ]);
@@ -105,30 +109,18 @@ class DatabaseSeeder extends Seeder
             'is_thumbnail' => true,
         ]);
 
-        // Varian Produk 1 (Contoh: Warna & Ukuran Layar/RAM)
-        ProductVariant::create([
-            'product_id' => $product1->id,
-            'color' => 'Matte Black',
-            'size' => '16GB RAM',
-            'price' => 28000000, // Harga sama dengan dasar
-            'stock' => 5,
-        ]);
-        ProductVariant::create([
-            'product_id' => $product1->id,
-            'color' => 'Carbon Fiber',
-            'size' => '32GB RAM',
-            'price' => 32000000, // Harga lebih mahal
-            'stock' => 3,
-        ]);
+        ProductVariant::create(['product_id' => $product1->id, 'color' => 'Matte Black', 'size' => '16GB RAM', 'price' => 28000000, 'stock' => 5]);
+        ProductVariant::create(['product_id' => $product1->id, 'color' => 'Carbon Fiber', 'size' => '32GB RAM', 'price' => 32000000, 'stock' => 3]);
 
 
         // --- PRODUK 2: Casing iPhone ---
         $product2 = Product::create([
             'store_id' => $store->id,
-            'product_category_id' => $catAccessories->id,
+            'product_category_id' => $catAccessories->id, // <--- UBAH KE INI
             'name' => 'Casing iPhone 12 Pro Max',
             'slug' => 'casing-iphone-12-pro-max',
-            'description' => 'Softcase premium anti slip.',
+            'thumbnail' => 'casing.jpg',
+            'about' => 'Softcase premium anti slip.',
             'condition' => 'new',
             'price' => 200000,
             'weight' => 200,
@@ -141,7 +133,6 @@ class DatabaseSeeder extends Seeder
             'is_thumbnail' => true,
         ]);
 
-        // Varian Produk 2 (Warna-warni)
         ProductVariant::create(['product_id' => $product2->id, 'color' => 'Midnight Blue', 'size' => 'Pro Max', 'price' => 200000, 'stock' => 20]);
         ProductVariant::create(['product_id' => $product2->id, 'color' => 'Red Product', 'size' => 'Pro Max', 'price' => 200000, 'stock' => 15]);
         ProductVariant::create(['product_id' => $product2->id, 'color' => 'Graphite', 'size' => 'Pro Max', 'price' => 210000, 'stock' => 15]);
@@ -150,10 +141,11 @@ class DatabaseSeeder extends Seeder
         // --- PRODUK 3: Asus ROG ---
         $product3 = Product::create([
             'store_id' => $store->id,
-            'product_category_id' => $catElektronik->id,
+            'product_category_id' => $catElektronik->id, // <--- UBAH KE INI
             'name' => 'Asus ROG Strix G15',
             'slug' => 'Asus-ROG-Strix-G15',
-            'description' => 'Laptop Gaming untuk pro player.',
+            'thumbnail' => 'Asus.jpg',
+            'about' => 'Laptop Gaming untuk pro player.',
             'condition' => 'new',
             'price' => 20000000,
             'weight' => 2500,
@@ -166,7 +158,6 @@ class DatabaseSeeder extends Seeder
             'is_thumbnail' => true,
         ]);
         
-        // Varian Produk 3
         ProductVariant::create(['product_id' => $product3->id, 'color' => 'Eclipse Gray', 'size' => 'RTX 3050', 'price' => 20000000, 'stock' => 50]);
         ProductVariant::create(['product_id' => $product3->id, 'color' => 'Volt Green', 'size' => 'RTX 4060', 'price' => 25000000, 'stock' => 50]);
 
@@ -174,10 +165,11 @@ class DatabaseSeeder extends Seeder
         // --- PRODUK 4: HP Pavilion ---
         $product4 = Product::create([
             'store_id' => $store->id,
-            'product_category_id' => $catElektronik->id,
+            'product_category_id' => $catElektronik->id, // <--- UBAH KE INI
             'name' => 'HP Pavilion 15',
             'slug' => 'HP-Pavilion-15',
-            'description' => 'Laptop Gaming entry level.',
+            'thumbnail' => 'HP.jpg',
+            'about' => 'Laptop Gaming entry level.',
             'condition' => 'new',
             'price' => 11000000,
             'weight' => 2200,
@@ -190,8 +182,9 @@ class DatabaseSeeder extends Seeder
             'is_thumbnail' => true,
         ]);
         
-        // Varian Produk 4
         ProductVariant::create(['product_id' => $product4->id, 'color' => 'Silver', 'size' => 'Standard', 'price' => 11000000, 'stock' => 10]);
         ProductVariant::create(['product_id' => $product4->id, 'color' => 'Gold', 'size' => 'Standard', 'price' => 11500000, 'stock' => 10]);
+
+        $this->command->info('Semua produk dan varian berhasil di-generate!');
     }
 }

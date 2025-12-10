@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaction;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -12,22 +12,25 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Menghitung status 'unpaid' DAN 'paid' sebagai Pesanan Aktif
-        $activeOrders = Transaction::whereHas('buyer', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->whereIn('payment_status', ['unpaid', 'paid']) 
-            ->count();
+        // Data default untuk Member
+        $data = [
+            'orders_count' => 0, // Nanti relasikan dengan Order
+            'favorites_count' => 0,
+        ];
 
-        // Ambil 3 Transaksi Terbaru
-        $recentTransactions = Transaction::with('transactionDetails.product')
-            ->whereHas('buyer', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->latest()
-            ->take(3)
-            ->get();
-        
-        return view('dashboard', compact('user', 'activeOrders', 'recentTransactions'));
+        // Data Khusus untuk Seller
+        if ($user->role === 'seller' && $user->store) {
+            $store = $user->store;
+            
+            // Mengambil statistik toko
+            $data['products_count'] = $store->products()->count();
+            // $data['orders_count'] = $store->transactions()->count(); // Jika relasi transaction sudah ada
+            $data['store_balance'] = $store->storeBallance->balance ?? 0;
+            
+            // Ambil 5 pesanan terbaru (Mockup/Placeholder jika belum ada tabel transaksi)
+            $data['recent_orders'] = []; // $store->transactions()->latest()->take(5)->get();
+        }
+
+        return view('dashboard', $data);
     }
 }
