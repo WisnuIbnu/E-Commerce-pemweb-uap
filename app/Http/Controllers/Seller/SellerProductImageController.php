@@ -3,63 +3,66 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SellerProductImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index($productId)
     {
-        //
+        $store = getSellerStore();
+        $product = Product::where('store_id', $store->id)->findOrFail($productId);
+        $images = $product->images;
+        
+        return view('seller.images.index', compact('product', 'images', 'store'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create($productId)
     {
-        //
+        $store = getSellerStore();
+        $product = Product::where('store_id', $store->id)->findOrFail($productId);
+        
+        return view('seller.images.create', compact('product', 'store'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, $productId)
     {
-        //
+        $request->validate([
+            'images.*' => 'required|image|max:2048',
+        ]);
+
+        $store = getSellerStore();
+        $product = Product::where('store_id', $store->id)->findOrFail($productId);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('products', 'public');
+                
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $path,
+                ]);
+            }
+        }
+
+        return redirect()->route('seller.products.images.index', $productId)
+            ->with('success', 'Gambar berhasil diupload.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($productId, $imageId)
     {
-        //
-    }
+        $store = getSellerStore();
+        $product = Product::where('store_id', $store->id)->findOrFail($productId);
+        $image = ProductImage::where('product_id', $product->id)->findOrFail($imageId);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        // Delete from storage
+        Storage::disk('public')->delete($image->image_path);
+        
+        $image->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('seller.products.images.index', $productId)
+            ->with('success', 'Gambar berhasil dihapus.');
     }
 }
