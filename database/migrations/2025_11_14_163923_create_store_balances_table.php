@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('store_balances', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->foreignId('store_id')->constrained()->cascadeOnDelete();
-            $table->decimal('balance',26, 2);
+            $table->id();
+            $table->foreignId('store_id')
+                ->constrained('stores')
+                ->cascadeOnDelete();
+
+            $table->decimal('balance', 26, 2);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('store_balances');
