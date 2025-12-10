@@ -3,19 +3,19 @@
 
 @section('content')
 
-<div class="page-header">
-    <div class="page-header-actions">
-        <div>
-            <h1>Seller Dashboard</h1>
-            <p>Selamat datang kembali, {{ $store->name }}!</p>
-        </div>
-        <a href="{{ route('seller.products.create') }}" class="btn btn-primary">
-            ➕ Tambah Produk
-        </a>
+<div class="page-header page-header-actions">
+    <div>
+        <h1>Seller Dashboard</h1>
+        <p>Selamat datang kembali, {{ $store->name }}!</p>
     </div>
+
+    <a href="{{ route('seller.products.create') }}" class="btn btn-primary">
+        ➕ Tambah Produk
+    </a>
 </div>
 
 <div class="stats-grid">
+
     <div class="stat-card">
         <div class="stat-header">
             <span class="stat-label">Total Produk</span>
@@ -49,6 +49,7 @@
             {{ 'Rp ' . number_format($stats['total_revenue'], 0, ',', '.') }}
         </div>
     </div>
+
 </div>
 
 <div class="card">
@@ -75,11 +76,7 @@
                 @foreach($recentOrders as $order)
                 <tr>
                     <td><strong>#{{ $order->id }}</strong></td>
-
-                    {{-- FIX: buyer, bukan user --}}
                     <td>{{ $order->buyer->name }}</td>
-
-                    {{-- FIX: total pakai grand_total --}}
                     <td>{{ 'Rp ' . number_format($order->grand_total, 0, ',', '.') }}</td>
 
                     <td>
@@ -92,7 +89,8 @@
                     <td>{{ $order->created_at->format('d M Y') }}</td>
 
                     <td>
-                        <a href="{{ route('seller.orders.show', $order->id) }}" class="btn btn-secondary btn-sm">
+                        <a href="{{ route('seller.orders.show', $order->id) }}" 
+                           class="btn btn-secondary btn-sm">
                             Detail
                         </a>
                     </td>
