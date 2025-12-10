@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Seller Dashboard - SORAE')@section('styles')
+@section('title', 'Seller Dashboard - SORAE')
+
+@section('styles')
 <style>
     .dashboard-hero {
-        background: url('{{ asset('images/hero-fashion.png') }}') center/cover no-repeat;
+        background: linear-gradient(rgba(86, 28, 36, 0.8), rgba(86, 28, 36, 0.8)), 
+                    url('{{ asset('images/hero-fashion.png') }}') center/cover no-repeat;
         color: white;
         padding: 60px 30px;
         border-radius: 15px;
@@ -28,8 +31,6 @@
         Welcome to your seller dashboard
     </p>
 </div>
-
-</h2>
 
 @if(!$store->is_verified)
 <div class="alert alert-warning">
@@ -80,7 +81,7 @@
 
 <!-- Quick Actions -->
 <div class="row g-4 mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a href="{{ url('/seller/products/create') }}" class="card text-decoration-none">
             <div class="card-body text-center">
                 <i class="fas fa-plus-circle fa-3x mb-3" style="color: var(--primary-color);"></i>
@@ -88,7 +89,15 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <a href="{{ url('/seller/products') }}" class="card text-decoration-none">
+            <div class="card-body text-center">
+                <i class="fas fa-box fa-3x mb-3" style="color: var(--primary-color);"></i>
+                <h5>Manage Products</h5>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
         <a href="{{ url('/seller/orders') }}" class="card text-decoration-none">
             <div class="card-body text-center">
                 <i class="fas fa-list-alt fa-3x mb-3" style="color: var(--primary-color);"></i>
@@ -96,11 +105,11 @@
             </div>
         </a>
     </div>
-    <div class="col-md-4">
-        <a href="{{ url('/seller/balance') }}" class="card text-decoration-none">
+    <div class="col-md-3">
+        <a href="{{ url('/seller/store/edit') }}" class="card text-decoration-none">
             <div class="card-body text-center">
-                <i class="fas fa-money-bill-wave fa-3x mb-3" style="color: var(--primary-color);"></i>
-                <h5>View Balance</h5>
+                <i class="fas fa-cog fa-3x mb-3" style="color: var(--primary-color);"></i>
+                <h5>Store Settings</h5>
             </div>
         </a>
     </div>

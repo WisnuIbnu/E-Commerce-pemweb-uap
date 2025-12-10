@@ -164,9 +164,6 @@
 <!-- Hero Section -->
 <div class="hero-section">
     <div class="container hero-content">
-        <a href="{{ url('/products') }}" class="btn btn-light btn-lg px-5 py-3">
-            <i class="fas fa-shopping-bag"></i> Shop Now
-        </a>
     </div>
 </div>
 
