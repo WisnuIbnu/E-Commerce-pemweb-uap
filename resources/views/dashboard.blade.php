@@ -48,21 +48,14 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
-    <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-lg">
-        <i class="fa-solid fa-wallet"></i>
-    </div>
-    <div>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kredit Akun</p>
-        
-        <p class="text-xl font-extrabold text-slate-800">
-            Rp {{ number_format(Auth::user()->saldo ?? 0, 0, ',', '.') }}
-        </p>
-        
-        <a href="{{ route('saldo.topup') }}" class="add saldo text-blue-600 hover:underline">
-            tambah saldo
-        </a>
-    </div>
-</div>
+                        <div class="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kredit Akun</p>
+                            <p class="text-xl font-extrabold text-slate-800">Rp 0</p>
+                        </div>
+                    </div>
 
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
                         <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg">
