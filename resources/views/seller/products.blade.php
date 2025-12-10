@@ -111,6 +111,7 @@
             </div>
             <div style="display: flex; gap: 0.5rem;">
                 <a href="{{ route('product.detail', $product->id) }}" class="btn" style="flex: 1; background: rgba(255,69,0,0.1); color: var(--primary); padding: 0.5rem; border-radius: 6px; text-decoration: none; text-align: center; font-size: 0.9rem;">View</a>
+                <a href="{{ route('seller.product.images', $product->id) }}" class="btn" style="flex: 1; background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 0.5rem; border-radius: 6px; text-decoration: none; text-align: center; font-size: 0.9rem;">Images</a>
                 <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" style="flex: 1;">
                     @csrf
                     @method('DELETE')

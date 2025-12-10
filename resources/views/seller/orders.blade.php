@@ -73,30 +73,36 @@
                     @if($order->order_status == 'pending')
                         <form action="{{ route('seller.orders.status', $order->id) }}" method="POST" style="display: inline;">
                             @csrf
-                            @method('PATCH')
                             <input type="hidden" name="order_status" value="processing">
                             <button type="submit" style="background: var(--primary); color: black; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
                                 Process
                             </button>
                         </form>
                     @elseif($order->order_status == 'processing')
-                        <form action="{{ route('seller.orders.status', $order->id) }}" method="POST" style="display: inline;">
+                        <form action="{{ route('seller.orders.status', $order->id) }}" method="POST">
                             @csrf
-                            @method('PATCH')
                             <input type="hidden" name="order_status" value="shipped">
-                            <button type="submit" style="background: #a855f7; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
-                                Ship
-                            </button>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <input type="text" name="tracking_number" placeholder="Enter Tracking No." required
+                                    style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; width: 140px;">
+                                <button type="submit" style="background: #a855f7; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
+                                    Ship
+                                </button>
+                            </div>
                         </form>
                     @elseif($order->order_status == 'shipped')
-                        <form action="{{ route('seller.orders.status', $order->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="order_status" value="delivered">
-                            <button type="submit" style="background: #22c55e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;">
-                                Delivered
-                            </button>
-                        </form>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                Tracking: <span style="color: white; font-family: monospace;">{{ $order->tracking_number ?? '-' }}</span>
+                            </div>
+                            <form action="{{ route('seller.orders.status', $order->id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="order_status" value="delivered">
+                                <button type="submit" style="background: #22c55e; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; width: 100%;">
+                                    Mark Delivered
+                                </button>
+                            </form>
+                        </div>
                     @else
                         <span style="color: var(--text-muted); font-size: 0.85rem;">—</span>
                     @endif

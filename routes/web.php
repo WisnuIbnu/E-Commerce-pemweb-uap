@@ -49,6 +49,7 @@ Route::post('/chatbot/message', [ChatbotController::class, 'sendMessage'])->name
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
     Route::get('/stores', [AdminController::class, 'stores'])->name('stores');
     Route::post('/stores/verify', [AdminController::class, 'verifyStore'])->name('stores.verify');
 });
@@ -56,6 +57,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 // Seller Routes - Only requires auth and verified store
 Route::middleware(['auth', 'verified'])->prefix('seller')->name('seller.')->group(function () {
     Route::get('/dashboard', [SellerController::class, 'index'])->name('dashboard');
+    Route::get('/store/edit', [SellerController::class, 'editStore'])->name('store.edit');
+    Route::put('/store/update', [SellerController::class, 'updateStore'])->name('store.update');
     Route::get('/products', [SellerController::class, 'products'])->name('products');
     Route::post('/products', [SellerController::class, 'storeProduct'])->name('products.store');
     Route::put('/products/{id}', [SellerController::class, 'updateProduct'])->name('products.update');
@@ -66,8 +69,19 @@ Route::middleware(['auth', 'verified'])->prefix('seller')->name('seller.')->grou
     Route::get('/withdrawal', [SellerController::class, 'withdrawal'])->name('withdrawal');
     Route::post('/withdrawal', [SellerController::class, 'processWithdrawal'])->name('withdrawal.process');
     Route::get('/balance', [SellerController::class, 'balance'])->name('balance');
+    
+    // Categories Management
     Route::get('/categories', [SellerController::class, 'categories'])->name('categories');
-    Route::get('/product-image', [SellerController::class, 'productImage'])->name('product.image');
+    Route::post('/categories', [SellerController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{id}', [SellerController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{id}', [SellerController::class, 'destroyCategory'])->name('categories.destroy');
+
+    // Product Images Management
+    Route::get('/products/{id}/images', [SellerController::class, 'productImage'])->name('product.images');
+    Route::post('/products/{id}/images', [SellerController::class, 'storeProductImage'])->name('product.images.store');
+    Route::delete('/products/{id}/images/{image_id}', [SellerController::class, 'destroyProductImage'])->name('product.images.destroy');
+    Route::post('/products/{id}/images/{image_id}/thumbnail', [SellerController::class, 'setProductThumbnail'])->name('product.images.thumbnail');
+
     Route::get('/profile', function() {
         return view('profile.edit');
     })->name('profile');

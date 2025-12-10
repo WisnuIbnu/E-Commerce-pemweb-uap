@@ -54,4 +54,16 @@ class AdminController extends Controller
             return redirect()->route('admin.stores')->with('success', 'Store rejected and removed.');
         }
     }
+    public function destroyUser($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Prevent deleting self
+        if ($user->id === auth()->id()) {
+            return redirect()->back()->with('error', 'Cannot delete your own account!');
+        }
+
+        $user->delete();
+        return redirect()->route('admin.users')->with('success', 'User deleted successfully.');
+    }
 }
