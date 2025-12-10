@@ -101,7 +101,23 @@
                         @endauth
                     </div>
                 </div>
-                <button class="action-btn">🛒</button>
+                <a href="{{ route('cart.index') }}" class="action-btn cart-btn" style="position: relative; text-decoration: none; color: inherit;">
+    🛒
+    @php
+        $cart = Session::get('cart', []);
+        $cartCount = array_sum(array_column($cart, 'quantity'));
+    @endphp
+    
+    @if($cartCount > 0)
+        <span id="cart-badge" class="cart-badge">
+            {{ $cartCount }}
+        </span>
+    @else
+        <span id="cart-badge" class="cart-badge" style="display: none;">
+            0
+        </span>
+    @endif
+</a>
             </div>
         </div>
     </div>

@@ -5,6 +5,9 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Customer\ProductController;
 use App\Http\Controllers\Customer\StoreController;
+use App\Http\Controllers\Customer\ProductReviewController;
+use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,4 +29,22 @@ Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.s
 // Route store customer
 Route::get('/store/{id}', [StoreController::class, 'show'])->name('store.show');
 
+
+// Product Reviews Routes
+Route::get('/product/{product}/reviews', [ProductReviewController::class, 'index'])
+    ->name('product.reviews.index');
+
+Route::post('/product/{product}/reviews', [ProductReviewController::class, 'store'])
+    ->middleware('auth')
+    ->name('product.reviews.store');
+
+
+// Cart routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout routes
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 require __DIR__.'/auth.php';
