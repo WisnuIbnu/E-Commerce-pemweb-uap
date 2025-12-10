@@ -3,63 +3,82 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class SellerCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $store = getSellerStore();
+        $categories = Category::where('store_id', $store->id)
+            ->withCount('products')
+            ->latest()
+            ->get();
+        
+        return view('seller.categories.index', compact('categories', 'store'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $store = getSellerStore();
+        return view('seller.categories.create', compact('store'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $store = getSellerStore();
+
+        Category::create([
+            'store_id' => $store->id,
+            'name' => $request->name,
+        ]);
+
+        return redirect()->route('seller.categories.index')
+            ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        //
+        $store = getSellerStore();
+        $category = Category::where('store_id', $store->id)->findOrFail($id);
+        
+        return view('seller.categories.edit', compact('category', 'store'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $store = getSellerStore();
+        $category = Category::where('store_id', $store->id)->findOrFail($id);
+
+        $category->update(['name' => $request->name]);
+
+        return redirect()->route('seller.categories.index')
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $store = getSellerStore();
+        $category = Category::where('store_id', $store->id)->findOrFail($id);
+        
+        // Check if category has products
+        if ($category->products()->count() > 0) {
+            return redirect()->route('seller.categories.index')
+                ->with('error', 'Kategori tidak dapat dihapus karena masih memiliki produk.');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $category->delete();
+
+        return redirect()->route('seller.categories.index')
+            ->with('success', 'Kategori berhasil dihapus.');
     }
 }
