@@ -736,7 +736,6 @@
                 <i class="fas fa-money-bill-wave"></i>
                 <span>Penarikan Dana</span>
             </a>
-
             <div class="sidebar-divider"></div>
 
             <a href="{{ route('seller.store.edit') }}"

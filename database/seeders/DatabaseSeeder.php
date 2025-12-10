@@ -11,22 +11,25 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     public function run(): void
-{
-    User::firstOrCreate(
-        ['email' => 'admin@example.com'],
-        [
-            'name' => 'admin',
-            'password' => bcrypt('password'),
-            'role' => 'admin'
-        ]
-    );
+    {
+        // Create default admin user (from HEAD)
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name'     => 'admin',
+                'password' => bcrypt('password'),
+                'role'     => 'admin'
+            ]
+        );
 
-    $this->call([
-            StoreBalanceSeeder::class,    // 1. Buat Store, User Seller, Balance
-            BuyerSeeder::class,            // 2. Buat Buyer User & Profile
-            ProductSeeder::class,          // 3. Buat Categories & Products
-            TransactionSeeder::class,      // 4. Buat Transactions
+        // Call all required seeders (merged)
+        $this->call([
+            AdminUserSeeder::class,       // from origin/user-syifa
+            StoreBalanceSeeder::class,    // from HEAD
+            SellerSeeder::class,          // from origin/user-syifa
+            BuyerSeeder::class,           // both branches
+            ProductSeeder::class,         // both branches
+            TransactionSeeder::class,     // from HEAD
         ]);
-}
-
+    }
 }

@@ -22,4 +22,11 @@ class ProductReview extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    // Accessor to get the User who made the review
+    public function getUserAttribute()
+    {
+        // Path: Review -> Transaction -> Buyer -> User
+        return $this->transaction->buyer->user ?? null;
+    }
 }

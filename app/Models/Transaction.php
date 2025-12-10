@@ -11,16 +11,14 @@ class Transaction extends Model
         'buyer_id',
         'store_id',
         'address',
-        'address_id',
         'city',
         'postal_code',
-        'shipping',
         'shipping_type',
         'shipping_cost',
         'tracking_number',
-        'tax',
         'grand_total',
-        'payment_status',
+        'status',
+        'payment_method',
     ];
 
     protected $casts = [
@@ -39,6 +37,11 @@ class Transaction extends Model
     }
 
     public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class);
+    }
+    
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class);
     }

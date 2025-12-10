@@ -6,26 +6,31 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Buyer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class BuyerSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         DB::transaction(function () {
-            // Create buyer user
-            $buyerUser = User::firstOrCreate(
+
+            // Create or update user buyer
+            $buyerUser = User::updateOrCreate(
                 ['email' => 'buyer@example.com'],
                 [
-                    'name' => 'Buyer Demo',
-                    'password' => bcrypt('password'),
+                    'name' => 'Buyer User',
+                    'password' => Hash::make('password'),
                     'role' => 'member'
                 ]
             );
 
             $this->command->info('✓ Buyer user created: ' . $buyerUser->email);
 
-            // Create buyer profile
-            $buyer = Buyer::firstOrCreate(
+            // Create or update buyer profile
+            $buyer = Buyer::updateOrCreate(
                 ['user_id' => $buyerUser->id],
                 [
                     'profile_picture' => null,
