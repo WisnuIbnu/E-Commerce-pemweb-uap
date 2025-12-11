@@ -77,4 +77,43 @@ class UserTransactionController extends Controller
             ->route('transactions.show', $transaction->id)
             ->with('success', 'Konfirmasi pembayaran dikirim. Menunggu verifikasi admin.');
     }
+
+    public function orders()
+{
+    $user = Auth::user();
+
+    $query = Transaction::with(['transactionDetails.product.store', 'buyer'])
+        ->whereHas('buyer', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        });
+
+    // PESANAN YANG MASIH AKTIF:
+    // - pembayaran: pending / waiting_confirmation / paid
+    // - ATAU pengiriman: processing / packed / shipped
+    $query->where(function ($q) {
+        $q->whereIn('payment_status', ['pending', 'waiting_confirmation', 'paid'])
+          ->orWhereIn('shipping', ['processing', 'packed', 'shipped']);
+    });
+
+    $orders = $query->latest()->paginate(10);
+
+    return view('orders.index', compact('orders'));
+}
+
+
+    public function track($id)
+    {
+        $user = Auth::user();
+
+        // Ambil transaksi + relasi
+        $transaction = Transaction::with(['transactionDetails.product.store', 'buyer'])
+            ->findOrFail($id);
+
+        // Pastikan pesanan ini milik user
+        if ($transaction->buyer->user_id !== $user->id) {
+            abort(403, 'Anda tidak punya akses ke pesanan ini.');
+        }
+
+        return view('orders.track', compact('transaction'));
+    }
 }
