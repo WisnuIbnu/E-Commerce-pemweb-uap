@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Instrument Sans', sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.welcome-top-header {
+    width: 100%;
+    margin: 0;
+    padding: 20px 40px;
+    display: flex;
+    background: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.welcome-nav a {
+    margin-left: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #555;
+}
+
+.btn-ghost:hover {
+    background: #eaeaea;
+}
+
+.btn-outline {
+    border: 1px solid #cfcfcf;
+    color: #555;
+}
+
+.btn-outline:hover {
+    background: #f1f1f1;
+}
+
+.welcome-content {
+    text-align: center;
+    margin-top: 120px;
+    padding: 20px;
+}
+
+.welcome-content h1 {
+    font-size: 42px;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+.welcome-content p {
+    font-size: 18px;
+    color: #666;
+}
+
+.btn-primary {
+    background: #333;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: #555;
+}
+
+.btn-lg {
+    padding: 14px 32px;
+}
+
+.mt-6 {
+    margin-top: 28px;
+}
+
+.welcome-footer-space {
+    height: 50px;
+}
+
+.product-card a,
+.product-link,
+.product-link-guest {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card a:hover,
+.product-link:hover,
+.product-link-guest:hover {
+    text-decoration: none;
+}
