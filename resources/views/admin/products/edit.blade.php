@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('content')
-<h1>Edit Product</h1>
+<h1>Edit Produk</h1>
 
 <div class="card">
 <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
