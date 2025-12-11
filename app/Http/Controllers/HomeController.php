@@ -8,25 +8,28 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $categories = ProductCategory::all();
-
-        $products = Product::with(['productImages', 'productCategory'])
-            ->latest()
-            ->paginate(12);
-
+        $products = Product::with('productImages', 'productCategory');
+    
+        if ($request->category) {
+            $products = $products->where('category_id', $request->category);
+        }
+    
+        $products = $products->paginate(12);
+    
         return view('home', compact('products', 'categories'));
     }
 
     public function category($slug)
     {
         $category = ProductCategory::where('slug', $slug)->firstOrFail();
-
-        $products = Product::with('productImages')
-            ->where('product_category_id', $category->id)
-            ->paginate(12);
-
-        return view('category', compact('category', 'products'));
+    
+        $products = $category->products()->paginate(12);
+    
+        $categories = ProductCategory::all();
+    
+        return view('category', compact('products', 'categories', 'category'));
     }
 }
