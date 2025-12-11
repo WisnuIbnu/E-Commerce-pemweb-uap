@@ -14,7 +14,7 @@
                 </p>
             </div>
 
-            {{-- (Optional) tombol kembali ke beranda --}}
+            {{-- Tombol kembali ke beranda --}}
             <a href="{{ route('home') }}"
                class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -26,14 +26,13 @@
             </a>
         </div>
 
-        {{-- FILTER / INFO BAR (bisa dikembangkan nanti) --}}
+        {{-- FILTER BAR --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-white rounded-2xl shadow-sm px-4 py-3">
             <div class="flex items-center gap-2 text-sm text-gray-600">
                 <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
                 <span>Produk siap dikirim dari berbagai toko terpercaya.</span>
             </div>
 
-            {{-- Placeholder sort (belum ada logic di controller, jadi cuma UI saja) --}}
             <div class="flex items-center gap-2 text-sm text-gray-600">
                 <span>Urutkan:</span>
                 <select
@@ -52,17 +51,27 @@
                     <a href="{{ route('product.show', $product->slug) }}"
                        class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition hover:-translate-y-1 overflow-hidden flex flex-col">
 
-                        @php
-                            $thumb = $product->productImages->first()
-                                ? asset('storage/' . $product->productImages->first()->image)
-                                : 'https://via.placeholder.com/400';
-                        @endphp
-
-                        {{-- Gambar --}}
+                        {{-- Gambar Produk --}}
                         <div class="relative">
-                            <img src="{{ $thumb }}"
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-40 object-cover">
+
+                            @php
+                                $firstImage = $product->productImages->first();
+                            @endphp
+
+                            @if($firstImage)
+                                {{-- Jika produk punya gambar --}}
+                                <img src="{{ asset('storage/' . $firstImage->image) }}"
+                                     alt="{{ $product->name }}"
+                                     class="w-full h-40 object-cover">
+                            @else
+                                {{-- DEFAULT FOTO --}}
+                                <div class="w-full h-40 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                                    <svg class="w-14 h-14 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                    </svg>
+                                </div>
+                            @endif
 
                             @if($product->productCategory)
                                 <span class="absolute top-2 left-2 bg-white/90 text-[10px] px-2 py-1 rounded-full text-gray-700 shadow">
@@ -91,7 +100,6 @@
                                 </p>
                             @endisset
 
-                            {{-- CTA kecil di bawah --}}
                             <div class="mt-3">
                                 <span class="inline-flex items-center text-[11px] font-medium text-orange-600">
                                     Lihat Detail
@@ -111,11 +119,11 @@
             <div class="mt-8">
                 {{ $products->links() }}
             </div>
+
         @else
             {{-- EMPTY STATE --}}
             <div class="flex flex-col items-center justify-center py-16 text-center">
-                <div
-                    class="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center mb-4">
+                <div class="w-16 h-16 rounded-full bg-orange-50 flex items-center justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-orange-400" fill="none"
                          viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

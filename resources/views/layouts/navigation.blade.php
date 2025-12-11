@@ -33,7 +33,7 @@
                         Beranda
                     </a>
 
-                    <a href="{{ route('products.search') }}"
+                    <a href="{{ route('products.index') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium">
                         Produk
                     </a>
@@ -86,7 +86,7 @@
                     </a>
 
 
-                    <a href="{{ route('products.search') }}"
+                    <a href="{{ route('products.index') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium">
                         Produk
                     </a>

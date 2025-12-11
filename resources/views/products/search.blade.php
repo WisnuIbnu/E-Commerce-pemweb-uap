@@ -24,17 +24,27 @@
                     <a href="{{ route('product.show', $product->slug) }}"
                        class="bg-white rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition p-0 overflow-hidden block">
 
-                        @php
-                            $thumb = $product->productImages->first()
-                                ? asset('storage/' . $product->productImages->first()->image)
-                                : 'https://via.placeholder.com/400';
-                        @endphp
-
                         {{-- GAMBAR PRODUK --}}
                         <div class="relative">
-                            <img src="{{ $thumb }}" 
-                                 alt="{{ $product->name }}"
-                                 class="w-full h-40 object-cover">
+
+                            @php
+                                $firstImage = $product->productImages->first();
+                            @endphp
+
+                            @if($firstImage)
+                                {{-- Jika ada gambar --}}
+                                <img src="{{ asset('storage/' . $firstImage->image) }}"
+                                     alt="{{ $product->name }}"
+                                     class="w-full h-40 object-cover">
+                            @else
+                                {{-- DEFAULT FOTO --}}
+                                <div class="w-full h-40 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                                    <svg class="w-14 h-14 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                    </svg>
+                                </div>
+                            @endif
 
                             @if($product->productCategory)
                                 <span class="absolute top-2 left-2 bg-white/90 text-[10px] px-2 py-1 rounded-full shadow text-gray-700">
@@ -88,6 +98,7 @@
                 </div>
 
                 <h2 class="text-lg font-semibold text-gray-800 mb-1">Tidak ada produk yang cocok</h2>
+
                 <p class="text-gray-500 text-sm max-w-sm">
                     Coba gunakan kata kunci lain atau periksa ejaan pencarian Anda.
                 </p>
