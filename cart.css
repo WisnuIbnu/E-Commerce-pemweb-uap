@@ -1,0 +1,20 @@
+/* GLOBAL BACKGROUND */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #00FFE1 0%, #000 60%);
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    color: #fff;
+}
+
+.cart-list { 
+    max-width: 800px; 
+    margin: 40px auto; 
+    padding: 30px; 
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #00FFE1;
+    border-radius: 12px;
+    color: #fff;
+}

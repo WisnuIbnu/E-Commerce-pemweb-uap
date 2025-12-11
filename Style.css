@@ -1,0 +1,194 @@
+/* ================================
+   GLOBAL RESET
+================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================================
+   BODY (FULL HEIGHT + GRADIENT)
+================================ */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    font-family: Arial, sans-serif;
+    color: #fff;
+
+    background: linear-gradient(135deg, #00FFE1 0%, #000 60%);
+    background-attachment: fixed;
+
+    /* ruang default dihilangkan karena main akan diberi padding */
+    padding: 0;
+}
+
+/* ================================
+   NAVBAR FIXED AT TOP
+================================ */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 15px 40px;
+    z-index: 9999;
+
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 2px solid #00FFE1;
+    box-shadow: 0 4px 20px rgba(0, 255, 225, 0.3);
+}
+
+/* LOGO + BRAND */
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-title img {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+
+.logo-title h1,
+.logo-title h2,
+.brand {
+    color: #00FFE1;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+/* NAVIGATION MENU */
+.nav-menu {
+    display: flex;
+    gap: 25px;
+}
+
+.nav-menu a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    transition: 0.3s;
+    border-radius: 4px;
+}
+
+.nav-menu a:hover {
+    background: #00FFE1;
+    color: #000;
+}
+
+/* LOGOUT BUTTON */
+.logout {
+    background: #00FFE1;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout:hover {
+    background: #00d4ba;
+    transform: scale(1.05);
+}
+
+/* ================================
+   MAIN CONTENT — TIDAK KETUTUP NAVBAR
+================================ */
+.main-content {
+    padding-top: 120px; /* supaya konten turun dari navbar */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ================================
+   TABLE
+================================ */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0,0,0,0.50);
+    border: 1px solid #00FFE1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table th {
+    background: rgba(0,0,0,0.85);
+    padding: 12px;
+    color: #00FFE1;
+    text-align: center;
+}
+
+.data-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+}
+
+/* STATUS BADGE */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+.status-badge.selesai {
+    background: #00c853;
+}
+
+.status-badge.dibatalkan {
+    background: #ff1744;
+}
+
+/* ================================
+   FOOTER — SELALU MENEMPEL DI BAWAH
+================================ */
+.footer {
+    background: rgba(0, 0, 0, 0.95);
+    border-top: 2px solid #00FFE1;
+    padding: 25px;
+    text-align: center;
+
+    margin-top: auto; /* ini yang bikin nempel bawah */
+}
+
+.footer p {
+    color: white !important;
+    margin: 0;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px 20px;
+        gap: 10px;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .main-content {
+        padding-top: 150px;
+    }
+}

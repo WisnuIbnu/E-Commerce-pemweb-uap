@@ -1,0 +1,456 @@
+/* ===================================
+   FILE: dashboard.css
+   Styles khusus untuk dashboard customer
+   =================================== */
+
+/* --- NAVBAR --- */
+.navbar {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 255, 225, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.brand {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0;
+    color: #fff;
+}
+
+.brand .gm,
+.brand .mart {
+    color: #fff;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.nav-menu a:hover {
+    background: #00FFE1;
+    color: #000;
+}
+
+.logout {
+    background: #00FFE1;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1em;
+}
+
+.logout:hover {
+    background: #00d4ba;
+    transform: scale(1.05);
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px 40px 20px;
+    flex: 1;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    padding: 40px 30px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 30px rgba(0, 255, 225, 0.2);
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.hero-image {
+    flex: 0 0 auto;
+    max-width: 450px;
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 255, 225, 0.3);
+}
+
+.hero-text {
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-text h1 {
+    font-size: 3em;
+    margin-bottom: 15px;
+    color: #00FFE1;
+    text-shadow: 0 0 20px rgba(0, 255, 225, 0.5);
+}
+
+.hero-text p {
+    font-size: 1.3em;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.hero-text .gm {
+    color: #00FFE1;
+    font-weight: 700;
+}
+
+/* --- FLASH SALE SECTION --- */
+.flash-sale {
+    text-align: center;
+    padding: 40px 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    margin-bottom: 40px;
+    border: 2px solid #ff5555;
+}
+
+.flash-sale h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #00FFE1;
+    text-shadow: 0 0 15px rgba(0, 255, 225, 0.5);
+}
+
+.sale-timer {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+.sale-timer strong {
+    color: #ff5555;
+    font-size: 1.1em;
+}
+
+/* --- PRODUCT CARDS --- */
+.product-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00FFE1;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 40px rgba(0, 255, 225, 0.4);
+}
+
+.product-card.featured {
+    border: 3px solid #ff5555;
+    max-width: 350px;
+    box-shadow: 0 8px 30px rgba(255, 85, 85, 0.3);
+}
+
+.product-card.featured:hover {
+    box-shadow: 0 12px 50px rgba(255, 85, 85, 0.5);
+}
+
+.badge-discount {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff5555;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.9em;
+    z-index: 10;
+}
+
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: #111;
+    padding: 10px;
+}
+
+.product-card h3 {
+    color: #00FFE1;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    min-height: 40px;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #888;
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+.discounted-price {
+    color: #00FFE1;
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.btn-buy,
+.btn-cart {
+    display: inline-block;
+    background: #00FFE1;
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 700;
+    margin-top: 10px;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-buy:hover,
+.btn-cart:hover {
+    background: #00d4ba;
+    transform: scale(1.05);
+}
+
+.btn-buy {
+    background: #ff5555;
+}
+
+.btn-buy:hover {
+    background: #ff3333;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: opacity 0.3s;
+}
+
+.btn-danger:hover {
+    opacity: 0.8;
+}
+
+/* --- DISCOUNT PRODUCTS SECTION --- */
+.discount-products {
+    padding: 40px 20px;
+}
+
+.discount-products h2 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: #00FFE1;
+    text-shadow: 0 0 15px rgba(0, 255, 225, 0.5);
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* --- DATA TABLE --- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.data-table th {
+    background-color: #0d0d0d;
+    color: #00FFE1;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.data-table td {
+    color: #f0f0f0;
+    font-size: 0.95em;
+}
+
+.data-table tr:hover {
+    background-color: rgba(0, 255, 225, 0.1);
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.85em;
+    display: inline-block;
+}
+
+.status-badge.selesai,
+.status-badge.completed {
+    background: #28a745;
+    color: #fff;
+}
+
+.status-badge.dibatalkan,
+.status-badge.cancelled {
+    background: #dc3545;
+    color: #fff;
+}
+
+.status-badge.pending {
+    background: #ffc107;
+    color: #000;
+}
+
+/* --- FOOTER STICKY + PUTIH --- */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.95);
+    margin-top: auto;
+    border-top: 2px solid #00FFE1;
+}
+
+.footer p {
+    color: #fff !important;
+    margin: 0;
+    font-size: 0.95em;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .nav-menu a {
+        font-size: 0.9em;
+        padding: 6px 12px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-image {
+        max-width: 100%;
+    }
+
+    .hero-text h1 {
+        font-size: 2em;
+    }
+
+    .hero-text p {
+        font-size: 1em;
+    }
+
+    .flash-sale h2,
+    .discount-products h2 {
+        font-size: 1.8em;
+    }
+
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-card,
+    .product-card.featured {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand {
+        font-size: 1.4em;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .hero-text h1 {
+        font-size: 1.5em;
+    }
+
+    .flash-sale h2,
+    .discount-products h2 {
+        font-size: 1.5em;
+    }
+
+    .product-card h3 {
+        font-size: 1.1em;
+    }
+
+    .discounted-price {
+        font-size: 1.3em;
+    }
+}

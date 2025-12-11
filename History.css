@@ -1,0 +1,93 @@
+/* FILE: history.css */
+
+.history-container { 
+    max-width: 900px; 
+    margin: 40px auto; 
+    padding: 20px; 
+}
+
+/* ALERT */
+.alert-success {
+    background: #00A85A;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(0,255,225,0.25);
+}
+
+/* CARD */
+.history-card { 
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #00FFE1; 
+    padding: 25px; 
+    margin-bottom: 30px; 
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,255,225,0.25);
+    color: #fff;
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #00FFE1;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.history-card h3 {
+    color: #00FFE1;
+}
+
+.history-card p {
+    color: #ccc;
+}
+
+.history-card strong {
+    color: #00FFE1;
+}
+
+/* ITEM LIST */
+.history-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px dotted rgba(255,255,255,0.3);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.item-image {
+    width: 60px;
+    height: 60px;
+    background: #111;
+    object-fit: contain;
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.item-details {
+    flex-grow: 1;
+}
+
+.transaction-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 2px solid #00FFE1;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.transaction-footer p:last-child {
+    color: #00FFE1;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #bbb;
+    margin-top: 50px;
+}
