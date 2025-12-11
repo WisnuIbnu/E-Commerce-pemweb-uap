@@ -6,12 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductReview extends Model
 {
-    protected $fillable = [
-        'transaction_id',
-        'product_id',
-        'rating',
-        'review',
-    ];
+    protected $fillable = ['transaction_id', 'product_id', 'rating', 'review'];
 
     public function transaction()
     {
@@ -21,5 +16,10 @@ class ProductReview extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function buyer()
+    {
+        return $this->belongsTo(Buyer::class);
     }
 }

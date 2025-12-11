@@ -2,24 +2,50 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
+        // Create Admin
+        User::create([
+            'name' => 'Admin SORAE',
+            'email' => 'admin@sorae.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin',
         ]);
+        
+        // Create Seller
+        User::create([
+            'name' => 'Seller Demo',
+            'email' => 'seller@sorae.com',
+            'password' => Hash::make('password'),
+            'role' => 'seller',
+        ]);
+        
+        // Create Buyer
+        User::create([
+            'name' => 'Buyer Demo',
+            'email' => 'buyer@sorae.com',
+            'password' => Hash::make('password'),
+            'role' => 'buyer',
+        ]);
+        
+        // Create Categories
+        $categories = [
+            ['name' => 'Women Fashion', 'slug' => 'women-fashion'],
+            ['name' => 'Men Fashion', 'slug' => 'men-fashion'],
+            ['name' => 'Accessories', 'slug' => 'accessories'],
+            ['name' => 'Shoes', 'slug' => 'shoes'],
+            ['name' => 'Bags', 'slug' => 'bags'],
+        ];
+        
+        foreach ($categories as $category) {
+            ProductCategory::create($category);
+        }
     }
 }

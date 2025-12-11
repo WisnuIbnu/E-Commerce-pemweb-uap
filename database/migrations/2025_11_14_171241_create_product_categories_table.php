@@ -8,28 +8,21 @@ use function Laravel\Prompts\text;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('product_categories', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->cascadeOnDelete();
-            $table->string('image')->nullable();
+            $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('tagline')->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
+            $table->string('icon')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('product_categories');
     }
 };
+
