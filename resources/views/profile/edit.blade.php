@@ -13,6 +13,7 @@
             @php
                 $user = auth()->user();
                 $initial = $user ? mb_strtoupper(mb_substr($user->name ?? 'A', 0, 1)) : 'A';
+                $phoneNumber = optional($user->buyer)->phone_number;
             @endphp
 
             {{-- mini badge profil di header --}}
@@ -27,6 +28,11 @@
                     <span class="text-xs text-gray-500">
                         {{ $user->email }}
                     </span>
+                    @if ($phoneNumber)
+                        <span class="text-xs text-gray-400">
+                            {{ $phoneNumber }}
+                        </span>
+                    @endif
                 </div>
             </div>
         </div>
@@ -37,12 +43,12 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                {{-- Kolom kiri: info singkat --}}
+                {{-- Kolom kiri --}}
                 <div class="space-y-4">
                     <div class="bg-white rounded-xl shadow-sm p-4">
                         <h3 class="text-sm font-semibold text-gray-800 mb-2">Profil Akun</h3>
                         <p class="text-xs text-gray-500 leading-relaxed">
-                            Ubah nama dan email akun kamu. Informasi ini akan digunakan di seluruh sistem Sembako Mart.
+                            Ubah nama, email, dan nomor HP akun kamu. Informasi ini akan digunakan di seluruh sistem Sembako Mart.
                         </p>
                     </div>
 
@@ -64,7 +70,7 @@
                     </div>
                 </div>
 
-                {{-- Kolom kanan: form profil + password (+ optional delete) --}}
+                {{-- Kolom kanan --}}
                 <div class="lg:col-span-2 space-y-6">
 
                     {{-- Informasi Profil --}}
@@ -73,15 +79,61 @@
                             <div>
                                 <h3 class="text-base font-semibold text-gray-800">Informasi Profil</h3>
                                 <p class="text-xs text-gray-500">
-                                    Perbarui nama dan alamat email akun kamu.
+                                    Perbarui nama, email, dan nomor HP akun kamu.
                                 </p>
                             </div>
                         </div>
 
-                        @include('profile.partials.update-profile-information-form')
+                        {{-- === FORM UPDATE PROFILE FULL === --}}
+                        @php
+                            $buyerPhone = old('phone_number', optional($user->buyer)->phone_number);
+                        @endphp
+
+                        <form method="post" action="{{ route('profile.update') }}" class="space-y-6">
+                            @csrf
+                            @method('patch')
+
+                            {{-- Name --}}
+                            <div>
+                                <x-input-label for="name" value="Name" />
+                                <x-text-input id="name" name="name" type="text"
+                                    class="mt-1 block w-full"
+                                    :value="old('name', $user->name)"
+                                    required autofocus />
+                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                            </div>
+
+                            {{-- Email --}}
+                            <div>
+                                <x-input-label for="email" value="Email" />
+                                <x-text-input id="email" name="email" type="email"
+                                    class="mt-1 block w-full"
+                                    :value="old('email', $user->email)"
+                                    required />
+                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                            </div>
+
+                            {{-- Nomor HP --}}
+                            <div>
+                                <x-input-label for="phone_number" value="Nomor HP" />
+                                <x-text-input id="phone_number" name="phone_number" type="text"
+                                    class="mt-1 block w-full"
+                                    :value="$buyerPhone"
+                                    autocomplete="tel" />
+                                <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <x-primary-button>Simpan</x-primary-button>
+
+                                @if (session('status') === 'profile-updated')
+                                    <p class="text-sm text-gray-600">Tersimpan.</p>
+                                @endif
+                            </div>
+                        </form>
                     </div>
 
-                    {{-- Update Password --}}
+                    {{-- Update password --}}
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div>
@@ -95,18 +147,10 @@
                         @include('profile.partials.update-password-form')
                     </div>
 
-                    {{-- Hapus Akun (kalau partial-nya memang ada) --}}
+                    {{-- Hapus Akun --}}
                     @if (View::exists('profile.partials.delete-user-form'))
                         <div class="bg-white rounded-xl shadow-sm p-6 border border-red-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h3 class="text-base font-semibold text-red-600">Hapus Akun</h3>
-                                    <p class="text-xs text-red-500">
-                                        Tindakan ini permanen. Semua data terkait akun akan dihapus.
-                                    </p>
-                                </div>
-                            </div>
-
+                            <h3 class="text-base font-semibold text-red-600 mb-2">Hapus Akun</h3>
                             @include('profile.partials.delete-user-form')
                         </div>
                     @endif

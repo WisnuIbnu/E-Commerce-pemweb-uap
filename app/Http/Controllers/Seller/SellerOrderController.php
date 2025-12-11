@@ -45,7 +45,7 @@ class SellerOrderController extends Controller
             abort(403);
         }
 
-        $order->load(['buyer', 'details']); 
+        $order->load(['buyer', 'details']);
 
         return view('seller.orders.show', compact('store', 'order'));
     }
@@ -61,15 +61,17 @@ class SellerOrderController extends Controller
             abort(403);
         }
 
+        // Field yang dikirim dari form: "status" & "tracking_number"
         $validated = $request->validate([
-            'shipping'         => ['nullable', 'string', 'max:255'],
-            'shipping_type'    => ['nullable', 'string', 'max:50'],
-            'tracking_number'  => ['nullable', 'string', 'max:255'],
-            'payment_status'   => ['required', 'in:pending,paid,shipped,completed,cancelled'],
-            // list status silakan kamu sesuaikan sendiri
+            'status'          => ['required', 'in:pending,processing,shipped,completed,cancelled'],
+            'tracking_number' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $order->fill($validated);
+        // ⬇️ DI SINI yang penting:
+        // Form pakai "status", tapi di DB kolomnya "payment_status"
+        $order->payment_status  = $validated['status'];
+        $order->tracking_number = $validated['tracking_number'] ?? null;
+
         $order->save();
 
         return redirect()

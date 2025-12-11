@@ -17,11 +17,24 @@
                 }
                 @endphp
 
-                <a href="{{ $logoHref }}" class="flex items-center gap-2">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png"
-                        class="h-8 w-8" alt="Logo">
-                    <span class="text-xl font-bold text-orange-400">Sembako Mart</span>
+                <a href="{{ $logoHref }}" class="flex items-center gap-2 group">
+                    {{-- Icon logo --}}
+                    <span
+                        class="inline-flex items-center justify-center w-9 h-9 rounded-2xl bg-orange-500/90 group-hover:bg-orange-500 transition">
+                        <img src="{{ asset('images/sembako-logo.svg') }}" alt="Sembako Mart" class="w-6 h-6">
+                    </span>
+
+                    {{-- Text logo --}}
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-sm sm:text-base font-bold tracking-tight text-gray-900">
+                            Sembako <span class="text-orange-500">Mart</span>
+                        </span>
+                        <!-- <span class="hidden sm:block text-[11px] text-gray-400">
+                            Belanja Hemat Setiap Hari
+                        </span> -->
+                    </div>
                 </a>
+
 
                 {{-- NAV LINKS --}}
                 <div class="hidden sm:flex sm:items-center sm:ml-10 space-x-6">
@@ -87,7 +100,8 @@
 
 
                     <a href="{{ route('products.index') }}"
-                        class="text-gray-700 hover:text-orange-400 font-medium">
+                        class="text-gray-700 hover:text-orange-400 font-medium
+                               {{ request()->routeIs('products.*') ? 'text-orange-500 font-semibold' : '' }}">
                         Produk
                     </a>
 

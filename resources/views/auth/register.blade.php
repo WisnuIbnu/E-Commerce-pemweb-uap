@@ -18,6 +18,15 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        {{-- ➤ Field baru : Nomor HP --}}
+        <div class="mt-4">
+            <x-input-label for="phone_number" value="Nomor HP" />
+            <x-text-input id="phone_number" class="block mt-1 w-full"
+                type="text" name="phone_number"
+                :value="old('phone_number')" required autocomplete="tel" />
+            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+        </div>
+
         <div class="mt-4">
             <x-input-label for="role" value="Daftar sebagai" />
 

@@ -30,4 +30,9 @@ class Buyer extends Model
     {
         return $this->hasMany(Transaction::class, 'buyer_id');
     }
+
+    public function buyer()
+    {
+        return $this->hasOne(Buyer::class);
+    }
 }

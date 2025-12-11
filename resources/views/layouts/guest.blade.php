@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- Favicon baru --}}
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/sembako-logo.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/sembako-logo.svg') }}">
+
     <title>{{ config('app.name', 'Sembako Mart') }}</title>
 
     <!-- Fonts -->
