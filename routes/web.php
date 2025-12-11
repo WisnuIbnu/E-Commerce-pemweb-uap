@@ -5,6 +5,8 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\WithdrawalController;
+use App\Http\Controllers\StoreBalanceController;
+use App\Http\Controllers\StoreBalanceHistoryController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/withdrawal/store', [WithdrawalController::class, 'store'])->name('withdrawal.store');
     Route::get('/withdrawal/{withdrawal}/edit', [WithdrawalController::class, 'edit'])->name('withdrawal.edit');
     Route::patch('/withdrawal/edit', [WithdrawalController::class, 'update'])->name('withdrawal.update');
+
+    Route::get('/store/balance/history', [StoreBalanceHistoryController::class, 'view'])->name('balance.history');
 });
 
 require __DIR__.'/auth.php';

@@ -30,6 +30,9 @@
                             <x-nav-link :href="route('store.edit')" :active="request()->routeIs('store.edit')">
                                 {{ __('Store Settings') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('balance.history')" :active="request()->routeIs('balance.history')">
+                                {{ __('Store Balance') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('withdrawal.create')" :active="request()->routeIs('withdrawal.create')">
                                 {{ __('Withdrawal Request') }}
                             </x-nav-link>
