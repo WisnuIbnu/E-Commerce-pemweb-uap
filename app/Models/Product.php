@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use App\Models\ProductImage;
+use App\Models\ProductCategory;
+use App\Models\Store;
+use App\Models\ProductReview;
+use App\Models\TransactionDetail;
 
 class Product extends Model
 {
@@ -13,105 +17,88 @@ class Product extends Model
         'name',
         'slug',
         'description',
-        'condition', // new or second (sesuai DB)
+        'condition',
         'price',
-        'weight', // gram
-        'stock',
+        'weight',
+        'stock'
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2', // Sesuai DB decimal(26,2)
-        'weight' => 'integer',
-        'stock' => 'integer',
-    ];
+    // Append accessor otomatis
+    protected $appends = ['average_rating', 'reviews_count', 'sold'];
 
-    protected static function boot()
+    /**
+     * Scope: hanya produk yang stoknya > 0
+     */
+    public function scopeInStock($query)
     {
-        parent::boot();
-        
-        static::creating(function ($product) {
-            if (empty($product->slug)) {
-                $product->slug = Str::slug($product->name);
-            }
-            
-            // Default condition untuk snack adalah 'new'
-            if (empty($product->condition)) {
-                $product->condition = 'new';
-            }
-        });
+        return $query->where('stock', '>', 0);
     }
 
-    // Relationships
-    public function store()
+    /**
+     * Accessor: Rata-rata rating
+     */
+    public function getAverageRatingAttribute()
     {
-        return $this->belongsTo(Store::class);
+        return $this->reviews()->avg('rating') ?? 4.5;
     }
 
-    public function category()
+    /**
+     * Accessor: Jumlah review
+     */
+    public function getReviewsCountAttribute()
     {
-        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+        return $this->reviews()->count();
     }
 
+    /**
+     * Accessor: Total produk terjual
+     */
+    public function getSoldAttribute()
+    {
+        return $this->transactionDetails()->sum('qty') ?? 0;
+    }
+
+    // ==============================
+    // RELATIONS
+    // ==============================
+
+    /**
+     * Gambar produk
+     */
     public function images()
     {
         return $this->hasMany(ProductImage::class);
     }
 
+    /**
+     * Kategori produk
+     */
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
+    /**
+     * Toko pemilik produk
+     */
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
+    /**
+     * Review produk
+     */
     public function reviews()
     {
-        return $this->hasMany(ProductReview::class);
+        return $this->hasMany(ProductReview::class, 'product_id');
     }
 
+    /**
+     * Detail transaksi (produk terjual)
+     */
     public function transactionDetails()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'product_id');
     }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    // Accessors
-    public function getThumbnailAttribute()
-    {
-        $thumbnail = $this->images()->where('is_thumbnail', true)->first();
-        
-        if ($thumbnail) {
-            return $thumbnail->image_url;
-        }
-        
-        $firstImage = $this->images()->first();
-        if ($firstImage) {
-            return $firstImage->image_url;
-        }
-        
-        return 'https://via.placeholder.com/300x300/98bad5/ffffff?text=Snack';
-    }
-
-    public function getAverageRatingAttribute()
-    {
-        return round($this->reviews()->avg('rating') ?? 4.5, 1);
-    }
-
-    public function getTotalReviewsAttribute()
-    {
-        return $this->reviews()->count();
-    }
-
-    public function getFormattedPriceAttribute()
-    {
-        return 'Rp ' . number_format($this->price, 0, ',', '.');
-    }
-
-    public function getIsAvailableAttribute()
-    {
-        return $this->stock > 0;
-    }
-
-    public function getConditionTextAttribute()
-    {
-        return $this->condition === 'new' ? 'Baru' : 'Bekas';
-    }
-    
 }

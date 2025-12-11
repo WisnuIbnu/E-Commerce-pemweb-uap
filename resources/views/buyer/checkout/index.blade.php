@@ -23,7 +23,7 @@
                     @foreach($items as $item)
                         <div style="display: flex; gap: 16px; padding: 16px; margin-bottom: 12px; background: var(--gray-50); border-radius: 8px; border: 1px solid var(--accent-light);">
                             @if($item->product->images && $item->product->images->count() > 0)
-                                <img src="{{ asset('storage/' . $item->product->images->first()->image_url) }}" 
+                                <img src="{{ $item->product->images->first()->image_url }}" 
                                      style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
                             @else
                                 <div style="width: 80px; height: 80px; background: var(--gray-100); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--gray-400); flex-shrink: 0;">

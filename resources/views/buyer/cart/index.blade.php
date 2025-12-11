@@ -19,7 +19,7 @@
                         <!-- Product Image -->
                         <div style="flex-shrink: 0;">
                             @if($item->product->images && $item->product->images->count() > 0)
-                                <img src="{{ asset('storage/' . $item->product->images->first()->image_url) }}" 
+                                <img src="{{ $item->product->images->first()->image_url }}" 
                                      alt="{{ $item->product->name }}"
                                      style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
                             @else

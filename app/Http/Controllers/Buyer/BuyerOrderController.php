@@ -10,128 +10,84 @@ class BuyerOrderController extends Controller
 {
     public function index()
     {
-        $buyerId = auth()->user()->buyer->id ?? null;
+        $buyer = auth()->user()->buyer;
         
-        if (!$buyerId) {
+        if (!$buyer) {
             return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
+                ->with('error', 'Buyer profile not found');
         }
 
-        // Ambil orders dengan pagination (15 per halaman)
-        $orders = Transaction::where('buyer_id', $buyerId)
-            ->with('transactionDetails.product.images') // Eager load details dan product
+        // Fetch orders with related transaction details, product images, and store
+        $orders = Transaction::with(['transactionDetails.product.images', 'store'])
+            ->where('buyer_id', $buyer->id)
             ->latest()
-            ->paginate(15);
-        
-        return view('buyer.orders.index', compact('orders'));
+            ->paginate(10); // Paginate results
+
+        return view('buyer.orders.index', compact('orders')); // Pass orders to the view
     }
-    
+
     public function show($id)
     {
-        $buyerId = auth()->user()->buyer->id ?? null;
-
-        if (!$buyerId) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
-        }
-
-        // Cari transaction berdasarkan ID dan buyer_id
-        $order = Transaction::where('buyer_id', $buyerId)
-            ->with('transactionDetails.product.images', 'store')
-            ->findOrFail($id);
+        $buyer = auth()->user()->buyer;
         
+        $order = Transaction::with(['transactionDetails.product.images', 'store'])
+            ->where('buyer_id', $buyer->id)
+            ->findOrFail($id);
+
         return view('buyer.orders.show', compact('order'));
     }
-    
+
+    public function payment(Request $request, $id)
+    {
+        $buyer = auth()->user()->buyer;
+        
+        $order = Transaction::where('buyer_id', $buyer->id)
+            ->where('payment_status', 'unpaid')
+            ->findOrFail($id);
+
+        // Simulate payment by updating the status
+        $order->update([
+            'payment_status' => 'paid',
+        ]);
+
+        return redirect()->route('buyer.orders.show', $order->id)
+            ->with('success', 'Pembayaran berhasil! Pesanan sedang diproses.');
+    }
+
     public function cancel($id)
     {
-        $buyerId = auth()->user()->buyer->id ?? null;
+        $buyer = auth()->user()->buyer;
+        
+        $order = Transaction::where('buyer_id', $buyer->id)
+            ->where('payment_status', 'unpaid')
+            ->findOrFail($id);
 
-        if (!$buyerId) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
+        // Return stock to the product
+        foreach ($order->transactionDetails as $detail) {
+            $detail->product->increment('stock', $detail->qty);
         }
 
-        try {
-            $order = Transaction::where('buyer_id', $buyerId)
-                ->findOrFail($id);
+        $order->update([
+            'payment_status' => 'cancelled',
+        ]);
 
-            // Hanya bisa cancel kalau status unpaid
-            if ($order->payment_status !== 'unpaid') {
-                return redirect()->back()
-                    ->with('error', 'Hanya pesanan yang belum dibayar yang bisa dibatalkan');
-            }
-
-            // Jangan ubah payment_status, hapus dari database saja
-            $order->delete();
-
-            return redirect()->route('buyer.orders.index')
-                ->with('success', 'Pesanan berhasil dibatalkan');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        return redirect()->route('buyer.orders.index')
+            ->with('success', 'Pesanan berhasil dibatalkan');
     }
-    
+
     public function confirmReceived($id)
     {
-        $buyerId = auth()->user()->buyer->id ?? null;
+        $buyer = auth()->user()->buyer;
+        
+        $order = Transaction::where('buyer_id', $buyer->id)
+            ->where('payment_status', 'shipped')
+            ->findOrFail($id);
 
-        if (!$buyerId) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
-        }
+        $order->update([
+            'payment_status' => 'completed',
+        ]);
 
-        try {
-            $order = Transaction::where('buyer_id', $buyerId)
-                ->findOrFail($id);
-
-            // Hanya bisa confirm kalau status paid (sudah bayar)
-            if ($order->payment_status !== 'paid') {
-                return redirect()->back()
-                    ->with('error', 'Hanya pesanan yang sudah dibayar yang bisa dikonfirmasi');
-            }
-
-            $order->update(['payment_status' => 'paid']); // Keep as paid, just mark as confirmed
-
-            return redirect()->route('buyer.orders.show', $order->id)
-                ->with('success', 'Pesanan dikonfirmasi diterima');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    public function payment($id)
-    {
-        $buyerId = auth()->user()->buyer->id ?? null;
-
-        if (!$buyerId) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
-        }
-
-        try {
-            $order = Transaction::where('buyer_id', $buyerId)
-                ->findOrFail($id);
-
-            // Hanya bisa bayar kalau status unpaid
-            if ($order->payment_status !== 'unpaid') {
-                return redirect()->back()
-                    ->with('error', 'Pesanan ini sudah dibayar atau dibatalkan');
-            }
-
-            // Update payment status menjadi paid
-            $order->update(['payment_status' => 'paid']);
-
-            return redirect()->route('buyer.orders.show', $order->id)
-                ->with('success', 'Pembayaran berhasil! Pesanan sedang diproses');
-
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
+        return redirect()->route('buyer.orders.show', $order->id)
+            ->with('success', 'Pesanan dikonfirmasi diterima. Silakan beri review!');
     }
 }

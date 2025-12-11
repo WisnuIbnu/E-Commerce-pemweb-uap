@@ -3,83 +3,39 @@
 namespace App\Http\Controllers\Buyer;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Order;
-use App\Models\Product;
+use App\Models\CartItem;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
-use App\Models\Buyer;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class BuyerCheckoutController extends Controller
 {
-    const CART_STATUS = 'cart';
-
-    public function index(Request $request)
+    public function index()
     {
-        $user = auth()->user();
+        $buyer = auth()->user()->buyer;
 
-        // Handle "Beli Sekarang" - dari product detail page
-        if ($request->has('product_id') && $request->has('qty')) {
-            $product = Product::findOrFail($request->product_id);
-            $qty = intval($request->qty);
-
-            // Validasi
-            if ($qty < 1 || $qty > $product->stock) {
-                return redirect()
-                    ->route('buyer.products.show', $product->id)
-                    ->with('error', 'Jumlah produk tidak valid');
-            }
-
-            // Buat temporary item untuk checkout
-            $items = collect([
-                (object)[
-                    'id' => 0,
-                    'user_id' => $user->id,
-                    'product_id' => $product->id,
-                    'quantity' => $qty,
-                    'total_price' => $product->price * $qty,
-                    'product' => $product,
-                ]
-            ]);
-
-            session(['temp_checkout' => [
-                'product_id' => $product->id,
-                'qty' => $qty
-            ]]);
-        } else {
-            // Ambil dari keranjang (status = 'cart')
-            $items = $user->orders()
-                ->where('status', self::CART_STATUS)
-                ->with('product.store')
-                ->get();
-
-            if ($items->isEmpty()) {
-                return redirect()
-                    ->route('buyer.cart.index')
-                    ->with('error', 'Keranjang Anda masih kosong.');
-            }
+        if (!$buyer) {
+            return redirect()->route('buyer.dashboard')->with('error', 'Buyer profile not found');
         }
 
-        // Hitung subtotal
-        $subtotal = $items->sum(function($item) {
-            return $item->product->price * $item->quantity;
-        });
+        $items = CartItem::with(['product.images', 'product.store'])
+            ->where('buyer_id', $buyer->id)
+            ->get();
 
-        // Ambil alamat jika ada (sesuaikan dengan model Buyer)
-        $addresses = collect([]);
+        if ($items->isEmpty()) {
+            return redirect()->route('buyer.cart.index')->with('error', 'Keranjang kosong');
+        }
 
-        return view('buyer.checkout.index', compact('items', 'subtotal', 'addresses'));
+        return view('buyer.checkout.index', compact('items'));
     }
 
     public function placeOrder(Request $request)
     {
-        $user = $request->user();
-        $buyer = Buyer::where('user_id', $user->id)->firstOrFail();
-
-        // Validasi data
-        $validated = $request->validate([
+        $request->validate([
+            'receiver_name' => 'required|string|max:255',
+            'receiver_phone' => 'required|string|max:20',
             'shipping_address' => 'required|string',
             'city' => 'required|string|max:100',
             'postal_code' => 'required|string|max:10',
@@ -87,107 +43,83 @@ class BuyerCheckoutController extends Controller
             'payment_method' => 'required|in:transfer,ewallet,cod',
         ]);
 
-        // Tentukan items
-        $cartItems = null;
-        if (session('temp_checkout')) {
-            // Dari "Beli Sekarang"
-            $tempData = session('temp_checkout');
-            $product = Product::findOrFail($tempData['product_id']);
-            $qty = $tempData['qty'];
-
-            $cartItems = collect([
-                (object)[
-                    'id' => 0,
-                    'product_id' => $product->id,
-                    'quantity' => $qty,
-                    'product' => $product,
-                ]
-            ]);
-        } else {
-            // Dari keranjang
-            $cartItems = $user->orders()
-                ->where('status', self::CART_STATUS)
-                ->with('product.store')
-                ->get();
-        }
+        $buyer = auth()->user()->buyer;
+        $cartItems = CartItem::with('product')->where('buyer_id', $buyer->id)->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()
-                ->route('buyer.cart.index')
-                ->with('error', 'Keranjang Anda kosong');
+            return back()->with('error', 'Keranjang kosong');
         }
 
-        // Kelompokkan berdasarkan store
-        $transactionsByStore = $cartItems->groupBy(function($item) {
-            return $item->product->store_id;
-        });
-
-        // Biaya pengiriman
+        // Ongkir
         $shippingCosts = [
             'regular' => 15000,
             'express' => 25000,
             'same-day' => 35000,
         ];
-        $baseShippingCost = $shippingCosts[$validated['shipping_method']] ?? 15000;
-        $taxRate = 0.0;
 
-        DB::transaction(function () use (
-            $user, $buyer, $validated, $transactionsByStore, 
-            $baseShippingCost, $taxRate, $cartItems
-        ) {
-            foreach ($transactionsByStore as $storeId => $items) {
-                $subtotal = $items->sum(function($item) {
-                    return $item->product->price * $item->quantity;
-                });
+        $shippingCost = $shippingCosts[$request->shipping_method];
 
-                $shippingCost = $baseShippingCost;
-                $tax = $subtotal * $taxRate;
-                $grandTotal = $subtotal + $shippingCost + $tax;
+        // Group by store
+        $itemsByStore = $cartItems->groupBy('product.store_id');
 
-                // Buat transaction header
+        DB::beginTransaction();
+        try {
+            foreach ($itemsByStore as $storeId => $items) {
+
+                $subtotal = $items->sum(fn($item) => $item->product->price * $item->quantity);
+                $tax = $subtotal * 0.11;
+                $grandTotal = $subtotal + $tax + $shippingCost;
+
+                // INSERT TRANSACTION (FIXED)
                 $transaction = Transaction::create([
-                    'code' => 'TRX-' . Str::upper(Str::random(10)),
-                    'buyer_id' => $buyer->id,
-                    'store_id' => $storeId,
-                    'address_id' => '', // Set kosong dulu
-                    'address' => $validated['shipping_address'],
-                    'city' => $validated['city'],
-                    'postal_code' => $validated['postal_code'],
-                    'shipping' => $validated['shipping_method'],
-                    'shipping_type' => $validated['shipping_method'],
+                    'code'          => 'TRX-' . strtoupper(Str::random(10)),
+                    'buyer_id'      => $buyer->id,
+                    'store_id'      => $storeId,
+                    'receiver_name' => $request->receiver_name,
+                    'receiver_phone'=> $request->receiver_phone,
+                    'address'       => $request->shipping_address,
+
+                    // 🔥 FIX WAJIB — tabel butuh address_id
+                    'address_id'    => Str::uuid(),
+
+                    'city'          => $request->city,
+                    'postal_code'   => $request->postal_code,
+
+                    // 🔥 FIX WAJIB — tabel butuh shipping
+                    'shipping'      => $request->shipping_method,
+
+                    'shipping_type' => $request->shipping_method,
                     'shipping_cost' => $shippingCost,
-                    'tax' => $tax,
-                    'grand_total' => $grandTotal,
-                    'payment_status' => 'unpaid',
+                    'payment_method'=> $request->payment_method,
+                    'tax'           => $tax,
+                    'grand_total'   => $grandTotal,
+                    'payment_status'=> 'unpaid',
                 ]);
 
-                // Buat transaction details
+                // INSERT DETAIL
                 foreach ($items as $item) {
                     TransactionDetail::create([
                         'transaction_id' => $transaction->id,
-                        'product_id' => $item->product_id,
-                        'qty' => $item->quantity,
-                        'subtotal' => $item->product->price * $item->quantity,
+                        'product_id'     => $item->product_id,
+                        'qty'            => $item->quantity,
+                        'subtotal'       => $item->product->price * $item->quantity,
                     ]);
 
-                    // Update stock
-                    Product::where('id', $item->product_id)
-                        ->decrement('stock', $item->quantity);
-                }
+                    // Kurangi stok
+                    $item->product->decrement('stock', $item->quantity);
 
-                // Hapus dari cart (jika bukan dari "Beli Sekarang")
-                if (!session('temp_checkout')) {
-                    Order::whereIn('id', $items->pluck('id'))
-                        ->update(['status' => 'processed']);
+                    // Hapus item dari cart
+                    $item->delete();
                 }
             }
 
-            // Clear session
-            session()->forget('temp_checkout');
-        });
+            DB::commit();
+            return redirect()->route('buyer.orders.index')
+                ->with('success', 'Pesanan berhasil dibuat! Silakan lakukan pembayaran.');
 
-        return redirect()
-            ->route('buyer.orders.index')
-            ->with('success', 'Pesanan berhasil dibuat!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

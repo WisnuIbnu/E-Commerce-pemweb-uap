@@ -29,6 +29,8 @@ class Transaction extends Model
         'grand_total' => 'decimal:2',
     ];
 
+    // === RELATIONS ===
+
     public function buyer()
     {
         return $this->belongsTo(Buyer::class);
@@ -44,12 +46,7 @@ class Transaction extends Model
         return $this->belongsTo(Store::class);
     }
 
-    public function transactionDetails()
-    {
-        return $this->hasMany(TransactionDetail::class);
-    }
-
-    // Tambahkan alias ini untuk controller
+    // PAKAI INI SAJA (rapi)
     public function details()
     {
         return $this->hasMany(TransactionDetail::class);
@@ -59,4 +56,9 @@ class Transaction extends Model
     {
         return $this->hasMany(ProductReview::class);
     }
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class);
+    }
+
 }

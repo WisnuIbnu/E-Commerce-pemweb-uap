@@ -21,16 +21,17 @@
 
             <div class="form-group">
                 <label>Status Pengiriman</label>
-                <select name="shipping_status" class="form-input">
-                    <option value="pending">Pending</option>
-                    <option value="shipped">Dikirim</option>
-                    <option value="delivered">Selesai</option>
+                <select name="shipping_type" class="form-input">
+                    <option value="pending" {{ $order->shipping_type=='pending'?'selected':'' }}>Pending</option>
+                    <option value="shipped" {{ $order->shipping_type=='shipped'?'selected':'' }}>Dikirim</option>
+                    <option value="delivered" {{ $order->shipping_type=='delivered'?'selected':'' }}>Selesai</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label>Nomor Resi</label>
-                <input type="text" name="tracking_number" class="form-input">
+                <input type="text" name="tracking_number" class="form-input" 
+                       value="{{ $order->tracking_number }}">
             </div>
 
             <div class="form-actions">

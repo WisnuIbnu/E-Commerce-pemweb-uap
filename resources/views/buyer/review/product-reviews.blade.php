@@ -15,7 +15,7 @@
 
         <div style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); border: 1px solid var(--accent-light); display: flex; gap: 20px; align-items: start;">
             @if($product->images && $product->images->count() > 0)
-                <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" 
+                <img src="{{ $product->images->first()->image_url }}" 
                      alt="{{ $product->name }}"
                      style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
             @else

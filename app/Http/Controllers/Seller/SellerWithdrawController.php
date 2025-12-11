@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaction;
-use App\Models\Withdrawal;
 use Illuminate\Http\Request;
+use App\Models\Withdrawal;
 
 class SellerWithdrawController extends Controller
 {
@@ -13,22 +12,9 @@ class SellerWithdrawController extends Controller
     {
         $store = auth()->user()->store;
 
-        // Total revenue dari transaksi yang sudah dibayar
-        $totalRevenue = Transaction::where('payment_status', 'paid')
-            ->whereHas('transactionDetails', function ($q) use ($store) {
-                $q->whereHas('product', function ($q2) use ($store) {
-                    $q2->where('store_id', $store->id);
-                });
-            })
-            ->sum('grand_total');
-
-        // Total penarikan yang sudah approved
-        $totalWithdrawn = $store->withdrawals()
-            ->where('status', 'approved')
-            ->sum('amount');
-
-        // Saldo tersisa
-        $availableBalance = $totalRevenue - $totalWithdrawn;
+        // Ambil saldo dari tabel store_balances
+        $balance = $store->balance; 
+        $availableBalance = $balance ? $balance->balance : 0;
 
         return view('seller.withdraw.index', compact('store', 'availableBalance'));
     }
@@ -36,42 +22,32 @@ class SellerWithdrawController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'amount'         => 'required|numeric|min:50000',
-            'bank_name'      => 'required|string',
-            'account_name'   => 'required|string',
-            'account_number' => 'required|string',
+            'amount'          => 'required|numeric|min:1000',
+            'bank_name'       => 'required|string',
+            'account_name'    => 'required|string',
+            'account_number'  => 'required|string',
         ]);
 
         $store = auth()->user()->store;
+        $balance = $store->balance;
 
-        // Hitung ulang total revenue (paid only)
-        $totalRevenue = Transaction::where('payment_status', 'paid')
-            ->whereHas('transactionDetails', function ($q) use ($store) {
-                $q->whereHas('product', function ($q2) use ($store) {
-                    $q2->where('store_id', $store->id);
-                });
-            })
-            ->sum('grand_total');
+        if (!$balance) {
+            return back()->with('error', 'Saldo belum tersedia.');
+        }
 
-        $totalWithdrawn = $store->withdrawals()
-            ->where('status', 'approved')
-            ->sum('amount');
-
-        $availableBalance = $totalRevenue - $totalWithdrawn;
-
-        // Cek saldo
-        if ($request->amount > $availableBalance) {
+        // Pastikan saldo cukup
+        if ($request->amount > $balance->balance) {
             return back()->with('error', 'Saldo tidak mencukupi.');
         }
 
-        // Simpan withdraw baru
+        // Simpan withdraw
         Withdrawal::create([
-            'store_id'       => $store->id,
-            'amount'         => $request->amount,
-            'bank_name'      => $request->bank_name,
-            'account_name'   => $request->account_name,
-            'account_number' => $request->account_number,
-            'status'         => 'pending',
+            'store_balance_id'   => $balance->id,
+            'amount'             => $request->amount,
+            'bank_name'          => $request->bank_name,
+            'bank_account_name'  => $request->account_name,
+            'bank_account_number'=> $request->account_number,
+            'status'             => 'pending',
         ]);
 
         return redirect()->route('seller.withdraw.history')
@@ -82,10 +58,11 @@ class SellerWithdrawController extends Controller
     {
         $store = auth()->user()->store;
 
-        $withdrawals = $store->withdrawals()
+        $withdrawals = $store->balance
+            ->withdrawals()
             ->latest()
-            ->paginate(20);
+            ->get();
 
-        return view('seller.withdraw.history', compact('store', 'withdrawals'));
+        return view('seller.withdraw.history', compact('withdrawals'));
     }
 }

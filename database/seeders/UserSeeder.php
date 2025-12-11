@@ -6,64 +6,59 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Buyer;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Cek apakah admin sudah ada
-        $admin = User::where('email', 'admin@elshop.com')->first();
-        if (!$admin) {
-            User::create([
+        // 1. ADMIN (update jika sudah ada)
+        User::updateOrCreate(
+            ['email' => 'admin@elshop.com'], // unique column
+            [
                 'name' => 'Admin ELSHOP',
-                'email' => 'admin@elshop.com',
                 'email_verified_at' => now(),
                 'role' => 'admin',
                 'is_verified' => 1,
                 'password' => Hash::make('password'),
-            ]);
-        }
+            ]
+        );
 
-        // Membuat 3 Member / Buyers
+        // 2. BUYERS (updateOrCreate untuk aman)
         for ($i = 1; $i <= 3; $i++) {
-            $email = "buyer$i@test.com";
-            $user = User::where('email', $email)->first();
-            
-            // Cek apakah user sudah ada
-            if (!$user) {
-                $user = User::create([
+            $user = User::updateOrCreate(
+                ['email' => "buyer$i@test.com"],
+                [
                     'name' => "Buyer $i",
-                    'email' => $email,
                     'email_verified_at' => now(),
                     'role' => 'member',
                     'is_verified' => 1,
                     'password' => Hash::make('password'),
-                ]);
-            }
+                ]
+            );
 
-            // Membuat profil buyer
-            Buyer::create([
-                'user_id' => $user->id,
-                'profile_picture' => null,
-                'phone_number' => '0812345678' . $i,
-            ]);
+            Buyer::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'profile_picture' => null,
+                    'phone_number' => '0812345678' . $i,
+                ]
+            );
         }
 
-        // Membuat 3 Member / Sellers
+        // 3. SELLERS (aman dari duplicate)
         for ($i = 1; $i <= 3; $i++) {
-            $email = "seller$i@test.com";
-            // Cek apakah seller sudah ada
-            if (!User::where('email', $email)->exists()) {
-                User::create([
+            User::updateOrCreate(
+                ['email' => "seller$i@test.com"],
+                [
                     'name' => "Seller $i",
-                    'email' => $email,
                     'email_verified_at' => now(),
                     'role' => 'member',
                     'is_verified' => 1,
                     'password' => Hash::make('password'),
-                ]);
-            }
+                ]
+            );
         }
+
+        $this->command->info('✅ Users seeded: 1 Admin + 3 Buyers + 3 Sellers (SAFE MODE)');
     }
 }

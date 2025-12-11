@@ -31,8 +31,8 @@
                     <td>Rp {{ number_format($order->grand_total,0,',','.') }}</td>
 
                     <td>
-                        <span class="status-badge {{ $order->status }}">
-                            {{ ucfirst($order->status) }}
+                        <span class="status-badge {{ $order->shipping_type }}">
+                            {{ ucfirst($order->shipping_type) }}
                         </span>
                     </td>
 

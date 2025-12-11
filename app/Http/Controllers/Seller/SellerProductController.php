@@ -4,138 +4,78 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
-use App\Models\ProductImage;
-use App\Models\Store;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SellerProductController extends Controller
 {
     public function index()
     {
-        $store = Store::where('user_id', auth()->id())
-            ->where('is_verified', 1)
-            ->firstOrFail();
+        $store = auth()->user()->store;
+        $products = Product::where('store_id', $store->id)->get();
 
-        $products = Product::where('store_id', $store->id)
-            ->with('images')
-            ->latest()
-            ->paginate(10);
-
-        return view('seller.products.index', compact('products', 'store'));
+        return view('seller.products.index', compact('products'));
     }
 
     public function create()
     {
-        $store = auth()->user()->store;
-        return view('seller.products.create', compact('store'));
+        $categories = ProductCategory::orderBy('name')->get();
+        return view('seller.products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $store = auth()->user()->store;
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:1000',
-            'stock' => 'required|numeric|min:0',
-            'desc' => 'nullable|string',
-            'images.*' => 'image|mimes:jpg,jpeg,png|max:2048'
-        ]);
-
         $product = Product::create([
             'store_id' => $store->id,
+            'product_category_id' => $request->category,
             'name' => $request->name,
-            'price' => $request->price,
-            'stock' => $request->stock,
+            'slug' => \Str::slug($request->name),
             'description' => $request->desc,
+            'condition' => $request->condition,
+            'price' => $request->price,
+            'weight' => $request->weight,
+            'stock' => $request->stock,
+            'sold' => 0,
         ]);
 
-        // SIMPAN GAMBAR
-        if ($request->hasFile('images')) {
-            foreach ($request->images as $img) {
-                $path = $img->store('products', 'public');
-
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_url' => $path
-                ]);
-            }
-        }
-
-        return redirect()->route('seller.products.index')
-            ->with('success', 'Produk berhasil ditambahkan.');
+        return redirect()->route('seller.product.index')
+            ->with('success', 'Product created successfully.');
     }
 
-    public function edit(Product $product)
+    public function edit($id)
     {
-        $store = auth()->user()->store;
+        $product = Product::findOrFail($id);
+        $categories = ProductCategory::orderBy('name')->get();
 
-        if ($product->store_id !== $store->id) {
-            abort(403, 'Unauthorized');
-        }
-
-        return view('seller.products.edit', compact('product', 'store'));
+        return view('seller.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        $store = auth()->user()->store;
-
-        if ($product->store_id !== $store->id) {
-            abort(403, 'Unauthorized');
-        }
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:1000',
-            'stock' => 'required|numeric|min:0',
-            'desc' => 'nullable|string',
-            'images.*' => 'image|mimes:jpg,jpeg,png|max:2048'
-        ]);
+        $product = Product::findOrFail($id);
 
         $product->update([
+            'product_category_id' => $request->category,
             'name' => $request->name,
-            'price' => $request->price,
-            'stock' => $request->stock,
+            'slug' => \Str::slug($request->name),
             'description' => $request->desc,
+            'condition' => $request->condition,
+            'price' => $request->price,
+            'weight' => $request->weight,
+            'stock' => $request->stock,
         ]);
 
-        // TAMBAH GAMBAR BARU
-        if ($request->hasFile('images')) {
-            foreach ($request->images as $img) {
-                $path = $img->store('products', 'public');
-
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_url' => $path
-                ]);
-            }
-        }
-
-        return redirect()->route('seller.products.index')
-            ->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('seller.product.index')
+            ->with('success', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        $store = auth()->user()->store;
-
-        if ($product->store_id !== $store->id) {
-            abort(403, 'Unauthorized');
-        }
-
-        // HAPUS FILE GAMBAR
-        foreach ($product->images as $img) {
-            Storage::delete('public/' . $img->image_url);
-        }
-
-        // HAPUS RECORD GAMBAR
-        $product->images()->delete();
-
-        // HAPUS PRODUK
+        $product = Product::findOrFail($id);
         $product->delete();
 
-        return back()->with('success', 'Produk berhasil dihapus.');
+        return back()->with('success', 'Product deleted.');
     }
 }

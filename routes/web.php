@@ -137,6 +137,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             // ORDERS
             Route::get('/orders', [SellerOrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{id}', [SellerOrderController::class, 'show'])->name('orders.show');
+            Route::put('/orders/{id}', [SellerOrderController::class, 'update'])->name('orders.update');
             Route::patch('/orders/{id}/status', [SellerOrderController::class, 'updateStatus'])->name('orders.update-status');
 
             // BALANCE

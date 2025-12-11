@@ -13,12 +13,12 @@
             <div style="margin-bottom: 32px;">
                 <div style="background: var(--gray-50); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 400px;">
                     @if($product->images && $product->images->count() > 0)
-                        <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" 
+                        <img src="{{ $product->images->first()->image_url }}" 
                              alt="{{ $product->name }}" 
                              style="max-width: 100%; max-height: 500px; object-fit: contain;"
-                             onerror="this.src='https://placehold.co/500x500/1e3a5f/ffffff?text=No+Image'">
+                             onerror="this.src='https://via.placeholder.com/500x500/1e3a5f/ffffff?text=No+Image'">
                     @else
-                        <img src="https://placehold.co/500x500/1e3a5f/ffffff?text=No+Image" 
+                        <img src="https://via.placeholder.com/500x500/1e3a5f/ffffff?text=No+Image" 
                              alt="No Image" style="max-width: 100%; max-height: 500px; object-fit: contain;">
                     @endif
                 </div>
@@ -43,7 +43,7 @@
                 <!-- Rating -->
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--accent-light);">
                     <div style="display: flex; align-items: center; gap: 4px; color: var(--warning);">
-                        <span style="font-size: 1.125rem;">★★★★★</span>
+                        <span style="font-size: 1.125rem;">⭐⭐⭐⭐⭐</span>
                     </div>
                     <span style="font-weight: 600; color: var(--gray-700);">{{ $product->average_rating ?? '4.5' }}</span>
                     <span style="color: var(--gray-400);">|</span>
@@ -139,11 +139,11 @@
                     @foreach($relatedProducts->take(4) as $related)
                         <a href="{{ route('buyer.products.show', $related->id) }}" class="product-card">
                             @if($related->images && $related->images->count() > 0)
-                                <img src="{{ asset('storage/' . $related->images->first()->image_url) }}" 
+                                <img src="{{ $related->images->first()->image_url }}" 
                                      alt="{{ $related->name }}" class="product-image"
-                                     onerror="this.src='https://placehold.co/400x400/1e3a5f/ffffff?text=No+Image'">
+                                     onerror="this.src='https://via.placeholder.com/400x400/1e3a5f/ffffff?text=No+Image'">
                             @else
-                                <img src="https://placehold.co/400x400/1e3a5f/ffffff?text=No+Image" 
+                                <img src="https://via.placeholder.com/400x400/1e3a5f/ffffff?text=No+Image" 
                                      alt="{{ $related->name }}" class="product-image">
                             @endif
 
@@ -154,7 +154,7 @@
                                 </div>
                                 <div class="product-meta">
                                     <div class="product-rating">
-                                        <span>★</span>
+                                        <span>⭐</span>
                                         <span>{{ $related->average_rating ?? '4.5' }}</span>
                                     </div>
                                     <div class="product-sold">{{ $related->sold ?? rand(50, 500) }}+ terjual</div>

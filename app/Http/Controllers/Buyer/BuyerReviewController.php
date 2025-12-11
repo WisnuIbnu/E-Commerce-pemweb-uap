@@ -5,173 +5,95 @@ namespace App\Http\Controllers\Buyer;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\ProductReview;
-use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class BuyerReviewController extends Controller
 {
     public function create($transactionId)
     {
-        $buyerId = Auth::user()->buyer->id ?? null;
-
-        if (!$buyerId) {
-            return redirect()->route('buyer.dashboard')
-                ->with('error', 'Data buyer tidak ditemukan');
-        }
-
-        $transaction = Transaction::where('buyer_id', $buyerId)
-            ->with('transactionDetails.product.images')
+        $buyer = auth()->user()->buyer;
+        
+        $transaction = Transaction::with(['transactionDetails.product.images'])
+            ->where('buyer_id', $buyer->id)
+            ->where('payment_status', 'completed')
             ->findOrFail($transactionId);
 
-        if ($transaction->payment_status !== 'completed') {
-            return redirect()->route('buyer.orders.show', $transaction->id)
-                ->with('error', 'Pesanan harus sudah selesai untuk memberikan review');
-        }
+        // Get existing reviews
+        $existingReviews = ProductReview::where('transaction_id', $transactionId)->get();
 
-        $existingReviews = ProductReview::where('transaction_id', $transaction->id)->get();
-
-        return view('buyer.review.create', compact('transaction', 'existingReviews'));
+        return view('buyer.reviews.create', compact('transaction', 'existingReviews'));
     }
 
     public function store(Request $request, $transactionId)
     {
-        $buyerId = Auth::user()->buyer->id ?? null;
-
-        if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data buyer tidak ditemukan'
-            ], 401);
-        }
-
-        $validated = $request->validate([
+        $request->validate([
             'product_id' => 'required|exists:products,id',
             'rating' => 'required|integer|min:1|max:5',
             'review' => 'required|string|min:10|max:1000',
         ]);
 
-        try {
-            $transaction = Transaction::where('buyer_id', $buyerId)
-                ->findOrFail($transactionId);
+        $buyer = auth()->user()->buyer;
+        
+        $transaction = Transaction::where('buyer_id', $buyer->id)
+            ->where('payment_status', 'completed')
+            ->findOrFail($transactionId);
 
-            if ($transaction->payment_status !== 'completed') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Pesanan harus sudah selesai untuk memberikan review'
-                ], 422);
-            }
+        // Check if product is in this transaction
+        $productExists = $transaction->transactionDetails()
+            ->where('product_id', $request->product_id)
+            ->exists();
 
-            $transactionDetail = $transaction->transactionDetails()
-                ->where('product_id', $validated['product_id'])
-                ->first();
-
-            if (!$transactionDetail) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Produk tidak ditemukan di pesanan ini'
-                ], 422);
-            }
-
-            $existingReview = ProductReview::where('transaction_id', $transaction->id)
-                ->where('product_id', $validated['product_id'])
-                ->first();
-
-            if ($existingReview) {
-                $existingReview->update([
-                    'rating' => $validated['rating'],
-                    'review' => $validated['review'],
-                ]);
-                $message = 'Review berhasil diperbarui!';
-            } else {
-                ProductReview::create([
-                    'transaction_id' => $transaction->id,
-                    'product_id' => $validated['product_id'],
-                    'rating' => $validated['rating'],
-                    'review' => $validated['review'],
-                ]);
-                $message = 'Review berhasil ditambahkan!';
-            }
-
-            $this->updateProductRating($validated['product_id']);
-
-            return response()->json([
-                'success' => true,
-                'message' => $message
-            ], 200);
-
-        } catch (\Exception $e) {
+        if (!$productExists) {
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+                'message' => 'Produk tidak ditemukan dalam pesanan ini'
+            ], 400);
         }
+
+        // Create or update review
+        $review = ProductReview::updateOrCreate(
+            [
+                'transaction_id' => $transactionId,
+                'product_id' => $request->product_id,
+            ],
+            [
+                'rating' => $request->rating,
+                'review' => $request->review,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review berhasil disimpan'
+        ]);
     }
 
-    private function updateProductRating($productId)
+    public function destroy($reviewId)
     {
-        $product = Product::findOrFail($productId);
+        $buyer = auth()->user()->buyer;
+        
+        $review = ProductReview::whereHas('transaction', function ($query) use ($buyer) {
+            $query->where('buyer_id', $buyer->id);
+        })->findOrFail($reviewId);
 
-        $avgRating = ProductReview::where('product_id', $productId)
-            ->avg('rating');
+        $review->delete();
 
-        $reviewCount = ProductReview::where('product_id', $productId)
-            ->count();
-
-        $product->update([
-            'average_rating' => $avgRating ? round($avgRating, 1) : 0,
-            'reviews_count' => $reviewCount,
+        return response()->json([
+            'success' => true,
+            'message' => 'Review berhasil dihapus'
         ]);
     }
 
     public function productReviews($productId)
     {
-        $product = Product::findOrFail($productId);
+        $product = \App\Models\Product::with(['images', 'category'])
+            ->findOrFail($productId);
 
-        $reviews = ProductReview::where('product_id', $productId)
-            ->with('transaction.buyer.user')
+        $reviews = ProductReview::with(['transaction.buyer.user'])
+            ->where('product_id', $productId)
             ->latest()
             ->paginate(10);
 
-        return view('buyer.review.product-reviews', compact('product', 'reviews'));
-    }
-
-    public function destroy($reviewId)
-    {
-        $buyerId = Auth::user()->buyer->id ?? null;
-
-        if (!$buyerId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data buyer tidak ditemukan'
-            ], 401);
-        }
-
-        try {
-            $review = ProductReview::findOrFail($reviewId);
-
-            if ($review->transaction->buyer_id !== $buyerId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Anda tidak berhak menghapus review ini'
-                ], 403);
-            }
-
-            $productId = $review->product_id;
-            $review->delete();
-
-            $this->updateProductRating($productId);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Review berhasil dihapus'
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        return view('buyer.reviews.product-reviews', compact('product', 'reviews'));
     }
 }

@@ -113,7 +113,10 @@ class ProductCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            ProductCategory::create($category);
+            ProductCategory::updateOrCreate(
+                ['slug' => $category['slug']], // Cegah duplikasi
+                $category
+            );
         }
     }
 }
