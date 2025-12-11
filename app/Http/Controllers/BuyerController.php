@@ -151,6 +151,7 @@ class BuyerController extends Controller
             $cart[$request->product_id]['qty'] += $request->qty;
         } else {
             $cart[$request->product_id] = [
+                'product_id' => $product->id, // Ensure ID is preserved
                 'name' => $product->name,
                 'qty' => $request->qty,
                 'price' => $product->price,
@@ -162,11 +163,35 @@ class BuyerController extends Controller
 
         session()->put('cart', $cart);
         
-        // Return JSON for AJAX or redirect back
         if($request->wantsJson()) {
             return response()->json(['message' => 'Product added to cart successfully!']);
         }
         return redirect()->back()->with('success', 'Product added to cart!');
+    }
+
+    public function buyNow(Request $request) {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'qty' => 'required|integer|min:1'
+        ]);
+
+        $product = Product::find($request->product_id);
+        
+        // Use a separate session key for direct checkout
+        $directCart = [
+            $product->id => [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'qty' => $request->qty,
+                'price' => $product->price,
+                'image' => $product->productImages->first()->image ?? '',
+                'store_id' => $product->store_id,
+                'store_name' => $product->store->name ?? 'Unknown Store', 
+            ]
+        ];
+
+        session()->put('direct_checkout', $directCart);
+        return redirect()->route('checkout');
     }
 
     public function showCart()
@@ -177,17 +202,44 @@ class BuyerController extends Controller
 
     public function removeFromCart($id)
     {
-        $cart = session()->get('cart');
+        $cart = session()->get('cart', []);
+        $removed = false;
+
+        // Try direct key removal
         if(isset($cart[$id])) {
             unset($cart[$id]);
-            session()->put('cart', $cart);
+            $removed = true;
+        } 
+        // Fallback: Search by product_id if key mismatch or legacy data
+        else {
+            foreach($cart as $key => $item) {
+                if(isset($item['product_id']) && $item['product_id'] == $id) {
+                    unset($cart[$key]);
+                    $removed = true;
+                    break;
+                }
+                // Fallback 2: Check if 'id' key exists in item (legacy from some implementation?)
+                if(isset($item['id']) && $item['id'] == $id) {
+                    unset($cart[$key]);
+                    $removed = true;
+                    break;
+                }
+            }
         }
-        return redirect()->back()->with('success', 'Item removed from cart');
+
+        if ($removed) {
+            session()->put('cart', $cart);
+            return redirect()->back()->with('success', 'Item removed from cart');
+        }
+        
+        return redirect()->back()->with('error', 'Item not found in cart');
     }
 
     public function checkout()
     {
-        $cart = session()->get('cart', []);
+        // Prioritize direct checkout session
+        $cart = session('direct_checkout') ? session('direct_checkout') : session()->get('cart', []);
+        
         if(empty($cart)) {
              return redirect()->route('cart.show')->with('error', 'Your cart is empty.');
         }
@@ -196,7 +248,10 @@ class BuyerController extends Controller
 
     public function processCheckout(Request $request)
     {
-        $cart = session()->get('cart', []);
+        // Check for direct checkout session first
+        $isDirect = session()->has('direct_checkout');
+        $cart = $isDirect ? session('direct_checkout') : session()->get('cart', []);
+
         if(empty($cart)) {
              return redirect()->route('home')->with('error', 'Cart is empty');
         }
@@ -208,31 +263,31 @@ class BuyerController extends Controller
             'payment_method' => 'required|in:transfer,cod',
         ]);
 
-        // Group items by store_id manually to preserve product_id keys
+        // Group items by store_id
         $itemsByStore = [];
         foreach($cart as $productId => $item) {
             $storeId = $item['store_id'];
             if(!isset($itemsByStore[$storeId])) {
                 $itemsByStore[$storeId] = [];
             }
-            // Preserve product_id as key
             $itemsByStore[$storeId][$productId] = $item;
         }
 
-        // Create transactions per store
         foreach($itemsByStore as $storeId => $items) {
             $subtotal = collect($items)->sum(fn($i) => $i['price'] * $i['qty']);
             $shippingCost = 15000;
             
             $user = auth()->user();
-            // Ensure buyer profile exists
             $buyer = $user->buyer;
+            
             if (!$buyer) {
                  $buyer = $user->buyer()->create([
                     'user_id' => $user->id,
-                    'profile_picture' => null, // Default or handle later
-                    'phone_number' => null // Optional or from user?
+                    'profile_picture' => null,
+                    'phone_number' => null
                  ]);
+                 // Refresh relationship to ensure we have the ID?
+                 // $buyer object has ID after create.
             }
 
             $transaction = \App\Models\Transaction::create([
@@ -252,7 +307,6 @@ class BuyerController extends Controller
                 'order_status' => 'pending',
             ]);
 
-            // Product_id keys are now preserved
             foreach($items as $productId => $details) {
                  \App\Models\TransactionDetail::create([
                      'transaction_id' => $transaction->id,
@@ -264,7 +318,13 @@ class BuyerController extends Controller
             }
         }
 
-        session()->forget('cart');
+        // Clear the appropriate session
+        if ($isDirect) {
+            session()->forget('direct_checkout');
+        } else {
+            session()->forget('cart');
+        }
+
         return redirect()->route('transaction.history')->with('success', 'Order placed successfully!');
     }
 

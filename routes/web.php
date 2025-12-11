@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Cart Routes (Public Access)
 Route::post('/cart/add', [BuyerController::class, 'addToCart'])->name('cart.add');
+Route::post('/checkout/direct', [BuyerController::class, 'buyNow'])->name('checkout.direct');
 Route::get('/cart', [BuyerController::class, 'showCart'])->name('cart.show');
 Route::delete('/cart/{id}', [BuyerController::class, 'removeFromCart'])->name('cart.remove');
 

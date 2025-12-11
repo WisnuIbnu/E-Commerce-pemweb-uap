@@ -54,7 +54,8 @@
                             {{-- Better: Iterate $groupedCart but we need the key (Product ID). 
                                  Since collect($cart) preserves keys, $id here IS the product ID. --}}
                                  
-                            <form action="{{ route('cart.remove', $id) }}" method="POST">
+                             {{-- Using details['product_id'] ensures we target the correct item ID --}}
+                            <form action="{{ route('cart.remove', $details['product_id'] ?? $id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.9rem;">REMOVE</button>

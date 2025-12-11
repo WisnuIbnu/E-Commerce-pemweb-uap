@@ -130,36 +130,31 @@
         const qty = document.getElementById('quantity').value;
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        fetch("{{ route('cart.add') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "X-CSRF-TOKEN": token
-            },
-            body: JSON.stringify({
-                product_id: id,
-                qty: qty
-            })
-        })
-        .then(response => {
-            if (response.status === 401) {
-                window.location.href = "{{ route('login') }}";
-                return;
-            }
-            return response.json().then(data => ({ status: response.status, body: data }));
-        })
-        .then(result => {
-            if (result && result.status === 200) {
-                window.location.href = "{{ route('checkout') }}";
-            } else if (result) {
-                alert(result.body.message || 'Error adding to cart');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
-        });
+        // Create a form dynamically and submit it
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ route('checkout.direct') }}";
+        
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '_token';
+        tokenInput.value = token;
+        form.appendChild(tokenInput);
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'product_id';
+        idInput.value = id;
+        form.appendChild(idInput);
+
+        const qtyInput = document.createElement('input');
+        qtyInput.type = 'hidden';
+        qtyInput.name = 'qty';
+        qtyInput.value = qty;
+        form.appendChild(qtyInput);
+
+        document.body.appendChild(form);
+        form.submit();
     }
 </script>
 @endpush
