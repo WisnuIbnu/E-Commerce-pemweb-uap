@@ -1,56 +1,152 @@
-@extends('admin.layouts.main')
+@extends('admin.layouts.admin')
 
 @section('content')
-<h2 class="mb-3">Store Verification</h2>
 
-@if (session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
+<style>
+    /* BUTTON STYLE PASTEL */
+    .btn-approve {
+        background: #A8E6A3;
+        color: #000;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 8px;
+        border: none;
+    }
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Nama Store</th>
-            <th>Pemilik</th>
-            <th>Deskripsi</th>
-            <th>Status</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
+    .btn-reject {
+        background: #FFE9A3;
+        color: #000;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 8px;
+        border: none;
+    }
 
-    <tbody>
-        @foreach($stores as $store)
-        <tr>
-            <td>{{ $store->name }}</td>
-            <td>{{ $store->user->name }}</td>
-            <td>{{ $store->description }}</td>
-            <td>
-                @if($store->status == 'pending')
-                    <span class="badge bg-warning">Pending</span>
-                @elseif($store->status == 'approved')
-                    <span class="badge bg-success">Approved</span>
-                @else
-                    <span class="badge bg-danger">Rejected</span>
-                @endif
-            </td>
-            <td>
-                @if($store->status == 'pending')
-                    <form action="{{ route('admin.stores.approve', $store->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        <button class="btn btn-success btn-sm">Approve</button>
-                    </form>
+    .btn-delete {
+        background: #FFB5B5;
+        color: #000;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 8px;
+        border: none;
+    }
 
-                    <form action="{{ route('admin.stores.reject', $store->id) }}" method="POST" class="d-inline">
-                        @csrf
-                        <button class="btn btn-danger btn-sm">Reject</button>
-                    </form>
-                @else
-                    <em>Tindakan selesai</em>
-                @endif
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+    /* Agar tombol sejajar rapi */
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <h3 class="mb-4 fw-bold">Manage Stores</h3>
+
+    {{-- VERIFIED STORES --}}
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-success text-white fw-bold">
+            Verified Stores
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th width="40%">Store Name</th>
+                        <th width="30%">City</th>
+                        <th width="30%">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($verifiedStores as $store)
+                    <tr>
+                        <td>{{ $store->name }}</td>
+                        <td>{{ $store->city }}</td>
+
+                        <td>
+                            <form action="{{ route('admin.stores.destroy', $store->id) }}" method="POST"
+                                  onsubmit="return confirm('Hapus store ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-delete w-100">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-3">
+                            Tidak ada store terverifikasi.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+    {{-- PENDING STORES --}}
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-warning fw-bold">
+            Pending Stores
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th width="35%">Store Name</th>
+                        <th width="25%">City</th>
+                        <th width="40%">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($pendingStores as $store)
+                    <tr>
+                        <td>{{ $store->name }}</td>
+                        <td>{{ $store->city }}</td>
+
+                        <td>
+                            <div class="action-buttons">
+
+                                {{-- Approve --}}
+                                <form action="{{ route('admin.stores.approve', $store->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn-approve">Approve</button>
+                                </form>
+
+                                {{-- Reject --}}
+                                <form action="{{ route('admin.stores.reject', $store->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn-reject">Reject</button>
+                                </form>
+
+                                {{-- Delete --}}
+                                <form action="{{ route('admin.stores.destroy', $store->id) }}" method="POST"
+                                      onsubmit="return confirm('Hapus store ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn-delete">Delete</button>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-3">
+                            Tidak ada store pending.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
 
 @endsection

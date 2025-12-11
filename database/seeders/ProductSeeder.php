@@ -4,44 +4,77 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
-use App\Models\Store;
-use App\Models\ProductCategory;
 use Illuminate\Support\Str;
+use App\Models\ProductCategory;
 
 class ProductSeeder extends Seeder
 {
     public function run()
     {
-        $store = Store::first();
+        echo "\n[ProductSeeder] Running...\n";
+
         $category = ProductCategory::first();
 
-        if (!$store || !$category) {
-            echo "Store atau Category belum ada\n";
+        if (!$category) {
+            echo "[ProductSeeder] NO CATEGORY FOUND!\n";
             return;
         }
 
-        Product::create([
-            'store_id' => $store->id,
-            'product_category_id' => $category->id,
-            'name' => 'Chocolate Cake Premium',
-            'slug' => Str::slug('Chocolate Cake Premium'),
-            'description' => 'Cake coklat lembut dan premium',
-            'condition' => 'new',
-            'price' => 120000,
-            'weight' => 500,
-            'stock' => 20,
-        ]);
+        $categoryId = $category->id;
 
-        Product::create([
-            'store_id' => $store->id,
-            'product_category_id' => $category->id,
-            'name' => 'Vanilla Dessert Box',
-            'slug' => Str::slug('Vanilla Dessert Box'),
-            'description' => 'Dessert box vanilla creamy',
-            'condition' => 'new',
-            'price' => 45000,
-            'weight' => 300,
-            'stock' => 15,
-        ]);
+        $products = [
+            [
+                'store_id' => 1,
+                'name' => 'Cupcake Vanilla Buttercream',
+                'price' => 47359,
+                'stock' => 16,
+                'weight' => 250,
+                'condition' => 'new',
+                'description' => 'Cupcake vanilla dengan buttercream lembut.',
+            ],
+            [
+                'store_id' => 1,
+                'name' => 'Macaron Strawberry',
+                'price' => 25500,
+                'stock' => 32,
+                'weight' => 100,
+                'condition' => 'new',
+                'description' => 'Macaron rasa stroberi premium.',
+            ],
+            [
+                'store_id' => 2,
+                'name' => 'Cupcake Red Velvet',
+                'price' => 38000,
+                'stock' => 20,
+                'weight' => 300,
+                'condition' => 'new',
+                'description' => 'Cupcake red velvet lembut dan manis.',
+            ],
+            [
+                'store_id' => 3,
+                'name' => 'Brownies Coklat Premium',
+                'price' => 52000,
+                'stock' => 15,
+                'weight' => 500,
+                'condition' => 'new',
+                'description' => 'Brownies coklat legit, bestseller!',
+            ],
+        ];
+
+        foreach ($products as $p) {
+            Product::create([
+                'store_id' => $p['store_id'],
+                'product_category_id' => $categoryId,
+                'name' => $p['name'],
+                'slug' => Str::slug($p['name']),
+                'price' => $p['price'],
+                'stock' => $p['stock'],
+                'weight' => $p['weight'],
+                'condition' => $p['condition'],
+                'description' => $p['description'],
+            ]);
+        }
+
+        echo "[ProductSeeder] Products inserted!\n";
     }
 }

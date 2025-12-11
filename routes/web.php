@@ -15,6 +15,8 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\AdminSellerApprovalController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminStoreController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 
 /* PUBLIC ROUTES */
@@ -143,32 +145,56 @@ Route::middleware(['auth', 'role:seller'])
     });
 
 
-
 /* ADMIN ROUTES */
-
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        // Dashboard
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
-
-
-        /* SELLER VERIFICATION */
-        Route::get('/stores', [AdminSellerApprovalController::class, 'listStores'])->name('stores.index');
-        Route::post('/stores/{id}/approve', [AdminSellerApprovalController::class, 'approve'])->name('stores.approve');
-        Route::post('/stores/{id}/reject', [AdminSellerApprovalController::class, 'reject'])->name('stores.reject');
-
+        /* DASHBOARD */
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
 
         /* USER MANAGEMENT */
         Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
         Route::get('/users/{id}', [AdminUserController::class, 'show'])->name('users.show');
+        Route::get('/users/{id}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{id}', [AdminUserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 
-    });
+        /* STORE MANAGEMENT */
+        Route::get('/stores', [AdminStoreController::class, 'index'])->name('stores.index');
 
-// Breeze Auth Routes
-require __DIR__ . '/auth.php';
+        Route::post('/stores/{id}/approve', [AdminStoreController::class, 'approve'])
+            ->name('stores.approve');
+
+        Route::post('/stores/{id}/reject', [AdminStoreController::class, 'reject'])
+            ->name('stores.reject');
+
+        Route::delete('/stores/{id}', [AdminStoreController::class, 'destroy'])
+            ->name('stores.destroy');
+
+        /* Admin edit store info */
+        Route::get('/stores/{id}/edit', [AdminSellerApprovalController::class, 'edit'])
+            ->name('stores.edit');
+
+        Route::put('/stores/{id}', [AdminSellerApprovalController::class, 'update'])
+            ->name('stores.update');
+
+
+        /* PRODUCT MANAGEMENT (ADMIN) */
+        Route::get('/products', [ProductController::class, 'adminIndex'])->name('products.index');
+        Route::get('/products/create', [ProductController::class, 'adminCreate'])->name('products.create');
+        Route::post('/products', [ProductController::class, 'adminStore'])->name('products.store');
+        Route::get('/products/{id}/edit', [ProductController::class, 'adminEdit'])->name('products.edit');
+        Route::put('/products/{id}', [ProductController::class, 'adminUpdate'])->name('products.update');
+        Route::delete('/products/{id}', [ProductController::class, 'adminDestroy'])->name('products.destroy');
+
+        /* CATEGORY MANAGEMENT */
+        Route::get('/categories', [ProductCategoryController::class, 'adminIndex'])->name('categories.index');
+        Route::get('/categories/create', [ProductCategoryController::class, 'adminCreate'])->name('categories.create');
+        Route::post('/categories', [ProductCategoryController::class, 'adminStore'])->name('categories.store');
+        Route::get('/categories/{id}/edit', [ProductCategoryController::class, 'adminEdit'])->name('categories.edit');
+        Route::put('/categories/{id}', [ProductCategoryController::class, 'adminUpdate'])->name('categories.update');
+        Route::delete('/categories/{id}', [ProductCategoryController::class, 'adminDestroy'])->name('categories.destroy');
+    });

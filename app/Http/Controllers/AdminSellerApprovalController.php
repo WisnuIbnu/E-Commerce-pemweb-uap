@@ -3,51 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class AdminSellerApprovalController extends Controller
 {
-    // TAMPILKAN DAFTAR STORE UNTUK ADMIN
     public function listStores()
     {
-        $stores = Store::with('user')->get();
-
+        $stores = Store::with('user')->latest()->paginate(10);
         return view('admin.stores.index', compact('stores'));
     }
 
-    // SETUJUI SELLER
     public function approve($id)
     {
         $store = Store::findOrFail($id);
+        $store->status = 'approved';
+        $store->save();
 
-        if ($store->status === 'approved') {
-            return back()->with('error', 'Store sudah disetujui sebelumnya.');
-        }
+        $store->user->update(['role' => 'seller']);
 
-        $store->update([
-            'is_verified' => true,
-            'status'      => 'approved',
-            'reason'      => null,
-        ]);
-
-        return back()->with('success', 'Seller berhasil disetujui.');
+        return back()->with('success', 'Store berhasil disetujui!');
     }
 
-    // TOLAK SELLER
-    public function reject(Request $request, $id)
+    public function reject($id)
     {
-        $request->validate([
-            'reason' => 'required|min:5'
-        ]);
-
         $store = Store::findOrFail($id);
+        $store->status = 'rejected';
+        $store->save();
 
-        $store->update([
-            'is_verified' => false,
-            'status'      => 'rejected',
-            'reason'      => $request->reason
-        ]);
-
-        return back()->with('success', 'Seller berhasil ditolak.');
+        return back()->with('success', 'Store berhasil ditolak.');
     }
+
+    public function destroy($id)
+    {
+        $store = Store::findOrFail($id);
+        $store->delete();
+
+        return redirect()->route('admin.stores.index')
+                        ->with('success', 'Toko berhasil dihapus');
+    }
+
 }

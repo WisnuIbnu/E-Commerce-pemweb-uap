@@ -1,0 +1,59 @@
+/* background soft
+body {
+    background: #fff5fb;
+}
+
+.navbar-sweet {
+    background: linear-gradient(90deg, #ff9ecb, #a8c9ff);
+}
+
+.navbar-sweet .navbar-brand {
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-sweet .nav-link {
+    color: white !important;
+    margin-right: 15px;
+    font-weight: 600;
+}
+
+.navbar-sweet .nav-link:hover {
+    color: #333 !important;
+}
+
+/* container 
+.admin-container {
+    padding: 30px;
+}
+
+/* title 
+.title {
+    font-weight: 700;
+    color: #ff7fbf;
+}
+
+/* card 
+.sweet-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 6px solid #ff9ecb;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* table 
+.sweet-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sweet-table thead {
+    background: #ffd3e8;
+}
+
+.sweet-table th {
+    color: #444;
+    font-weight: bold;
+} */
