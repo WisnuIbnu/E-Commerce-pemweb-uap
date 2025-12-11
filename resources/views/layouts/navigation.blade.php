@@ -17,6 +17,7 @@
                             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                 {{ __('Dashboard') }}
                             </x-nav-link>
+<<<<<<< HEAD
                             <x-nav-link :href="route('admin.stores')" :active="request()->routeIs('admin.stores')">
                                 {{ __('Stores') }}
                             </x-nav-link>
@@ -29,6 +30,20 @@
                             </x-nav-link>
                             <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.index')">
                                 {{ __('Orders') }}
+=======
+                        @elseif(Auth::user()->role === 'member')
+                            <x-nav-link :href="route('store.create')" :active="request()->routeIs('store.create')">
+                                {{ __('Create Store') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('store.edit')" :active="request()->routeIs('store.edit')">
+                                {{ __('Store Settings') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('balance.history')" :active="request()->routeIs('balance.history')">
+                                {{ __('Store Balance') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('withdrawal.create')" :active="request()->routeIs('withdrawal.create')">
+                                {{ __('Withdrawal Request') }}
+>>>>>>> 248a66fdfc86b0ed23ff66b8e186e1e5f0defc26
                             </x-nav-link>
                         @endif
                     @endauth
