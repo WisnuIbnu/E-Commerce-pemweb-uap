@@ -19,6 +19,12 @@ return new class extends Migration
             $table->string('bank_account_number');
             $table->string('bank_name');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+
+            // Kolom untuk tracking approval/rejection
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamp('rejected_at')->nullable();
+            $table->text('rejection_reason')->nullable();
+
             $table->timestamps();
         });
     }
