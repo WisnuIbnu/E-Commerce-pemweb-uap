@@ -252,7 +252,7 @@
         <div class="topnav-left">
             {{-- Logo --}}
             <a href="{{ route('dashboard') }}" class="topnav-logo">
-                <span>{{ config('app.name', 'Laravel') }}</span>
+                <span>Klikly</span>
             </a>
 
             {{-- Link utama (desktop) --}}
