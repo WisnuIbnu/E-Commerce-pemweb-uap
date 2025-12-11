@@ -123,7 +123,7 @@ class BuyerController extends Controller
         // For now, let's keep standard DB fetch but safeguard against 404 for demonstration if possible, 
         // though standard is fine. The simplified routes earlier relied on DB.
         
-        $product = Product::with(['store', 'productCategory', 'productImages', 'productReviews.user'])->find($id);
+        $product = Product::with(['store', 'productCategory', 'productImages', 'productReviews.transaction.buyer.user'])->find($id);
 
         if (!$product) {
             abort(404);

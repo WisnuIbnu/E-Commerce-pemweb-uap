@@ -94,7 +94,7 @@
             @forelse($product->productReviews as $review)
             <div class="review-item" style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:10px; margin-bottom:1rem;">
                 <div class="review-header" style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
-                    <span class="reviewer-name" style="font-weight:bold; color:white;">{{ $review->user->name }}</span>
+                    <span class="reviewer-name" style="font-weight:bold; color:white;">{{ $review->transaction->buyer->user->name ?? 'Anonymous' }}</span>
                     <span class="review-stars" style="color:#ffd700;">
                         @for($i = 1; $i <= 5; $i++)
                             @if($i <= $review->rating) ★ @else ☆ @endif
