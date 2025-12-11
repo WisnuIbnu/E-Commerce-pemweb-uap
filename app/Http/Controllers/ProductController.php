@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function index()
+    {
+        $products = Product::with(['productCategory', 'store', 'productImages'])
+            ->where('stock', '>', 0)
+            ->latest()
+            ->paginate(12);
+
+        return view('products.index', compact('products'));
+    }
+
     public function search(Request $request)
     {
         $query = $request->input('q');
