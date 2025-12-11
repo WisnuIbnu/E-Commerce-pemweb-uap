@@ -29,21 +29,36 @@ class Transaction extends Model
         'grand_total' => 'decimal:2',
     ];
 
+    // === RELATIONS ===
+
     public function buyer()
     {
         return $this->belongsTo(Buyer::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(Buyer::class, 'buyer_id');
+    }
+
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function transactionDetails()
+    // PAKAI INI SAJA (rapi)
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class);
     }
+
     public function productReviews()
     {
         return $this->hasMany(ProductReview::class);
     }
+    public function transactionDetails()
+    {
+        return $this->hasMany(TransactionDetail::class);
+    }
+
 }
