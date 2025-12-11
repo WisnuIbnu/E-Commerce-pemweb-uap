@@ -40,4 +40,12 @@ class ProductController extends Controller
 
         return view('user.products.products', compact('products'));
     }
+
+    public function show(Product $product)
+    {
+        // Load relationships needed for detail page
+        $product->load(['store', 'category', 'productImages', 'productReviews']);
+        
+        return view('user.products.show', compact('product'));
+    }
 }

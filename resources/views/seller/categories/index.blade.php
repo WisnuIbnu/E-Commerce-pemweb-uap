@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-6">
-    <h1 class="text-3xl font-bold mb-6">Kategori Produk</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Categories</h1>
 
     <div class="grid grid-cols-1 gap-6">
         @foreach($categories as $category)

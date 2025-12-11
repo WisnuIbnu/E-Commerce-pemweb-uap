@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-6">
-    <h1 class="text-xl font-bold mb-6">Seller Dashboard</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Seller Dashboard</h1>
 
     <!-- Statistik Toko: Total Produk, Total Pesanan, Status Toko -->
     <div class="grid grid-cols-3 gap-6 mb-6">

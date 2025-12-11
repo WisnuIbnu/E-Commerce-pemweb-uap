@@ -12,7 +12,14 @@ class BalanceController extends Controller
      */
     public function index()
     {
-        //
+        $store = auth()->user()->store;
+        
+        // Get history via balance relationship
+        $history = $store->balance 
+            ? $store->balance->storeBalanceHistories()->latest()->get() 
+            : collect();
+
+        return view('seller.balance.index', compact('store', 'history'));
     }
 
     /**

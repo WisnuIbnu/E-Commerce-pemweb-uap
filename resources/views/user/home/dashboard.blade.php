@@ -57,8 +57,53 @@
 
     </section>
 
+    {{-- NEW ARRIVALS SECTION --}}
+    <section class="max-w-7xl mx-auto px-16 mt-20 mb-16">
+        <div class="flex justify-between items-end mb-8">
+            <h2 class="text-3xl font-serif font-bold text-gray-800">New Arrivals</h2>
+            <a href="{{ route('products') }}" class="text-sm font-medium text-black hover:underline">View All &rarr;</a>
+        </div>
 
-    </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            @forelse ($newArrivals as $product)
+                <div class="group bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                    <a href="{{ route('products.show', $product->slug) }}" class="block">
+                        <div class="w-full h-64 bg-gray-50 relative overflow-hidden">
+                                @if($product->productImages->where('is_thumbnail', true)->first())
+                                <img src="{{ asset('storage/' . $product->productImages->where('is_thumbnail', true)->first()->image) }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    alt="{{ $product->name }}">
+                            @elseif($product->productImages->first())
+                                <img src="{{ asset('storage/' . $product->productImages->first()->image) }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    alt="{{ $product->name }}">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">
+                                    <span class="text-xs uppercase font-bold tracking-widest text-gray-300">No Image</span>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <div class="p-4">
+                            <div class="text-xs text-gray-500 mb-1 uppercase tracking-wide">
+                                {{ $product->category ? $product->category->name : 'Uncategorized' }}
+                            </div>
+                            <h3 class="font-bold text-gray-900 text-lg mb-2 truncate group-hover:text-blue-600 transition-colors">
+                                {{ $product->name }}
+                            </h3>
+                            <div class="text-gray-900 font-bold">
+                                Rp {{ number_format($product->price, 0, ',', '.') }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @empty
+                <div class="col-span-full text-center py-10 text-gray-500">
+                    No new arrivals yet.
+                </div>
+            @endforelse
+        </div>
+    </section>
 
 </body>
 

@@ -42,58 +42,56 @@
         {{-- HISTORY LIST WRAPPER --}}
         <section class="bg-white/80 backdrop-blur rounded-2xl shadow-sm border border-gray-200 px-6 py-4 space-y-4">
 
-            {{-- Dummy order item, nanti tinggal di-loop pakai data dari controller --}}
-            @for ($i = 0; $i < 3; $i++)
+            @forelse ($transactions as $transaction)
                 <article class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b last:border-b-0 py-4">
 
                     {{-- Left: basic info --}}
                     <div class="flex-1">
                         <div class="flex items-center gap-3 text-sm text-gray-500 mb-1">
-                            <span class="uppercase tracking-wide">Order #MPR-00{{ $i + 1 }}</span>
+                            <span class="uppercase tracking-wide">Order #{{ $transaction->id }}</span>
                             <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-                            <span>12 Dec 2025, 14:30</span>
+                            <span>{{ $transaction->created_at->format('d M Y, H:i') }}</span>
                         </div>
                         <div class="font-semibold text-lg">
-                            2 items • Basic Slim Fit T-Shirt, Cotton Pants
+                            {{ $transaction->store ? $transaction->store->name : 'Unknown Store' }}
                         </div>
                         <div class="text-sm text-gray-500 mt-1">
-                            Shipped to: Jakarta, Indonesia
+                            Shipped to: {{ $transaction->shipping_address ?? 'Address not set' }}
                         </div>
                     </div>
 
                     {{-- Middle: status + total --}}
                     <div class="flex flex-col items-start md:items-end gap-2 min-w-[150px]">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
-                            @if ($i === 0) bg-green-100 text-green-700
-                            @elseif ($i === 1) bg-yellow-100 text-yellow-700
-                            @else bg-red-100 text-red-700 @endif">
-                            @if ($i === 0)
-                                Completed
-                            @elseif ($i === 1)
-                                On Delivery
-                            @else
-                                Canceled
-                            @endif
+                            @if ($transaction->status === 'completed') bg-green-100 text-green-700
+                            @elseif ($transaction->status === 'shipping') bg-yellow-100 text-yellow-700
+                            @elseif ($transaction->status === 'canceled') bg-red-100 text-red-700
+                            @else bg-gray-100 text-gray-700 @endif">
+                            {{ ucfirst($transaction->status) }}
                         </span>
 
                         <div class="text-right">
                             <div class="text-xs text-gray-500">Total</div>
-                            <div class="text-lg font-semibold">$ 199.00</div>
+                            <div class="text-lg font-semibold">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</div>
                         </div>
                     </div>
 
                     {{-- Right: actions --}}
                     <div class="flex flex-col items-start md:items-end gap-2 min-w-[130px]">
-                        <button class="text-sm underline underline-offset-4 hover:text-black">
+                        <!-- <button class="text-sm underline underline-offset-4 hover:text-black">
                             View Details
-                        </button>
-                        <button class="text-sm border px-4 py-2 rounded-full hover:bg-gray-100">
+                        </button> -->
+                        <!-- <button class="text-sm border px-4 py-2 rounded-full hover:bg-gray-100">
                             Buy Again
-                        </button>
+                        </button> -->
                     </div>
 
                 </article>
-            @endfor
+            @empty
+                <div class="p-8 text-center text-gray-500">
+                    You haven't placed any orders yet.
+                </div>
+            @endforelse
 
         </section>
 

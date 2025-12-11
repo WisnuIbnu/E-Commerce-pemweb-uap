@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Store;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +24,7 @@ class ProductController extends Controller
     {
         $store = $this->currentStore();
 
-        $products = Product::with('category')
+        $products = Product::with(['category', 'productImages'])
             ->where('store_id', $store->id)
             ->latest()
             ->get();
@@ -60,16 +61,23 @@ class ProductController extends Controller
         }
 
         // Menyimpan produk baru
-        Product::create([
+        $product = Product::create([
             'store_id'            => $store->id,
             'product_category_id' => $validated['product_category_id'],
             'name'                => $validated['name'],
-            'slug'                => Str::slug($validated['name'] . '-' . uniqid()), // Menyimpan slug
+            'slug'                => Str::slug($validated['name']) . '-' . uniqid(),
             'description'         => $validated['description'],
             'price'               => $validated['price'],
             'stock'               => $validated['stock'],
-            'image'               => $imagePath,  // Menyimpan path gambar
         ]);
+
+        if ($imagePath) {
+             ProductImage::create([
+                'product_id' => $product->id,
+                'image' => $imagePath,
+                'is_thumbnail' => true, 
+             ]);
+        }
 
         return redirect()->route('seller.products.index')
             ->with('success', 'Product created successfully.');
@@ -107,20 +115,30 @@ class ProductController extends Controller
         ]);
 
         // Jika gambar baru di-upload, hapus gambar lama dan simpan gambar baru
+        // Jika gambar baru di-upload, hapus gambar lama dan simpan gambar baru
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+            $oldImage = $product->productImages()->where('is_thumbnail', true)->first();
+            if ($oldImage) {
+                Storage::disk('public')->delete($oldImage->image);
+                $oldImage->delete();
             }
+            
             // Simpan gambar baru
             $imagePath = $request->file('image')->store('product_images', 'public');
-            $product->image = $imagePath;
+            
+             ProductImage::create([
+                'product_id' => $product->id,
+                'image' => $imagePath,
+                'is_thumbnail' => true, 
+             ]);
         }
 
         // Memperbarui data produk
         $product->update([
             'product_category_id' => $validated['product_category_id'],
             'name'                => $validated['name'],
+            'slug'                => Str::slug($validated['name']) . '-' . uniqid(),
             'description'         => $validated['description'],
             'price'               => $validated['price'],
             'stock'               => $validated['stock'],
@@ -139,8 +157,10 @@ class ProductController extends Controller
         }
 
         // Hapus gambar produk jika ada
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+        // Hapus gambar produk jika ada
+        foreach($product->productImages as $img) {
+             Storage::disk('public')->delete($img->image);
+             $img->delete();
         }
 
         $product->delete();

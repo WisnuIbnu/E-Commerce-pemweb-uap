@@ -82,7 +82,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     @forelse ($products as $product)
                         <div class="group bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
-                            <a href="#" class="block">
+                            <a href="{{ route('products.show', $product->slug) }}" class="block">
                                 <div class="w-full h-64 bg-gray-50 relative overflow-hidden">
                                      @if($product->productImages->first())
                                         <img src="{{ asset('storage/' . $product->productImages->first()->image) }}"

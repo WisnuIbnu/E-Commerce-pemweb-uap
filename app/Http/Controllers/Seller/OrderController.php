@@ -12,7 +12,9 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $store = auth()->user()->store;
+        $orders = \App\Models\Order::where('store_id', $store->id)->latest()->get();
+        return view('seller.orders.index', compact('orders'));
     }
 
     /**

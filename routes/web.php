@@ -2,19 +2,21 @@
 
 use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\User\HistoryController;
+use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\Seller\DashboardController;
-use App\Http\Controllers\Seller\SellerOrderController;
-use App\Http\Controllers\Seller\SellerBalanceController;
-use App\Http\Controllers\Seller\SellerWithdrawalController;
-use App\Http\Controllers\Seller\SellerStoreController;
+use App\Http\Controllers\Seller\OrderController as SellerOrderController;
+use App\Http\Controllers\Seller\BalanceController as SellerBalanceController;
+use App\Http\Controllers\Seller\WithdrawalController as SellerWithdrawalController;
+use App\Http\Controllers\Seller\StoreController as SellerStoreController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Seller\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Landing Page
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
  
 // ================= USER SIDE (WAJIB LOGIN) =================
@@ -22,16 +24,22 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     // Home / Dashboard
     Route::get('/home', function () {
-        return view('user.home.dashboard');
+        $newArrivals = App\Models\Product::with('productImages')->latest()->take(4)->get();
+        return view('user.home.dashboard', compact('newArrivals'));
     })->name('home');
 
     Route::get('/dashboard', function () {
-        return view('user.home.dashboard');
+        $newArrivals = App\Models\Product::with('productImages')->latest()->take(4)->get();
+        return view('user.home.dashboard', compact('newArrivals'));
     })->name('dashboard');
 
     // ✅ Katalog produk
     Route::get('/products', [UserProductController::class, 'index'])
         ->name('products');
+    
+    // ✅ Detail Produk
+    Route::get('/products/{product:slug}', [UserProductController::class, 'show'])
+        ->name('products.show');
 
     // ✅ History transaksi
     Route::get('/history', [HistoryController::class, 'index'])
@@ -45,6 +53,11 @@ Route::middleware('auth')->group(function () {
     // Daftar jadi seller
     Route::post('/profile/become-seller', [ProfileController::class, 'becomeSeller'])
         ->name('profile.becomeSeller');
+
+    // Cart
+    Route::resource('cart', CartController::class)->only(['index', 'store', 'destroy']);
+    Route::post('/cart/add/{product}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/buy/{product}', [CartController::class, 'buyNow'])->name('cart.buy');
 });
 
 require __DIR__.'/auth.php';
@@ -95,4 +108,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/users-and-stores', [AdminController::class, 'manageUsersAndStores'])->name('usersAndStores');
         Route::delete('/user/{userId}', [AdminController::class, 'deleteUser'])->name('user.delete');
         Route::delete('/store/{storeId}', [AdminController::class, 'deleteStore'])->name('store.delete');
+
+        // Withdrawal Management
+        Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalController::class, 'index'])->name('withdrawals.index');
+        Route::post('/withdrawals/{id}/approve', [\App\Http\Controllers\Admin\WithdrawalController::class, 'approve'])->name('withdrawals.approve');
+        Route::post('/withdrawals/{id}/reject', [\App\Http\Controllers\Admin\WithdrawalController::class, 'reject'])->name('withdrawals.reject');
     });

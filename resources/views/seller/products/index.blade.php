@@ -1,10 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-6">
-    <h1 class="text-3xl font-bold mb-6">Daftar Produk</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Products</h1>
 
-    <a href="{{ route('seller.products.create') }}" class="px-4 py-2 bg-green-600 text-white rounded-md mb-4 inline-block">Tambah Produk</a>
+    {{-- Success Message --}}
+    @if (session('success'))
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center justify-between">
+            <span>{{ session('success') }}</span>
+            <button onclick="this.parentElement.remove()" class="text-green-600 hover:text-green-800">&times;</button>
+        </div>
+    @endif
+
+    {{-- Error Message --}}
+    @if (session('error'))
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center justify-between">
+            <span>{{ session('error') }}</span>
+            <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-800">&times;</button>
+        </div>
+    @endif
+
+    <a href="{{ route('seller.products.create') }}" class="px-4 py-2 bg-green-600 text-white rounded-md mb-4 inline-block hover:bg-green-700">Tambah Produk</a>
 
     <!-- Daftar Produk -->
     <div class="bg-white p-6 rounded-lg shadow-md">
@@ -24,10 +40,12 @@
                 @foreach ($products as $product)
                     <tr>
                         <td class="px-4 py-2">
-                            @if ($product->image)
-                                <img src="{{ Storage::url($product->image) }}" class="w-20 h-20 object-cover" alt="{{ $product->name }}">
+                            @if($product->productImages->where('is_thumbnail', true)->first())
+                                <img src="{{ asset('storage/' . $product->productImages->where('is_thumbnail', true)->first()->image) }}" class="w-20 h-20 object-cover rounded" alt="{{ $product->name }}">
+                            @elseif($product->productImages->first())
+                                <img src="{{ asset('storage/' . $product->productImages->first()->image) }}" class="w-20 h-20 object-cover rounded" alt="{{ $product->name }}">
                             @else
-                                <span>No Image</span>
+                                <span class="text-gray-400 text-xs">No Image</span>
                             @endif
                         </td>
                         <td class="px-4 py-2">{{ $product->name }}</td>

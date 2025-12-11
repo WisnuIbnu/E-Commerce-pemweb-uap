@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-6">
-    <h1 class="text-3xl font-bold mb-6">Profil Toko</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Store Profile</h1>
 
     <form method="POST" action="{{ route('seller.store.update') }}">
         @csrf
