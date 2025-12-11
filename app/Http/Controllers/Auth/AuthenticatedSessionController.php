@@ -28,7 +28,24 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = auth()->user();
+        
+        // Admin
+        if ($user->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+        
+        // Seller (member dengan toko verified)
+        $store = \App\Models\Store::where('user_id', $user->id)
+            ->where('is_verified', 1)
+            ->first();
+        
+        if ($store) {
+            return redirect()->intended(route('seller.dashboard'));
+        }
+        
+        // Default: Buyer
+        return redirect()->intended(route('buyer.dashboard'));
     }
 
     /**

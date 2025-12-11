@@ -2,76 +2,128 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
+        'role', // 'admin' or 'member'
+        'phone',
+        'city',
+        'province',
+        'address',
+        'postal_code',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    // ============================================
+    // RELATIONSHIPS
+    // ============================================
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * User bisa punya 1 Store (untuk jadi seller)
      */
-    protected function casts(): array
+    public function store()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasOne(Store::class, 'user_id');
     }
 
-    // Helper methods
-    public function isAdmin()
+    /**
+     * User bisa punya 1 Buyer profile
+     */
+    public function buyer()
+    {
+        return $this->hasOne(Buyer::class, 'user_id');
+    }
+
+    /**
+     * User punya banyak Transactions
+     */
+    public function transactions()
+    {
+        return $this->hasManyThrough(
+            Transaction::class,
+            Buyer::class,
+            'user_id',
+            'buyer_id',
+            'id',
+            'id'
+        );
+    }
+
+    /**
+     * User punya banyak Orders (direct)
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id');
+    }
+
+    /**
+     * User punya Wishlist
+     */
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    // ============================================
+    // ACCESSORS & HELPERS
+    // ============================================
+
+    /**
+     * Cek apakah user adalah admin
+     */
+    public function getIsAdminAttribute()
     {
         return $this->role === 'admin';
     }
 
-    public function isMember()
+    /**
+     * Cek apakah user punya store verified (adalah seller)
+     */
+    public function getIsSellerAttribute()
     {
-        return $this->role === 'member';
-    }
-    
-    // Cek apakah user adalah seller (punya store yang verified)
-    public function isSeller()
-    {
-        return $this->store()->exists() && $this->store->is_verified;
-    }
-    // relationships can hava one store 
-    public function store()
-    {
-        return $this->hasOne(Store::class);
+        return $this->store()->where('is_verified', 1)->exists();
     }
 
-    public function buyer()
+    /**
+     * Cek apakah user punya pending store application
+     */
+    public function getHasPendingStoreAttribute()
     {
-        return $this->hasOne(Buyer::class);
+        return $this->store()->where('is_verified', 0)->exists();
+    }
+
+    /**
+     * Get verified store
+     */
+    public function getVerifiedStoreAttribute()
+    {
+        return $this->store()->where('is_verified', 1)->first();
+    }
+
+    /**
+     * Get cart items count (untuk badge di header)
+     */
+    public function getCartItemsCountAttribute()
+    {
+        // TODO: Implement cart system
+        return 0;
     }
 }
