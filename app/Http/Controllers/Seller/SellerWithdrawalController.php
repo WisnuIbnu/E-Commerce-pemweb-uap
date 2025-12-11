@@ -97,7 +97,6 @@ class SellerWithdrawalController extends Controller
             'bank_account_name'   => $store->bank_account_name,
             'note'                => $data['note'] ?? null,
         ]);
-
         return back()->with('success', 'Pengajuan penarikan berhasil dikirim. Menunggu persetujuan admin.');
     }
 }
