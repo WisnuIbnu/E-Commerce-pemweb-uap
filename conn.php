@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db_name = "UAPPEMWEB12"; // <<< GANTI NAMA DB
+$db_name = "UAPPEMWEB12"; 
 
 $mysqli = new mysqli($host, $user, $pass, $db_name);
 
