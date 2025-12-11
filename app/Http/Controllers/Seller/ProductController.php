@@ -132,8 +132,7 @@ class ProductController extends Controller
             DB::commit();
 
             return redirect()->route('seller.products.edit', $product->id)
-                             ->with('success', 'Produk berhasil ditambahkan. Silakan upload gambar produk.')
-                             ->with('new_product', true);
+                             ->with('success', 'Produk berhasil ditambahkan. Silakan upload gambar produk.');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();

@@ -80,9 +80,13 @@
                             <span class="badge bg-success">
                                 <i class="fas fa-check-circle me-1"></i>Dibayar
                             </span>
-                        @else
+                        @elseif($order->status === 'pending')
                             <span class="badge bg-warning text-dark">
-                                <i class="fas fa-clock me-1"></i>Belum Dibayar
+                                <i class="fas fa-clock me-1"></i>Pending
+                            </span>
+                        @else
+                            <span class="badge bg-secondary">
+                                <i class="fas fa-info-circle me-1"></i>{{ ucfirst($order->status) }}
                             </span>
                         @endif
                     </div>
@@ -214,6 +218,7 @@
 
                 </div>
 
+                {{-- ✅ TOMBOL UPDATE PENGIRIMAN - Hanya muncul jika sudah dibayar --}}
                 @if($order->status === 'paid')
                     <button class="btn btn-primary w-100 mt-3"
                             data-bs-toggle="modal"
@@ -221,6 +226,11 @@
                         <i class="fas fa-edit"></i>
                         {{ $order->tracking_number ? 'Update Info Pengiriman' : 'Input Nomor Resi' }}
                     </button>
+                @else
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Nomor resi dapat diinput setelah pesanan dibayar</small>
+                    </div>
                 @endif
 
             </div>
@@ -249,7 +259,7 @@
 
                 <div class="summary-item">
                     <span>Pajak</span>
-                    <span>Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
+                    <span>Rp {{ number_format($order->tax ?? 0, 0, ',', '.') }}</span>
                 </div>
 
                 <div class="summary-divider"></div>
@@ -265,7 +275,7 @@
     </div>
 </div>
 
-{{-- SHIPPING MODAL --}}
+{{-- ✅ SHIPPING UPDATE MODAL --}}
 <div class="modal fade" id="updateShippingModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -283,40 +293,44 @@
                 <div class="modal-body">
 
                     <div class="mb-3">
-                        <label class="form-label">Kurir</label>
+                        <label class="form-label">Kurir <span class="text-danger">*</span></label>
                         <select class="form-select" name="shipping" required>
                             <option value="">Pilih Kurir</option>
                             <option value="JNE" {{ $courier == 'JNE' ? 'selected' : '' }}>JNE</option>
-                            <option value="J&T" {{ $courier == 'J&T' ? 'selected' : '' }}>J&T</option>
+                            <option value="J&T" {{ $courier == 'J&T' ? 'selected' : '' }}>J&T Express</option>
                             <option value="SCP" {{ $courier == 'SCP' ? 'selected' : '' }}>SiCepat</option>
                             <option value="ANT" {{ $courier == 'ANT' ? 'selected' : '' }}>Anteraja</option>
                             <option value="NIN" {{ $courier == 'NIN' ? 'selected' : '' }}>Ninja Express</option>
+                            <option value="IDX" {{ $courier == 'IDX' ? 'selected' : '' }}>ID Express</option>
                         </select>
+                        <small class="text-muted">Pilih jasa kurir yang digunakan</small>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Nomor Resi</label>
+                        <label class="form-label">Nomor Resi <span class="text-danger">*</span></label>
                         <input type="text"
                                class="form-control"
                                name="tracking_number"
                                value="{{ $order->tracking_number }}"
-                               placeholder="Contoh: JNE12345678"
+                               placeholder="Contoh: JNE12345678901234"
                                required>
+                        <small class="text-muted">Masukkan nomor resi pengiriman</small>
                     </div>
 
-                    <div class="alert alert-info">
+                    <div class="alert alert-info mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Pastikan nomor resi sudah benar sebelum disimpan
+                        <strong>Penting:</strong> Pastikan nomor resi sudah benar sebelum disimpan. Pembeli akan menerima notifikasi setelah resi diinput.
                     </div>
 
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"
-                            data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan
+                        <i class="fas fa-save"></i> Simpan Informasi
                     </button>
                 </div>
 

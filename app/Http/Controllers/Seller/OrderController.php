@@ -23,7 +23,7 @@ class OrderController extends Controller
         $query = Transaction::where('store_id', $store->id)
             ->with(['buyer.user', 'transactionDetails.product']);
 
-        // Filter berdasarkan status pembayaran (sekarang nama field: status)
+        // Filter berdasarkan status pembayaran
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
@@ -48,7 +48,7 @@ class OrderController extends Controller
         $totalOrders = Transaction::where('store_id', $store->id)->count();
 
         $unpaidOrders = Transaction::where('store_id', $store->id)
-            ->where('status', 'unpaid') // sekarang pakai status
+            ->whereIn('status', ['pending', 'waiting_payment'])
             ->count();
 
         $unshippedOrders = Transaction::where('store_id', $store->id)
@@ -70,24 +70,75 @@ class OrderController extends Controller
         $store = Auth::user()->store;
 
         $order = Transaction::where('store_id', $store->id)
-            ->with(['buyer.user', 'transactionDetails.product', 'store'])
+            ->with(['buyer.user', 'transactionDetails.product.productImages', 'store'])
             ->findOrFail($id);
 
         return view('seller.orders.show', compact('store', 'order'));
     }
 
-    public function updateTracking(Request $request, $id)
+    /**
+     * ✅ UPDATE SHIPPING INFO (Nomor Resi + Kurir)
+     */
+    public function updateShipping(Request $request, $id)
     {
         $request->validate([
+            'shipping' => 'required|string|max:10',
             'tracking_number' => 'required|string|max:100',
-            'shipping_type' => 'required|string|max:100', // field baru
+        ], [
+            'shipping.required' => 'Kurir harus dipilih',
+            'tracking_number.required' => 'Nomor resi harus diisi',
         ]);
 
         try {
             $store = Auth::user()->store;
             $order = Transaction::where('store_id', $store->id)->findOrFail($id);
 
-            // Cek apakah sudah dibayar
+            // Validasi: Hanya bisa update jika sudah dibayar
+            if ($order->status !== 'paid') {
+                return redirect()->back()
+                    ->with('error', 'Nomor resi hanya dapat diinput untuk pesanan yang sudah dibayar.');
+            }
+
+            DB::beginTransaction();
+
+            // Format tracking number: KURIR + Nomor
+            // Contoh: JNE12345678 atau sudah lengkap JNE12345678
+            $trackingNumber = $request->tracking_number;
+
+            // Jika nomor resi belum ada prefix kurir, tambahkan
+            if (!str_starts_with(strtoupper($trackingNumber), strtoupper($request->shipping))) {
+                $trackingNumber = strtoupper($request->shipping) . $trackingNumber;
+            }
+
+            $order->tracking_number = $trackingNumber;
+            $order->save();
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('success', 'Informasi pengiriman berhasil diperbarui! Nomor resi: ' . $trackingNumber);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * LEGACY METHOD - Bisa dihapus jika tidak dipakai
+     */
+    public function updateTracking(Request $request, $id)
+    {
+        $request->validate([
+            'tracking_number' => 'required|string|max:100',
+            'shipping_type' => 'required|string|max:100',
+        ]);
+
+        try {
+            $store = Auth::user()->store;
+            $order = Transaction::where('store_id', $store->id)->findOrFail($id);
+
             if ($order->status != 'paid') {
                 return redirect()->back()
                     ->with('error', 'Pesanan belum dibayar. Tidak dapat menambahkan nomor resi.');
@@ -96,7 +147,7 @@ class OrderController extends Controller
             DB::beginTransaction();
 
             $order->tracking_number = $request->tracking_number;
-            $order->shipping_type = $request->shipping_type; // field baru
+            $order->shipping_type = $request->shipping_type;
             $order->save();
 
             DB::commit();
@@ -105,29 +156,6 @@ class OrderController extends Controller
                 ->with('success', 'Nomor resi berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    public function updateShipping(Request $request, $id)
-    {
-        $request->validate([
-            'tracking_number' => 'nullable|string|max:100',
-            'shipping_type' => 'required|string|max:100', // field baru
-        ]);
-
-        try {
-            $store = Auth::user()->store;
-            $order = Transaction::where('store_id', $store->id)->findOrFail($id);
-
-            $order->tracking_number = $request->tracking_number;
-            $order->shipping_type = $request->shipping_type;
-            $order->save();
-
-            return redirect()->back()
-                ->with('success', 'Informasi pengiriman berhasil diperbarui.');
-        } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }

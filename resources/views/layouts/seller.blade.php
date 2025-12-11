@@ -301,6 +301,17 @@
             color: #dc2626;
         }
 
+        /* ✅ NEW: User Dashboard Link Style */
+        .profile-dropdown-item.user-dashboard {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .profile-dropdown-item.user-dashboard:hover {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+
         /* Main Content */
         .main-content {
             flex: 1;
@@ -519,6 +530,16 @@
             color: white;
         }
 
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+            color: white;
+        }
+
         /* Alert */
         .alert {
             border: none;
@@ -689,21 +710,21 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo">
-                @if (Auth::user()->seller && Auth::user()->seller->logo)
-                    <img src="{{ asset('storage/' . Auth::user()->seller->logo) }}" alt="Logo">
+                @if (Auth::user()->store && Auth::user()->store->logo)
+                    <img src="{{ asset('storage/' . Auth::user()->store->logo) }}" alt="Logo">
                 @else
                     <i class="fas fa-store"></i>
                 @endif
             </div>
             <div class="sidebar-text">
                 <h5>
-                    @if (Auth::user()->seller)
-                        {{ Auth::user()->seller->name ?? 'Toko Saya' }}
+                    @if (Auth::user()->store)
+                        {{ Auth::user()->store->name ?? 'Toko Saya' }}
                     @else
                         Seller
                     @endif
                 </h5>
-                <small>SELLER</small>
+                <small>SELLER DASHBOARD</small>
             </div>
         </div>
 
@@ -752,7 +773,7 @@
         <div class="topbar">
             <div class="topbar-greeting">
                 <div>
-                    <h5>Halo👋</h5>
+                    <h5>Halo 👋</h5>
                     <small>Selamat datang kembali di dashboard seller Anda</small>
                 </div>
             </div>
@@ -773,6 +794,13 @@
                         <small>{{ Auth::user()->email }}</small>
                     </div>
                     <div class="profile-dropdown-menu">
+                        {{-- ✅ NEW: Link to User Dashboard --}}
+                        <a href="{{ route('home') }}" class="profile-dropdown-item user-dashboard">
+                            <i class="fas fa-home"></i>
+                            <span>Ke Halaman Pembeli</span>
+                        </a>
+                        <div class="profile-dropdown-divider"></div>
+
                         <a href="{{ route('profile.edit') }}" class="profile-dropdown-item">
                             <i class="fas fa-user-circle"></i>
                             <span>Pengaturan Akun</span>
@@ -833,7 +861,7 @@
             e.stopPropagation();
         });
     </script>
-@stack('scripts')
+    @stack('scripts')
 </body>
 
 </html>
