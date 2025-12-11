@@ -73,13 +73,13 @@
                        class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
                         Store
                     </a>
-                    <a href="#collection" 
+                    <a href="{{ route('home') }}#collection" 
                        @click="activeSection = 'collection'"
                        :class="activeSection === 'collection' ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : ''"
                        class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
                         Collection
                     </a>
-                    <a href="#bestseller" 
+                    <a href="{{ route('home') }}#bestseller" 
                        @click="activeSection = 'bestseller'"
                        :class="activeSection === 'bestseller' ? 'text-[#60A5FA] border-b-2 border-[#60A5FA]' : ''"
                        class="text-sm font-bold text-slate-700 hover:text-[#60A5FA] hover:border-b-2 hover:border-[#60A5FA] transition-all uppercase tracking-wide pb-1">
@@ -209,6 +209,21 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                                     My Orders
                                 </a>
+                                
+                                {{-- Store Navigation - Create or Go to Store --}}
+                                @if(Auth::user()->store)
+                                    {{-- User has a store - link to dashboard --}}
+                                    <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-[#F8F8FF] hover:text-[#60A5FA] transition-colors flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                        My Store
+                                    </a>
+                                @else
+                                    {{-- User doesn't have a store - link to create --}}
+                                    <a href="{{ route('seller.store.create') }}" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-[#F8F8FF] hover:text-[#60A5FA] transition-colors flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                        Create Store
+                                    </a>
+                                @endif
                                 <form action="{{ route('logout') }}" method="POST" class="border-t border-gray-100 mt-1 pt-1">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 font-bold transition-colors flex items-center gap-2">

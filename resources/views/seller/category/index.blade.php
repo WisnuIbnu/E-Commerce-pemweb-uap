@@ -2,6 +2,10 @@
 
 @section('title', 'Kelola Kategori')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/seller/product/product.css') }}">
+@endpush
+
 @section('content')
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -31,8 +35,8 @@
     </div>
     @endif
 
-    <div class="page-header">
-        <div class="page-header-content">
+<div class="page-header">
+    <div class="page-header-content">
         <h1 class="page-title">
             <i class="fas fa-tags"></i>
             Kelola Kategori

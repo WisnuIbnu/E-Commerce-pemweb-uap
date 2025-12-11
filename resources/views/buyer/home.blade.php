@@ -33,25 +33,19 @@
                 </div>
             </div>
 
-            <!-- Hero Image - Scattered -->
+            <!-- Hero Visual Element - Abstract Gradient -->
             <div class="relative h-[400px] md:h-[500px] w-full animate-fade-in delay-200 order-1 md:order-2">
-                <!-- Decorative Glow -->
+                <!-- Decorative Glow Layers -->
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+                <div class="absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-gradient-to-br from-blue-400/30 to-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-1/3 right-1/3 w-[250px] h-[250px] bg-gradient-to-tl from-cyan-400/20 to-blue-500/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
                 
-                <!-- Floating Shoe 1 (Main) -->
-                <img src="{{ asset('floating_shoe_v2_1.png') }}" 
-                     alt="Floating Shoe 1" 
-                     class="absolute top-1/2 left-[45%] -translate-x-1/2 -translate-y-1/2 w-[350px] md:w-[450px] object-contain mix-blend-screen contrast-125 animate-float z-20 [mask-image:radial-gradient(closest-side,white_60%,transparent_100%)]">
-
-                <!-- Floating Shoe 2 (Small Top Right) -->
-                <img src="{{ asset('floating_shoe_v2_2.png') }}" 
-                     alt="Floating Shoe 2" 
-                     class="absolute top-12 right-12 md:right-32 w-[180px] md:w-[220px] object-contain mix-blend-screen contrast-125 animate-float-delayed z-10 opacity-90 filter blur-[0.5px] [mask-image:radial-gradient(closest-side,white_60%,transparent_100%)]">
-
-                <!-- Floating Shoe 3 (Small Bottom Left) -->
-                <img src="{{ asset('floating_shoe_v2_3.png') }}" 
-                     alt="Floating Shoe 3" 
-                     class="absolute bottom-12 left-4 md:left-16 w-[200px] md:w-[240px] object-contain mix-blend-screen contrast-125 animate-float-slow z-10 opacity-90 filter blur-[0.5px] [mask-image:radial-gradient(closest-side,white_60%,transparent_100%)]">
+                <!-- Decorative Icons/Shapes -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <svg class="w-64 md:w-80 h-64 md:h-80 text-blue-400/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                    </svg>
+                </div>
             </div>
         </div>
 

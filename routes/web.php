@@ -39,6 +39,8 @@ Route::get('/products', [BuyerController::class, 'products'])->name('products.in
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [BuyerController::class, 'checkout'])->name('checkout');
     Route::post('/checkout/process', [BuyerController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/payment/{transaction}', [BuyerController::class, 'showPayment'])->name('payment.show');
+    Route::post('/payment/{transaction}/confirm', [BuyerController::class, 'confirmPayment'])->name('payment.confirm');
     Route::get('/my-orders', [BuyerController::class, 'transactionHistory'])->name('transaction.history');
     Route::get('/my-orders/{id}', [BuyerController::class, 'transactionDetail'])->name('transaction.detail');
 });

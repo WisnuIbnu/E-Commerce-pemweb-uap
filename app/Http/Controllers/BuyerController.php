@@ -213,6 +213,14 @@ class BuyerController extends Controller
         }
 
         try {
+            // Ensure user has buyer record - create if not exists
+            $buyer = Auth::user()->buyer;
+            if (!$buyer) {
+                $buyer = \App\Models\Buyer::create([
+                    'user_id' => Auth::user()->id,
+                ]);
+            }
+
             DB::beginTransaction();
 
             // Calculate totals
@@ -230,7 +238,7 @@ class BuyerController extends Controller
             // Create transaction
             $transaction = Transaction::create([
                 'code' => 'TRX-' . time(),
-                'buyer_id' => Auth::user()->buyer->id ?? 1,
+                'buyer_id' => $buyer->id,
                 'store_id' => 1, // Default store
                 'address' => $request->address,
                 'city' => $request->city,
@@ -260,8 +268,19 @@ class BuyerController extends Controller
             // Clear cart
             session()->forget('cart');
 
-            return redirect()->route('transaction.history')
-                ->with('success', 'Order placed successfully! Order ID: ' . $transaction->code);
+            // Different flow based on payment method
+            if ($request->payment_method === 'COD') {
+                // COD: Mark as paid immediately and go to order history
+                $transaction->status = 'paid';
+                $transaction->save();
+                
+                return redirect()->route('transaction.history')
+                    ->with('success', 'Order placed successfully! Order ID: ' . $transaction->code);
+            } else {
+                // Bank Transfer: Show payment page for confirmation
+                return redirect()->route('payment.show', $transaction->id)
+                    ->with('success', 'Order placed successfully! Please complete your payment.');
+            }
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -269,10 +288,54 @@ class BuyerController extends Controller
         }
     }
 
+    public function showPayment($id)
+    {
+        // If no buyer record, redirect to home
+        if (!Auth::user()->buyer) {
+            return redirect()->route('home')->with('error', 'Transaction not found.');
+        }
+
+        $transaction = Transaction::with(['details.product.images'])
+            ->where('buyer_id', Auth::user()->buyer->id)
+            ->findOrFail($id);
+
+        return view('buyer.payment', compact('transaction'));
+    }
+
+    public function confirmPayment($id)
+    {
+        // Check if user has buyer record
+        if (!Auth::user()->buyer) {
+            return redirect()->route('home')->with('error', 'Transaction not found.');
+        }
+
+        $transaction = Transaction::where('buyer_id', Auth::user()->buyer->id)
+            ->findOrFail($id);
+
+        // Update status to paid
+        $transaction->status = 'paid';
+        $transaction->save();
+
+        return redirect()->route('transaction.history')
+            ->with('success', 'Payment confirmed! Your order is being processed.');
+    }
+
     public function transactionHistory()
     {
+        // If no buyer record, show empty transactions
+        if (!Auth::user()->buyer) {
+            $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
+                [],
+                0,
+                10,
+                1,
+                ['path' => request()->url()]
+            );
+            return view('buyer.transaction-history', compact('transactions'));
+        }
+
         $transactions = Transaction::with(['details.product.images'])
-            ->where('buyer_id', Auth::user()->buyer->id ?? 1)
+            ->where('buyer_id', Auth::user()->buyer->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -281,8 +344,13 @@ class BuyerController extends Controller
 
     public function transactionDetail($id)
     {
+        // If no buyer record, redirect
+        if (!Auth::user()->buyer) {
+            return redirect()->route('home')->with('error', 'Transaction not found.');
+        }
+
         $transaction = Transaction::with(['details.product.images'])
-            ->where('buyer_id', Auth::user()->buyer->id ?? 1)
+            ->where('buyer_id', Auth::user()->buyer->id)
             ->findOrFail($id);
 
         return view('buyer.transaction-detail', compact('transaction'));

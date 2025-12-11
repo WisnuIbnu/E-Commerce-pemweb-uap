@@ -67,6 +67,23 @@
                                     <span class="text-gray-600">Shipping Type</span>
                                     <span class="font-bold text-gray-900">{{ $transaction->shipping_type }}</span>
                                 </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Delivery Status</span>
+                                    @php
+                                        $deliveryColors = [
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'processing' => 'bg-blue-100 text-blue-800',
+                                            'shipped' => 'bg-purple-100 text-purple-800',
+                                            'delivered' => 'bg-green-100 text-green-800',
+                                            'cancelled' => 'bg-red-100 text-red-800',
+                                        ];
+                                        $deliveryStatus = $transaction->delivery_status ?? 'pending';
+                                        $colorClass = $deliveryColors[$deliveryStatus] ?? 'bg-gray-100 text-gray-800';
+                                    @endphp
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase {{ $colorClass }}">
+                                        {{ ucfirst($deliveryStatus) }}
+                                    </span>
+                                </div>
                                 @if($transaction->tracking_number)
                                 <div class="flex justify-between pt-2 border-t border-gray-100">
                                     <span class="text-gray-600">Tracking No.</span>
@@ -127,6 +144,32 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Confirm Payment Button for Pending --}}
+                    @if($transaction->status === 'pending')
+                        <div class="mt-8 pt-8 border-t border-gray-200">
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <div>
+                                        <p class="font-bold text-yellow-800 mb-1">Payment Pending</p>
+                                        <p class="text-sm text-yellow-700">Please complete your payment to process this order. Click the button below after you have transferred the payment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <form action="{{ route('payment.confirm', $transaction->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" 
+                                        style="background: #10b981 !important;" 
+                                        class="w-full py-5 text-white text-center font-bold uppercase tracking-widest text-base hover:opacity-90 transition-all duration-300 rounded-lg shadow-2xl border-4 border-green-400">
+                                    ✓ CONFIRM PAYMENT
+                                </button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
