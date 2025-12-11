@@ -20,4 +20,9 @@ class StoreBalanceHistory extends Model
     {
         return $this->belongsTo(StoreBalance::class);
     }
+
+    public function reference()
+    {
+        return $this->morphTo();
+    }
 }

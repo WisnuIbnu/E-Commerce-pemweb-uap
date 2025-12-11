@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WithDrawal extends Model
+class Withdrawal extends Model
 {
+    protected $table = 'withdrawals';
 
     protected $fillable = [
         'store_balance_id',

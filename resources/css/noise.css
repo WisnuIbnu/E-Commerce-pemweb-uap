@@ -1,0 +1,4 @@
+.noise-bg {
+    background-image: url('/css/noise.png');
+    opacity: 0.08;
+}

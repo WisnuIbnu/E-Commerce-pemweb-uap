@@ -20,13 +20,17 @@ class Store extends Model
         'is_verified',
     ];
 
+    protected $casts = [
+        'is_verified' => 'boolean',
+    ];
+
     // relationships one store has one owner (user)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function storeBallance()
+    public function balance()
     {
         return $this->hasOne(StoreBalance::class);
     }

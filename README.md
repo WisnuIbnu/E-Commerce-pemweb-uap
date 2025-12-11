@@ -1,69 +1,69 @@
-<p align="center">
-  <a href="https://github.com/WisnuIbnu/E-Commerce-pemweb-uap">
-    <h1 align="center" style="color: #4B47FF">E-Commerce UAP</h1>
-  </a>
-</p>
+ 👔 Mpruy Store
 
-This repository is Laravel 12 with the auth starter kit Laravel Breeze and a provided Database Structure. Your task is to submit a Pull Request with your team's version of implementing the task, and your PR will be reviewed by the practicum assistant.
+**Mpruy Store** adalah platform e-commerce eksklusif yang didedikasikan untuk menyediakan pakaian formal berkualitas tinggi, mencakup atasan (**Tops**) dan bawahan (**Bottoms**). Kami berkomitmen untuk memberikan pengalaman belanja online yang sempurna, elegan, dan memuaskan bagi para profesional yang mengutamakan gaya dan kualitas.
 
-# Getting Started
+Nikmati pengalaman berbelanja yang mulus, diskon menarik, dan koleksi eksklusif yang dikurasi khusus untuk menunjang penampilan profesional Anda.
 
-## Task Explanation
+ ✨ Fitur Unggulan
 
-You need to create a simple CRUD E-Commerce interface with several pages:
+- **Koleksi Eksklusif**: Fokus pada pakaian formal (Tops & Bottoms) dengan bahan premium.
+- **Pengalaman E-Commerce Lengkap**: Mulai dari katalog produk, keranjang belanja, hingga proses checkout yang mudah.
+- **Manajemen Seller Canggih**: Dashboard khusus seller untuk mengelola produk, pesanan, dan penarikan dana instan.
+- **Verifikasi Toko**: Sistem keamanan dengan verifikasi admin untuk memastikan kredibilitas seller.
+- **Promo & Penawaran**: Berbagai promo menarik untuk pelanggan setia.
 
-User Pages (Customer Side):
-1. **Homepage:** List of products, including:
-    - List of all products
-    - List of products based on product category
-2. **Product Page:** Display a single product with detail of product, images, category, and reviews
-3. **Checkout Page:** Customer fills address, shipping type, and completes purchase
-4. **Transaction History Page :** Display past purchases and transaction details
+---
 
-Store Pages (Seller Dashboard):
-1. **Store Registration Page:** Seller creates a store profile
-2. **Order Management Page:** View and update incoming orders, shipping info, and tracking number
-3. **Store Balance Page:** View balance and balance history
-4. **Withdrawal Page:** Request withdrawal and view withdrawal history, including:
-    - Manage (i.e., update) bank name, bank account name, bank account number
-5. **Seller Store Page:** For the author to manage store, including:
-    - Manage (i.e., update/delete) store profile  
-    - Manage (i.e., create/update/delete) products
-    - Manage (i.e., create/update/delete) product categories
-    - Manage (i.e., create/update/delete) Product Images
+## 📂 Struktur Folder Proyek
 
-Admin Pages (Owner of e-commerce):
-1. **Store Verification Page:** Verify or reject store applications
-2. **User & Store Management Page:** View and manage registered all of users and stores
+Berikut adalah gambaran umum struktur folder proyek ini (berbasis Laravel):
 
-## DB Structure
-![db structure](https://github.com/WisnuIbnu/E-Commerce-pemweb-uap/blob/main/public/db_structure.png?raw=true)
+```
+e-commerce-group-4/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/        # Logika bisnis (Admin, Seller, User)
+│   │   │   ├── Admin/          # Controller khusus fitur Admin
+│   │   │   ├── Seller/         # Controller khusus fitur Seller (Dashboard, Produk, dll)
+│   │   │   └── User/           # Controller fitur User (Belanja, Checkout)
+│   │   └── Middleware/         # Middleware untuk autentikasi role
+│   └── Models/                 # Model Database (Product, Store, Transaction, dll)
+├── database/
+│   └── migrations/             # Skema Database
+├── resources/
+│   ├── views/                  # Tampilan Antarmuka (Blade Templates)
+│   │   ├── admin/              # View untuk Admin
+│   │   ├── seller/             # View untuk Dashboard Seller
+│   │   ├── user/               # View untuk Storefront User
+│   │   └── layouts/            # Layout utama aplikasi
+│   └── css/                    # File CSS (Tailwind)
+├── routes/
+│   └── web.php                 # Definisi Rute Aplikasi
+└── public/
+    └── images/                 # Aset gambar produk dan banner
+```
 
-## Prerequisites
+---
 
-You will need the following to run project:
+## ⚠️ Masalah yang Diketahui (Known Issues)
 
--   PHP >= 8.3
--   Composer
--   NPM
--   Database server (MySQL, MariaDB, PostgreSQL, or SQLite)
+### Konflik Sesi Multi-Akun (Login User, Admin, & Seller)
 
-## Installation
+**Masalah:**
+Sistem autentikasi saat ini menggunakan sesi browser tunggal. Jika Anda mencoba login sebagai **User**, **Admin**, dan **Seller** secara bersamaan dalam satu browser yang sama (meskipun di tab yang berbeda), sesi login terakhir akan menimpa sesi sebelumnya.
 
-The following steps will guide you through the installation process for running in a development environment locally on your machine:
+**Dampak:**
+- Dashboard Seller mungkin akan berubah menjadi tampilan User, atau sebaliknya.
+- Terjadi kesalahan "Unauthorized action" atau redirect yang tidak sesuai.
+- Data yang ditampilkan mungkin tertukar antar peran.
 
-1. Clone the latest version from the repository
-2. Run `composer install` to install the required PHP dependencies
-3. Copy the .env.example file to .env and edit the database credentials according to your database server
-4. Run `php artisan key:generate` to generate a new application key
-5. Run `php artisan migrate` to create the database tables. You can also add the `--seed` flag to seed the database with some dummy data
-6. Run `php artisan serve` to start the development server
-7. Open another terminal and run `npm install && npm run build` to install the required node modules
-8. Run `npm run dev` to compile the assets for development
-9. Open your browser and go to `http://localhost:8000` to view the application
+**Solusi Sementara:**
+Untuk menghindari masalah ini saat melakukan pengujian atau penggunaan:
+1.  Gunakan **Browser yang Berbeda** untuk setiap akun (Contoh: Chrome untuk Admin, Firefox untuk Seller, Edge untuk User).
+2.  Atau gunakan fitur **Incognito / Private Window** untuk login ke akun kedua atau ketiga.
+3.  Pastikan untuk **Logout** terlebih dahulu sebelum berganti akun di browser yang sama.
 
-## Submitting Assignment:
+---
 
-1. Fork the repository with the name "e-commerce-group-x"
-2. Complete the assignment tasks as specified.
-3. Create a pull request to our repository's main branch with your changes.
+**Developed by Group 4**
+*Pemrograman Web Lanjut - Semester 3*
