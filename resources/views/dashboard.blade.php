@@ -103,21 +103,6 @@
                     </div>
                 </template>
 
-                <!-- Navigation Buttons -->
-                <!-- <button @click="prev"
-                    class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-3 shadow-lg transition transform hover:scale-110 z-10">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-
-                <button @click="next"
-                    class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-3 shadow-lg transition transform hover:scale-110 z-10">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button> -->
-
                 <!-- Indicators -->
                 <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
                     <template x-for="(slide, index) in slides" :key="index">
