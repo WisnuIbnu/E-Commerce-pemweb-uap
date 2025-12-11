@@ -30,12 +30,9 @@
                     <a href="{{ route('home') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium
                            {{ request()->routeIs('home') ? 'text-orange-500 font-semibold' : '' }}">
-                        Home
+                        Beranda
                     </a>
-                    <a href="{{ route('category.show', 'sembako') }}"
-                        class="text-gray-700 hover:text-orange-400 font-medium">
-                        Kategori
-                    </a>
+
                     <a href="{{ route('products.search') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium">
                         Produk
@@ -85,17 +82,19 @@
                     <a href="{{ route('dashboard') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium
                                {{ request()->routeIs('dashboard') ? 'text-orange-500 font-semibold' : '' }}">
-                        Home
+                        Beranda
                     </a>
 
-                    <a href="{{ route('category.show', 'sembako') }}"
-                        class="text-gray-700 hover:text-orange-400 font-medium">
-                        Kategori
-                    </a>
 
                     <a href="{{ route('products.search') }}"
                         class="text-gray-700 hover:text-orange-400 font-medium">
                         Produk
+                    </a>
+
+                    <a href="{{ route('orders.index') }}"
+                        class="text-gray-700 hover:text-orange-400 font-medium
+                               {{ request()->routeIs('orders.*') ? 'text-orange-500 font-semibold' : '' }}">
+                        Pesanan Saya
                     </a>
 
                     <a href="{{ route('transactions.index') }}"
@@ -176,11 +175,11 @@
                 <div class="flex items-center gap-3">
                     <a href="{{ route('login') }}"
                         class="px-4 py-2 border-2 border-orange-400 text-orange-400 rounded-lg font-medium hover:bg-orange-400 hover:text-white transition-all duration-300">
-                        Login
+                        Masuk
                     </a>
                     <a href="{{ route('register') }}"
                         class="px-4 py-2 bg-orange-400 text-white rounded-lg font-medium hover:bg-orange-500 transition-all duration-300">
-                        Register
+                        Daftar
                     </a>
                 </div>
                 @endif
@@ -210,7 +209,6 @@
         <div class="p-4 space-y-2">
             @guest
             <a href="{{ route('home') }}" class="block text-gray-700 hover:text-orange-600">Home</a>
-            <a href="{{ route('category.show', 'sembako') }}" class="block text-gray-700 hover:text-orange-600">Kategori</a>
             <a href="{{ route('products.search') }}" class="block text-gray-700 hover:text-orange-600">Produk</a>
             @else
             @if (Auth::user()->role === 'seller')
@@ -229,17 +227,38 @@
                        {{ request()->routeIs('seller.orders.*') ? 'text-orange-500 font-semibold' : '' }}">
                 Pesanan Masuk
             </a>
-            <a href="{{ route('seller.form') }}"
+            <a href="{{ route('seller.store.edit') }}"
                 class="block text-gray-700 hover:text-orange-600
                        {{ request()->routeIs('seller.form') ? 'text-orange-500 font-semibold' : '' }}">
                 Pengaturan Toko
             </a>
             @else
-            <a href="{{ route('dashboard') }}" class="block text-gray-700 hover:text-orange-600">Home</a>
-            <a href="{{ route('category.show', 'sembako') }}" class="block text-gray-700 hover:text-orange-600">Kategori</a>
-            <a href="{{ route('products.search') }}" class="block text-gray-700 hover:text-orange-600">Produk</a>
-            <a href="{{ route('transactions.index') }}" class="block text-gray-700 hover:text-orange-600">Transaksi</a>
+            {{-- MENU BUYER (MOBILE) --}}
+            <a href="{{ route('dashboard') }}"
+                class="block text-gray-700 hover:text-orange-600
+              {{ request()->routeIs('dashboard') ? 'text-orange-500 font-semibold' : '' }}">
+                Beranda
+            </a>
+
+            <a href="{{ route('products.search') }}"
+                class="block text-gray-700 hover:text-orange-600
+              {{ request()->routeIs('products.search') ? 'text-orange-500 font-semibold' : '' }}">
+                Produk
+            </a>
+
+            <a href="{{ route('orders.index') }}"
+                class="block text-gray-700 hover:text-orange-600
+              {{ request()->routeIs('orders.*') ? 'text-orange-500 font-semibold' : '' }}">
+                Pesanan Saya
+            </a>
+
+            <a href="{{ route('transactions.index') }}"
+                class="block text-gray-700 hover:text-orange-600
+              {{ request()->routeIs('transactions.*') ? 'text-orange-500 font-semibold' : '' }}">
+                Transaksi
+            </a>
             @endif
+
             @endguest
         </div>
 
@@ -268,11 +287,11 @@
             <div class="space-y-2">
                 <a href="{{ route('login') }}"
                     class="block w-full text-center px-4 py-2 border-2 border-orange-400 text-orange-400 rounded-lg font-medium hover:bg-orange-400 hover:text-white transition">
-                    Login
+                    Masuk
                 </a>
                 <a href="{{ route('register') }}"
                     class="block w-full text-center px-4 py-2 bg-orange-400 text-white rounded-lg font-medium hover:bg-orange-500 transition">
-                    Register
+                    Daftar
                 </a>
             </div>
             @endif

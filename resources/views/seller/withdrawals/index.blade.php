@@ -1,7 +1,20 @@
 <x-seller-layout>
-   @php
+    @php
     $availableBalance = $availableBalance ?? 0; // fallback biar aman
-@endphp
+    @endphp
+
+    @if (session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#f97316',
+            });
+        });
+    </script>
+    @endif
 
     @if (session('success'))
     <script>

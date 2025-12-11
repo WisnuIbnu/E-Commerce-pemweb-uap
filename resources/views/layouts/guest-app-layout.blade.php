@@ -43,9 +43,6 @@
                             Home
                         </a>
                         <a href="{{ route('home') }}" class="text-gray-700 hover:text-orange-600 font-medium transition">
-                            Kategori
-                        </a>
-                        <a href="{{ route('home') }}" class="text-gray-700 hover:text-orange-600 font-medium transition">
                             Produk
                         </a>
                     </div>
@@ -98,14 +95,12 @@
                      class="md:hidden border-t border-gray-200 py-4">
                     <div class="space-y-3">
                         <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded transition">
-                            Home
-                        </a>
-                        <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded transition">
-                            Kategori
+                            Beranda
                         </a>
                         <a href="{{ route('home') }}" class="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded transition">
                             Produk
                         </a>
+                        
                         <div class="border-t border-gray-200 pt-3 px-4">
                             <a href="{{ route('login') }}" class="block w-full text-center py-2 border border-orange-500 text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition mb-2">
                                 Masuk
