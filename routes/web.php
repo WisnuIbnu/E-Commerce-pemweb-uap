@@ -98,6 +98,13 @@ Route::middleware(['auth', 'admin.access'])
         Route::resource('users', UserController::class, ['only' => ['index', 'show', 'destroy']]);
         Route::post('users/{user}/toggle-role', [UserController::class, 'toggleRole'])
             ->name('users.toggleRole');
+
+        Route::prefix('withdrawals')->name('withdrawals.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\WithdrawalController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Admin\WithdrawalController::class, 'show'])->name('show');
+        Route::get('/{id}/approve', [App\Http\Controllers\Admin\WithdrawalController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [App\Http\Controllers\Admin\WithdrawalController::class, 'reject'])->name('reject');
+    });
     });
 
 /*

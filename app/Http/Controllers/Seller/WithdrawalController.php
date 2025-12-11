@@ -9,7 +9,6 @@ use App\Models\Withdrawal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class WithdrawalController extends Controller
 {
@@ -95,7 +94,7 @@ class WithdrawalController extends Controller
 
             DB::beginTransaction();
 
-            // Create withdrawal request
+            // Create withdrawal request (status pending, saldo BELUM dikurangi)
             $withdrawal = Withdrawal::create([
                 'store_balance_id' => $storeBalance->id,
                 'amount' => $request->amount,
@@ -105,19 +104,8 @@ class WithdrawalController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Deduct balance
-            $storeBalance->balance -= $request->amount;
-            $storeBalance->save();
-
-            // Create balance history
-            StoreBalanceHistory::create([
-                'store_balance_id' => $storeBalance->id,
-                'type' => 'withdraw',
-                'reference_id' => $withdrawal->id,
-                'reference_type' => 'App\Models\Withdrawal',
-                'amount' => $request->amount,
-                'remarks' => 'Penarikan dana ke ' . $request->bank_name . ' - ' . $request->bank_account_number,
-            ]);
+            // TIDAK mengurangi saldo di sini
+            // Saldo akan dikurangi setelah admin menyetujui
 
             DB::commit();
 

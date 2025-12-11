@@ -555,6 +555,10 @@
                 <i class="fas fa-users"></i>
                 <span>Pengguna</span>
             </a>
+            <a href="{{ route('admin.withdrawals.index') }}" class="{{ request()->routeIs('admin.withdrawals.*') ? 'active' : '' }}">
+                <i class="fas fa-money-check-alt"></i>
+                <span>Penarikan Dana</span>
+            </a>
         </div>
     </div>
 
