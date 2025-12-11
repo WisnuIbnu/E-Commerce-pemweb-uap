@@ -2,28 +2,25 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Model;
 
 class StoreBalance extends Model
 {
-
     protected $fillable = [
         'store_id',
         'balance',
     ];
 
     protected $casts = [
-        'balanace' => 'decimal:2'
+        'balance' => 'decimal:2',
     ];
 
-    // relationships one store balance belongs to one store
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function storeBalanceHistories()
+    public function histories() 
     {
         return $this->hasMany(StoreBalanceHistory::class);
     }

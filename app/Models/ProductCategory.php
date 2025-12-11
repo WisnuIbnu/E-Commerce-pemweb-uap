@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class ProductCategory extends Model
 {
 
+    protected $table = 'product_categories';
     protected $fillable = [
+        'store_id',
         'parent_id',
         'image',
         'name',
@@ -23,10 +25,12 @@ class ProductCategory extends Model
     public function children()
     {
         return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
-    } 
+    }
+     
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'product_category_id');
     }
+    
 }

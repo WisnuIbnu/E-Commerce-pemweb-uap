@@ -26,16 +26,35 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Ambil semua data tervalidasi
+        $validated = $request->validated();
+
+        // Pisahkan phone_number dari data user (karena bukan kolom di tabel users)
+        $phoneNumber = $validated['phone_number'] ?? null;
+        unset($validated['phone_number']);
+
+        // Update data user (name, email, dll)
+        $user->fill($validated);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        $user->save();
+
+        // Kalau dia buyer, update / buat data di tabel buyers
+        if ($user->role === 'buyer') {
+            $user->buyer()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['phone_number' => $phoneNumber]
+            );
+        }
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
 
     /**
      * Delete the user's account.

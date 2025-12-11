@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-
     protected $fillable = [
         'user_id',
         'name',
@@ -18,17 +17,25 @@ class Store extends Model
         'address',
         'postal_code',
         'is_verified',
+        'status',
+        'bank_name',
+        'bank_account_number',
+        'bank_account_name',
     ];
 
-    // relationships one store has one owner (user)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function storeBallance()
+    public function balance()
     {
         return $this->hasOne(StoreBalance::class);
+    }
+
+    public function storeBallance()
+    {
+        return $this->balance();
     }
 
     public function products()
@@ -39,5 +46,15 @@ class Store extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasManyThrough(
+            Withdrawal::class,   
+            StoreBalance::class, 
+            'store_id',
+            'store_balance_id'   
+        );
     }
 }
