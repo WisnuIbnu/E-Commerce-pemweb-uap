@@ -3,75 +3,100 @@
 session_start();
 require "conn.php"; 
 
-// --- CEK LOGIN DAN ROLE ---
-// Memastikan hanya user dengan role 'admin' yang bisa mengakses
-if (!isset($_SESSION["user"]) || ($_SESSION["user"]["role"] ?? 'customer') !== 'admin') {
+// --- CEK LOGIN ADMIN ---
+if (!isset($_SESSION["user"]) || $_SESSION["user"]["role"] !== 'admin') {
     header("Location: Login.php"); 
     exit;
 }
 
-$current_user = $_SESSION["user"]; 
+$current_user = $_SESSION["user"];
 $message = '';
 $error = '';
 
-// --- LOGIKA UPDATE ROLE (POST REQUEST) ---
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id']) && isset($_POST['new_role'])) {
-    $user_id = (int)$_POST['user_id'];
-    $new_role = $_POST['new_role'];
-    
-    // Validasi role yang diizinkan
-    $allowed_roles = ['customer', 'seller', 'admin'];
-    if (!in_array($new_role, $allowed_roles)) {
-        $error = "Role yang diminta tidak valid.";
+// ---------------------------------------------------
+// CEK TABEL ADA / TIDAK
+// ---------------------------------------------------
+function table_exists($mysqli, $table) {
+    $q = $mysqli->query("SHOW TABLES LIKE '$table'");
+    return ($q && $q->num_rows > 0);
+}
+
+// ---------------------------------------------------
+// CEK KOLOM ADA / TIDAK
+// ---------------------------------------------------
+function column_exists($mysqli, $table, $column) {
+    if (!table_exists($mysqli, $table)) return false;
+    $q = $mysqli->query("SHOW COLUMNS FROM `$table` LIKE '$column'");
+    return ($q && $q->num_rows > 0);
+}
+
+// ---------------------------------------------------
+// HANDLE UPDATE ROLE
+// ---------------------------------------------------
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['new_role'])) {
+
+    if (!table_exists($mysqli, "users") || !column_exists($mysqli, "users", "role")) {
+        $error = "Struktur tabel users tidak lengkap.";
     } else {
-        $mysqli->begin_transaction();
-        try {
-            $store_id_update = 'NULL';
-            
-            // 1. Update role pengguna
-            $stmt = $mysqli->prepare("UPDATE users SET role = ? WHERE id = ?");
-            $stmt->bind_param("si", $new_role, $user_id);
-            $stmt->execute();
-            $stmt->close();
-            
-            $message = "Role pengguna ID {$user_id} berhasil diubah menjadi '{$new_role}'.";
-            
-            // LOGIKA TAMBAHAN: Jika diubah menjadi non-seller, putuskan hubungan toko
-            if ($new_role === 'customer' || $new_role === 'admin') {
-                // Hapus store_id dari users
-                $stmt_clear_store = $mysqli->prepare("UPDATE users SET store_id = NULL WHERE id = ?");
-                $stmt_clear_store->bind_param("i", $user_id);
-                $stmt_clear_store->execute();
-                $stmt_clear_store->close();
-                
-                // Opsional: Set status toko menjadi 'rejected' jika ada toko yang terkait (tergantung kebijakan)
-                // $stmt_reject_store = $mysqli->prepare("UPDATE stores SET store_status = 'rejected' WHERE seller_id = ? AND store_status = 'verified'");
-                // ...
-            }
-            
-            $mysqli->commit();
-            header("Location: admin_manage_users.php?msg=" . urlencode($message));
+        $user_id = (int)$_POST['user_id'];
+        $new_role = $_POST['new_role'];
+
+        $valid_roles = ['customer', 'seller', 'admin'];
+        if (!in_array($new_role, $valid_roles)) {
+            $error = "Role tidak valid.";
+        } else {
+            $mysqli->query("UPDATE users SET role='$new_role', store_id=NULL WHERE id=$user_id");
+            header("Location: admin_manage_users.php?msg=Role berhasil diperbarui");
             exit;
-        } catch (Exception $e) {
-            $mysqli->rollback();
-            $error = "Gagal mengubah role: " . $e->getMessage();
         }
     }
 }
-// --- AKHIR LOGIKA POST ---
 
-// --- PENGAMBILAN SEMUA DATA PENGGUNA (QUERY DIPERBAIKI) ---
-// Menghilangkan 'u.tanggal_join' dari SELECT
-$sql_users = "
-    SELECT 
-        u.id, u.nama, u.email, u.role, 
-        s.store_name, s.store_status, s.id AS store_id
-    FROM users u
-    LEFT JOIN stores s ON u.store_id = s.id
-    ORDER BY u.id ASC
-";
-$result_users = $mysqli->query($sql_users); // Baris ini adalah baris 73 di file sebelumnya
-$all_users = $result_users->fetch_all(MYSQLI_ASSOC);
+// ---------------------------------------------------
+// AMBIL SEMUA USER DENGAN ANTI ERROR
+// ---------------------------------------------------
+$users = [];
+
+if (table_exists($mysqli, "users")) {
+
+    $columns = [
+        "id",
+        column_exists($mysqli, "users", "nama") ? "nama" : "'' AS nama",
+        column_exists($mysqli, "users", "email") ? "email" : "'' AS email",
+        column_exists($mysqli, "users", "role") ? "role" : "'customer' AS role",
+        column_exists($mysqli, "users", "store_id") ? "store_id" : "NULL AS store_id"
+    ];
+
+    $sql = "SELECT " . implode(", ", $columns) . " FROM users ORDER BY id ASC";
+    $result = $mysqli->query($sql);
+
+    if ($result) {
+        $users = $result->fetch_all(MYSQLI_ASSOC);
+    }
+}
+
+// ---------------------------------------------------
+// AMBIL INFO TOKO (HANYA JIKA ADA TABELNYA)
+// ---------------------------------------------------
+$store_data = [];
+
+if (table_exists($mysqli, "stores")) {
+    $sql_store = "
+        SELECT 
+            id,
+            " . (column_exists($mysqli, "stores", "store_name") ? "store_name" : "'' AS store_name") . ",
+            " . (column_exists($mysqli, "stores", "store_status") ? "store_status" : "'pending' AS store_status") . ",
+            " . (column_exists($mysqli, "stores", "seller_id") ? "seller_id" : "0 AS seller_id") . "
+        FROM stores
+    ";
+
+    $res_store = $mysqli->query($sql_store);
+    if ($res_store) {
+        while ($row = $res_store->fetch_assoc()) {
+            $store_data[$row['seller_id']] = $row;
+        }
+    }
+}
 
 $mysqli->close();
 ?>
@@ -81,25 +106,11 @@ $mysqli->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Manajemen Pengguna - GM'Mart Admin</title>
-    
+
     <link rel="stylesheet" href="dashboard.css">
-    <link rel="stylesheet" href="admin.css"> <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        function toggleMenu() {
-            document.querySelector(".nav-menu").classList.toggle("active");
-        }
-        
-        // Fungsi untuk konfirmasi perubahan role
-        function confirmRoleChange(userId, currentRole) {
-            const newRole = document.getElementById('select_role_' + userId).value;
-            if (newRole !== currentRole) {
-                return confirm(`Apakah Anda yakin ingin mengubah role pengguna ID ${userId} dari '${currentRole}' menjadi '${newRole}'?`);
-            }
-            return false;
-        }
-    </script>
+    <link rel="stylesheet" href="admin.css">
 </head>
+
 <body>
 
 <header class="navbar">
@@ -107,93 +118,76 @@ $mysqli->close();
         <img src="Logo.jpg" class="logo">
         <h1 class="brand"><span class="cyan">GM'</span>Mart - ADMIN</h1>
     </div>
-    <div class="menu-toggle" onclick="toggleMenu()">
-        <div></div> <div></div> <div></div>
-    </div>
+
     <nav class="nav-menu">
         <a href="admin_dashboard.php">Dashboard</a>
         <a href="admin_manage_users.php" class="active-link">Manajemen Pengguna</a>
         <a href="admin_manage_stores.php">Verifikasi Toko</a>
     </nav>
+
     <form action="Logout.php" method="POST">
         <button class="logout">Log out</button>
     </form>
 </header>
 
 <main class="main-content">
-    <h2 class="page-title">Manajemen Pengguna dan Toko</h2>
-    
+    <h2 class="page-title">Manajemen Pengguna</h2>
+
     <?php if (isset($_GET['msg'])): ?>
         <div class="alert success"><?= htmlspecialchars($_GET['msg']) ?></div>
     <?php endif; ?>
+
     <?php if ($error): ?>
         <div class="alert error"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
     <section class="user-list">
-        <h3>Total Pengguna Terdaftar (<?= count($all_users) ?>)</h3>
-        
-        <div class="table-responsive">
-            <table class="data-table user-management-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Role Saat Ini</th>
-                        <th>Toko Terkait</th>
-                        <th>Status Toko</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($all_users as $user): 
-                        $is_admin_or_self = ($user['role'] === 'admin' && $user['id'] !== $current_user['id']);
-                        $is_self = ($user['id'] === $current_user['id']);
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Nama Toko</th>
+                    <th>Status Toko</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <?php foreach ($users as $u): ?>
+                    <?php 
+                        $store = $store_data[$u['id']] ?? null;
                     ?>
                     <tr>
-                        <td><?= htmlspecialchars($user['id']); ?></td>
-                        <td><?= htmlspecialchars($user['nama']); ?></td>
-                        <td><?= htmlspecialchars($user['email']); ?></td>
-                        <td><span class="status-badge <?= htmlspecialchars($user['role']); ?>"><?= strtoupper(htmlspecialchars($user['role'])); ?></span></td>
-                        <td><?= htmlspecialchars($user['store_name'] ?? '-'); ?></td>
+                        <td><?= $u['id'] ?></td>
+                        <td><?= htmlspecialchars($u['nama']) ?></td>
+                        <td><?= htmlspecialchars($u['email']) ?></td>
+                        <td><?= htmlspecialchars($u['role']) ?></td>
+
+                        <td><?= $store['store_name'] ?? '-' ?></td>
+                        <td><?= $store['store_status'] ?? '-' ?></td>
+
                         <td>
-                            <?php if ($user['store_status']): ?>
-                                <span class="status-badge <?= htmlspecialchars($user['store_status']); ?>">
-                                    <?= strtoupper(htmlspecialchars($user['store_status'])); ?>
-                                </span>
-                            <?php else: ?>
-                                -
-                            <?php endif; ?>
-                        </td>
-                        <td>
-                            <form method="POST" onsubmit="return confirmRoleChange(<?= $user['id']; ?>, '<?= $user['role']; ?>');">
-                                <input type="hidden" name="user_id" value="<?= $user['id']; ?>">
-                                <select name="new_role" id="select_role_<?= $user['id']; ?>" class="role-select" 
-                                    <?= $is_admin_or_self ? 'disabled' : ''; // Admin lain dan diri sendiri tidak bisa diedit role-nya ?>
-                                >
-                                    <option value="customer" <?= $user['role'] == 'customer' ? 'selected' : ''; ?>>Customer</option>
-                                    <option value="seller" <?= $user['role'] == 'seller' ? 'selected' : ''; ?>>Seller</option>
-                                    <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                            <form method="POST">
+                                <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+
+                                <select name="new_role">
+                                    <option value="customer" <?= $u['role']=='customer'?'selected':'' ?>>Customer</option>
+                                    <option value="seller" <?= $u['role']=='seller'?'selected':'' ?>>Seller</option>
+                                    <option value="admin" <?= $u['role']=='admin'?'selected':'' ?>>Admin</option>
                                 </select>
-                                
-                                <?php if (!$is_admin_or_self && !$is_self): ?>
-                                    <button type="submit" class="btn-action">Update Role</button>
-                                <?php elseif ($is_self): ?>
-                                    <button type="button" class="btn-action disabled" disabled>Anda Saat Ini</button>
-                                <?php else: ?>
-                                    <button type="button" class="btn-action disabled" disabled>Admin Lain</button>
-                                <?php endif; ?>
+
+                                <button type="submit">Update</button>
                             </form>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                <?php endforeach ?>
+            </tbody>
+        </table>
     </section>
 </main>
-
 <footer class="footer">
     © 2025 GM'Mart. Admin Panel.
 </footer>
