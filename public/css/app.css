@@ -385,3 +385,109 @@ select.form-control {
     h2 { font-size: 20px; }
     h3 { font-size: 18px; }
 }
+
+/* ========================================
+   SELLER & ADMIN LAYOUT
+   ======================================== */
+
+.seller-layout,
+.admin-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-2xl) 0;
+}
+
+/* Sidebar */
+.seller-sidebar,
+.admin-sidebar {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.store-header,
+.admin-header {
+    text-align: center;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--spacing-lg);
+}
+
+.store-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto var(--spacing-md);
+    border: 3px solid var(--border);
+}
+
+.admin-badge {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--danger) 0%, #DC2626 100%);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto var(--spacing-md);
+}
+
+.store-name,
+.admin-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.store-status {
+    font-size: 12px;
+}
+
+.seller-nav,
+.admin-nav {
+    list-style: none;
+}
+
+.seller-nav-item,
+.admin-nav-item {
+    margin-bottom: var(--spacing-xs);
+}
+
+.seller-nav-link,
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    color: var(--dark);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.seller-nav-link:hover,
+.seller-nav-link.active,
+.admin-nav-link:hover,
+.admin-nav-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .seller-layout,
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .seller-sidebar,
+    .admin-sidebar {
+        position: static;
+    }
+}

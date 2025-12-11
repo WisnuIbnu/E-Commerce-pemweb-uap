@@ -317,4 +317,21 @@
         </main>
     </div>
 </div>
+<script>
+// Auto-format account number with spaces every 4 digits
+const accountNumberInput = document.getElementById('bank_account_number');
+
+if (accountNumberInput) {
+    accountNumberInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, ''); // Remove existing spaces
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value; // Add space every 4 chars
+        e.target.value = formattedValue;
+    });
+
+    // On form submit, remove spaces before sending
+    accountNumberInput.closest('form').addEventListener('submit', function() {
+        accountNumberInput.value = accountNumberInput.value.replace(/\s/g, '');
+    });
+}
+</script>
 @endsection
