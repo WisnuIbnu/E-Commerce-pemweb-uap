@@ -10,6 +10,7 @@ class Store extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'slug',
         'logo',
         'about',
         'phone',
@@ -34,6 +35,11 @@ class Store extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class);
     }
 
     public function transactions()
