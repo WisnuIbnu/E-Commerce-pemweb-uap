@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'code',
         'buyer_id',
         'store_id',
-        'address',
         'address_id',
+        'address',
         'city',
         'postal_code',
         'shipping',
@@ -29,21 +32,56 @@ class Transaction extends Model
         'grand_total' => 'decimal:2',
     ];
 
+    /**
+     * 🔥 RELASI KE BUYER - DIPERBAIKI
+     * buyer_id merujuk ke tabel 'buyers', bukan 'users'
+     */
     public function buyer()
     {
-        return $this->belongsTo(Buyer::class);
-    }
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
+        return $this->belongsTo(Buyer::class, 'buyer_id', 'id');
     }
 
+    /**
+     * Relasi ke Store
+     */
+    public function store()
+    {
+        return $this->belongsTo(Store::class, 'store_id', 'id');
+    }
+
+    /**
+     * Relasi ke TransactionDetail
+     */
     public function transactionDetails()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
-    public function productReviews()
+
+    /**
+     * SCOPES untuk status transaksi
+     */
+    public function scopePending($query)
     {
-        return $this->hasMany(ProductReview::class);
+        return $query->where('payment_status', 'pending');
+    }
+
+    public function scopeProcessing($query)
+    {
+        return $query->where('payment_status', 'processing');
+    }
+
+    public function scopeShipped($query)
+    {
+        return $query->where('payment_status', 'shipped');
+    }
+
+    public function scopeDelivered($query)
+    {
+        return $query->where('payment_status', 'delivered');
+    }
+
+    public function scopeCancelled($query)
+    {
+        return $query->where('payment_status', 'cancelled');
     }
 }

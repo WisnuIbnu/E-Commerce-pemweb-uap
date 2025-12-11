@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -20,15 +22,15 @@ class Store extends Model
         'is_verified',
     ];
 
-    // relationships one store has one owner (user)
+    protected $casts = [
+        'is_verified' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function storeBallance()
-    {
-        return $this->hasOne(StoreBalance::class);
     }
 
     public function products()
@@ -36,8 +38,26 @@ class Store extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function transactions()
+    public function balance()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasOne(StoreBalance::class);
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->where('is_verified', true);
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        if ($this->logo && file_exists(public_path($this->logo))) {
+            return asset($this->logo);
+        }
+        return asset('images/default-store-logo.png');
+    }
+
+    public static function hasStore($userId)
+    {
+        return self::where('user_id', $userId)->exists();
     }
 }
