@@ -6,24 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
 {
-
     protected $fillable = [
-        'user_id',
         'name',
-        'logo',
         'about',
         'phone',
-        'address_id',
         'city',
-        'address',
         'postal_code',
-        'is_verified',
+        'address',
+        'address_id',
+        'logo',
+        'owner_id',
+        'status',
     ];
 
-    // relationships one store has one owner (user)
-    public function user()
+    // Satu toko dimiliki satu user (owner)
+    public function owner()
     {
-        return $this->belongsTo(User::class);
+        // pakai kolom owner_id sebagai foreign key
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function storeBallance()

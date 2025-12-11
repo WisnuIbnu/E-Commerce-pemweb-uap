@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,11 +11,6 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -25,21 +18,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -58,20 +41,25 @@ class User extends Authenticatable
     {
         return $this->role === 'member';
     }
-    
-    // Cek apakah user adalah seller (punya store yang verified)
+
+    // Cek apakah user adalah seller (punya store yang status-nya active)
     public function isSeller()
     {
-        return $this->store()->exists() && $this->store->is_verified;
+        return $this->store && $this->store->status === 'active';
+        // atau kalau mau benar2 pakai query:
+        // return $this->store()->where('status', 'active')->exists();
     }
-    // relationships can hava one store 
-    public function store()
-    {
-        return $this->hasOne(Store::class);
-    }
+
+    // relationships
 
     public function buyer()
     {
         return $this->hasOne(Buyer::class);
+    }
+
+    // Satu user punya satu store, foreign key = owner_id di tabel stores
+    public function store()
+    {
+        return $this->hasOne(Store::class, 'owner_id');
     }
 }

@@ -4,16 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WithDrawal extends Model
+class Withdrawal extends Model
 {
+    // Sesuaikan dengan nama tabel di database Anda: 'withdrawals'
+    protected $table = 'withdrawals'; 
 
     protected $fillable = [
-        'store_balance_id',
-        'amount',
-        'bank_account_name',
-        'bank_account_number',
-        'bank_name',
-        'status',
+        'store_balance_id', 
+        'amount', 
+        'bank_name', 
+        'bank_account_name', 
+        'bank_account_number', 
+        'status'
     ];
 
     public function storeBalance()
