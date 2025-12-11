@@ -1,22 +1,17 @@
-<x-seller-layout title="Withdraw Balance">
+<x-seller-layout title="Penarikan">
 
-<div class="seller-card">
+<div class="max-w-3xl mx-auto py-8">
+    <h1 class="text-2xl font-bold mb-4">Penarikan Dana</h1>
 
-<form action="{{ route('seller.withdrawal.request') }}" method="POST">
-    @csrf
+    <div class="bg-white p-6 rounded shadow">
+        <form action="{{ route('seller.withdraw.request') }}" method="POST">
+            @csrf
+            <label>Jumlah (min Rp 10.000)</label>
+            <input name="amount" type="number" class="border w-full p-2 mb-3" required>
 
-    <label>Bank Name</label>
-    <input type="text" name="bank_name" class="form-input mb-3">
-
-    <label>Account Number</label>
-    <input type="text" name="account_number" class="form-input mb-3">
-
-    <label>Amount</label>
-    <input type="number" name="amount" class="form-input mb-3">
-
-    <button class="seller-btn mt-3">Request Withdrawal</button>
-</form>
-
+            <button class="bg-sweet-500 text-white px-4 py-2 rounded">Ajukan Penarikan</button>
+        </form>
+    </div>
 </div>
 
 </x-seller-layout>

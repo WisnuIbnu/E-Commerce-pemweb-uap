@@ -35,7 +35,7 @@ class AdminUserSeeder extends Seeder
             'name' => 'Seller User',
             'email' => 'seller@gmail.com',
             'password' => Hash::make('password123'),
-            'role' => 'member'  
+            'role' => 'seller'  
         ]);
 
         // Buat store untuk seller + verifikasi

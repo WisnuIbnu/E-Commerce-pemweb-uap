@@ -3,81 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
-use App\Models\Product;
-use App\Models\Buyer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
     /**
-     * Menampilkan riwayat transaksi user
-     */
-    public function index()
-    {
-        $buyer = auth()->user()->buyer;
-
-        if (!$buyer) {
-            $buyer = Buyer::create(['user_id' => auth()->id()]);
-        }
-
-        $transactions = Transaction::with('details.product')
-            ->where('buyer_id', $buyer->id)
-            ->latest()
-            ->get();
-
-        return view('user.transactions.index', compact('transactions'));
-    }
-
-    /**
-     * Menampilkan detail transaksi
-     */
-    public function show($id)
-    {
-        $buyer = auth()->user()->buyer;
-
-        if (!$buyer) {
-            $buyer = Buyer::create(['user_id' => auth()->id()]);
-        }
-
-        $transaction = Transaction::with(['details.product', 'store'])
-            ->where('buyer_id', $buyer->id)
-            ->findOrFail($id);
-
-        return view('user.transactions.show', compact('transaction'));
-    }
-
-    /**
-     * Seller melihat semua order untuk tokonya
+     * Orders for seller — tampilkan pesanan yang berhubungan dengan store seller.
      */
     public function sellerOrders()
     {
-        $store = auth()->user()->store;
+        // temukan store id pemilik saat ini
+        $store = Auth::user()->store;
+        if (!$store) {
+            abort(403, 'Anda bukan penjual atau belum mendaftar toko.');
+        }
 
-        $orders = Transaction::with(['details.product', 'buyer.user'])
-            ->where('store_id', $store->id)
+        $orders = Transaction::where('store_id', $store->id)
             ->latest()
-            ->get();
+            ->paginate(12);
 
         return view('seller.orders.index', compact('orders'));
     }
 
     /**
-     * Seller mengupdate status pengiriman
+     * Update shipping (kirim / set tracking number)
      */
     public function shipOrder(Request $request, $id)
     {
         $request->validate([
-            'tracking_number' => 'required',
+            'tracking_number' => 'nullable|string|max:255',
         ]);
 
-        $store = auth()->user()->store;
+        $transaction = Transaction::where('id', $id)
+            ->where('store_id', Auth::user()->store->id)
+            ->firstOrFail();
 
-        $transaction = Transaction::where('store_id', $store->id)->findOrFail($id);
-
-        $transaction->shipping = 'shipped';
         $transaction->tracking_number = $request->tracking_number;
+        // you can add shipping status if your DB has 'shipping_status'
+        if ($request->has('mark_shipped')) {
+            // $transaction->shipping_status = 'shipped';
+            $transaction->shipped_at = now(); // only if column exists
+        }
         $transaction->save();
 
-        return back()->with('success', 'Status pengiriman berhasil diperbarui!');
+        return back()->with('success','Informasi pengiriman tersimpan.');
     }
 }

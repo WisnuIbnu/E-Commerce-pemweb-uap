@@ -1,21 +1,14 @@
-<x-seller-layout title="Store Balance">
+<x-seller-layout title="Saldo">
 
-<div class="seller-card">
+<div class="max-w-4xl mx-auto py-8">
+    <h1 class="text-2xl font-bold mb-4">Saldo Toko</h1>
 
-    <h2 class="text-xl font-bold">Current Balance: Rp {{ number_format($balance,0,',','.') }}</h2>
+    <div class="bg-white p-6 rounded shadow">
+        <p class="text-gray-600">Saldo saat ini</p>
+        <p class="text-3xl font-bold mt-2">Rp {{ number_format($balance,0,',','.') }}</p>
 
-    <h3 class="mt-6 mb-3 font-semibold">Balance History</h3>
-
-    <table class="table">
-        @foreach ($history as $h)
-        <tr>
-            <td>{{ $h->type }}</td>
-            <td>Rp {{ number_format($h->amount,0,',','.') }}</td>
-            <td>{{ $h->created_at->format('d M Y') }}</td>
-        </tr>
-        @endforeach
-    </table>
-
+        <a href="{{ route('seller.wallet.history') }}" class="inline-block mt-4 text-sweet-500">Lihat Riwayat</a>
+    </div>
 </div>
 
 </x-seller-layout>

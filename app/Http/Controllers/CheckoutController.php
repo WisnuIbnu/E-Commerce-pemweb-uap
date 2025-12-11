@@ -13,20 +13,43 @@ use Illuminate\Support\Facades\DB;
 class CheckoutController extends Controller
 {
     /**
-     * Menampilkan isi cart
+     * CART PAGE
      */
     public function showCart()
     {
         $cart = session()->get('cart', []);
 
-        // Ambil data produk berdasarkan product_id
         $products = Product::whereIn('id', array_keys($cart))->get();
 
         return view('user.cart.index', compact('products', 'cart'));
     }
 
     /**
-     * Menampilkan halaman checkout
+     * REMOVE ONE ITEM
+     */
+    public function removeItem($id)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('cart', $cart);
+        }
+
+        return back()->with('success', 'Item berhasil dihapus.');
+    }
+
+    /**
+     * CLEAR CART
+     */
+    public function clearCart()
+    {
+        session()->forget('cart');
+        return back()->with('success', 'Keranjang dikosongkan.');
+    }
+
+    /**
+     * CHECKOUT PAGE
      */
     public function showCheckout()
     {
@@ -42,7 +65,7 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Proses checkout → Membuat transaksi + detail
+     * PROCESS CHECKOUT
      */
     public function processCheckout(Request $request)
     {
@@ -55,50 +78,44 @@ class CheckoutController extends Controller
 
         $cart = session()->get('cart', []);
 
-        if (empty($cart)) {
+        if (!$cart) {
             return redirect('/cart')->with('error', 'Keranjang kosong.');
         }
 
         DB::beginTransaction();
 
         try {
+            // Buyer auto-create
             $buyer = auth()->user()->buyer;
-
-            // Fix: jika buyer belum ada → buat otomatis
             if (!$buyer) {
-                $buyer = \App\Models\Buyer::create([
+                $buyer = Buyer::create([
                     'user_id' => auth()->id(),
                 ]);
             }
 
-            // ambil semua produk yang ada di keranjang
             $products = Product::whereIn('id', array_keys($cart))->get();
 
-            $grand_total = 0;
+            $subtotal = 0;
             $storeId = null;
 
-            // hitung total keseluruhan
             foreach ($products as $p) {
                 $qty = $cart[$p->id]['qty'];
 
-                // VALIDASI STOK
                 if ($p->stock < $qty) {
                     return redirect('/cart')->with('error', "Stok {$p->name} tidak cukup.");
                 }
 
-                $subtotal = $p->price * $qty;
-                $grand_total += $subtotal;
+                $subtotal += $p->price * $qty;
                 $storeId = $p->store_id;
             }
 
-            // cost
-            $shipping_cost = 20000; // flat (bisa diubah)
-            $tax = $grand_total * 0.1;
-            $final_total = $grand_total + $shipping_cost + $tax;
+            $shipping_cost = $request->shipping_type == "express" ? 35000 : 20000;
+            $tax = $subtotal * 0.10;
+            $grand_total = $subtotal + $shipping_cost + $tax;
 
-            // buat transaksi
+            // Create Transaction
             $transaction = Transaction::create([
-                'code'          => 'TRX-' . Str::upper(Str::random(8)),
+                'code'          => 'TRX-' . strtoupper(Str::random(8)),
                 'buyer_id'      => $buyer->id,
                 'store_id'      => $storeId,
                 'address'       => $request->address,
@@ -107,28 +124,26 @@ class CheckoutController extends Controller
                 'shipping_type' => $request->shipping_type,
                 'shipping_cost' => $shipping_cost,
                 'tax'           => $tax,
-                'grand_total'   => $final_total,
+                'grand_total'   => $grand_total,
                 'payment_status'=> 'paid',
             ]);
 
-            // masukkan item ke transaction_details
+            // Create Transaction Details + reduce stock
             foreach ($products as $p) {
                 $qty = $cart[$p->id]['qty'];
-                $subtotal = $qty * $p->price;
+                $subtotalPerItem = $qty * $p->price;
 
                 TransactionDetail::create([
                     'transaction_id' => $transaction->id,
                     'product_id'     => $p->id,
                     'qty'            => $qty,
-                    'subtotal'       => $subtotal,
+                    'subtotal'       => $subtotalPerItem,
                 ]);
 
-                // kurangi stok
                 $p->stock -= $qty;
                 $p->save();
             }
 
-            // HAPUS CART
             session()->forget('cart');
 
             DB::commit();
@@ -138,7 +153,30 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * TRANSACTION HISTORY
+     */
+    public function index()
+    {
+        $buyer = auth()->user()->buyer;
+        $transactions = Transaction::where('buyer_id', $buyer->id)
+                                   ->latest()
+                                   ->get();
+
+        return view('user.transactions.index', compact('transactions'));
+    }
+
+    /**
+     * TRANSACTION RECEIPT
+     */
+    public function show($id)
+    {
+        $transaction = Transaction::with('details.product')->findOrFail($id);
+
+        return view('user.transactions.show', compact('transaction'));
     }
 }

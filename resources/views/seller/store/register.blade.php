@@ -1,71 +1,44 @@
-<x-seller-layout title="Register Your Store">
+<x-seller-layout title="Daftar Toko">
 
-<div class="seller-card w-full max-w-xl">
+<div class="max-w-3xl mx-auto py-8">
+    <h1 class="text-2xl font-bold mb-4">Daftar Toko</h1>
 
-    <h2 class="text-xl font-bold mb-4">Create Your Store</h2>
+    @if(session('success')) <div class="bg-green-50 p-3 rounded mb-4">{{ session('success') }}</div> @endif
+    @if($errors->any())
+        <div class="bg-red-50 p-3 rounded mb-4">
+            <ul class="list-disc pl-5">
+                @foreach($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-    <form action="{{ route('seller.store.register') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('seller.store.register') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow">
         @csrf
 
-        {{-- STORE NAME --}}
-        <label class="font-medium">Store Name</label>
-        <input type="text"
-               name="name"
-               required
-               class="form-input mb-3"
-               placeholder="Ex: Sweet Dessert Bakery">
+        <label class="block mb-2 font-medium">Nama Toko</label>
+        <input name="name" class="w-full border p-2 mb-3" required>
 
-        {{-- LOGO --}}
-        <label class="font-medium">Store Logo</label>
-        <input type="file"
-               name="logo"
-               accept="image/*"
-               class="form-input mb-3">
+        <label class="block mb-2 font-medium">Logo (opsional)</label>
+        <input name="logo" type="file" class="w-full mb-3">
 
-        {{-- ABOUT --}}
-        <label class="font-medium">About Store</label>
-        <textarea name="about"
-                  required
-                  rows="3"
-                  class="form-input mb-3"
-                  placeholder="Describe your store..."></textarea>
+        <label class="block mb-2 font-medium">Tentang Toko</label>
+        <textarea name="about" class="w-full border p-2 mb-3" rows="4" required></textarea>
 
-        {{-- PHONE --}}
-        <label class="font-medium">Phone Number</label>
-        <input type="text"
-               name="phone"
-               required
-               class="form-input mb-3"
-               placeholder="08xxxxxxxxxx">
+        <label class="block mb-2 font-medium">Telepon</label>
+        <input name="phone" class="w-full border p-2 mb-3" required>
 
-        {{-- CITY --}}
-        <label class="font-medium">City</label>
-        <input type="text"
-               name="city"
-               required
-               class="form-input mb-3"
-               placeholder="Kota">
+        <label class="block mb-2 font-medium">Kota</label>
+        <input name="city" class="w-full border p-2 mb-3" required>
 
-        {{-- ADDRESS --}}
-        <label class="font-medium">Full Address</label>
-        <textarea name="address"
-                  required
-                  rows="2"
-                  class="form-input mb-3"
-                  placeholder="Alamat lengkap pengiriman"></textarea>
+        <label class="block mb-2 font-medium">Alamat</label>
+        <input name="address" class="w-full border p-2 mb-3" required>
 
-        {{-- POSTAL CODE --}}
-        <label class="font-medium">Postal Code</label>
-        <input type="text"
-               name="postal_code"
-               required
-               class="form-input mb-3"
-               placeholder="Kode Pos">
+        <label class="block mb-2 font-medium">Kode Pos</label>
+        <input name="postal_code" class="w-full border p-2 mb-3" required>
 
-        <button class="seller-btn mt-3 w-full">
-            Register Store
-        </button>
-
+        <button class="bg-sweet-500 text-white px-4 py-2 rounded">Kirim Permintaan Daftar</button>
     </form>
 </div>
 

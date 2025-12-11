@@ -7,15 +7,11 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/pages/landing.css',
+                'resources/css/pages/user.css',    // FIX
+                'resources/css/pages/seller.css',  // FIX
                 'resources/js/app.js',
             ],
             refresh: true,
         }),
     ],
-    server: {
-        hmr: {
-            host: 'localhost',
-        },
-        host: true,
-    },
 });

@@ -7,9 +7,10 @@
 
     @vite([
         'resources/css/app.css',
-        'resources/css/user.css',
+        'resources/css/pages/user.css',
         'resources/js/app.js'
     ])
+
 </head>
 
 <body class="bg-softgray">

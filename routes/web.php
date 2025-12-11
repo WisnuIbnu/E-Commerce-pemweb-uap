@@ -91,19 +91,16 @@ Route::middleware(['auth', 'role:member'])->group(function () {
     })->name('cart.add');
 
     Route::get('/cart', [CheckoutController::class, 'showCart'])->name('cart.index');
-    Route::delete('/cart/remove/{id}', [CheckoutController::class, 'remove'])
-    ->name('cart.remove');
+    Route::delete('/cart/remove/{id}', [CheckoutController::class, 'removeItem'])->name('cart.remove');
+    Route::post('/cart/clear', [CheckoutController::class, 'clearCart'])->name('cart.clear');
 
-
-    /* CHECKOUT */
+    // CHECKOUT
     Route::get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout.index');
-    Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+    Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 
-
-    /* TRANSACTIONS (Riwayat Belanja) */
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-    Route::get('/transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
-
+    // TRANSACTIONS
+    Route::get('/transactions', [CheckoutController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions/{id}', [CheckoutController::class, 'show'])->name('transactions.show');
 });
 
 Route::middleware(['auth', 'role:member'])
@@ -115,45 +112,40 @@ Route::middleware(['auth', 'role:member'])
     ->name('seller.store.register');
 
 /* SELLER ROUTES */
-
 Route::middleware(['auth', 'role:seller'])
     ->prefix('seller')
     ->name('seller.')
     ->group(function () {
 
-        // Dashboard
+        // DASHBOARD
         Route::get('/dashboard', [StoreController::class, 'dashboard'])->name('dashboard');
 
-        // Store profile
-        Route::get('/store', [StoreController::class, 'profile'])->name('store.profile');
-        Route::put('/store', [StoreController::class, 'update'])->name('store.update');
+        // PROFIL TOKO
+        Route::get('/store/profile', [StoreController::class, 'profilePage'])->name('store.profile');
+        Route::put('/store/profile', [StoreController::class, 'update'])->name('store.update');
 
-
-        /* PRODUCT MANAGEMENT */
+        // PRODUK
         Route::get('/products', [ProductController::class, 'sellerIndex'])->name('products.index');
-        Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-        Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-        Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-        // Product Images
-        Route::post('/products/{id}/images', [ProductImageController::class, 'store'])->name('product.images.store');
-        Route::delete('/product-images/{id}', [ProductImageController::class, 'destroy'])->name('product.images.delete');
-
-
-        /* CATEGORY MANAGEMENT (SELLER) */
+        // KATEGORI
         Route::get('/categories', [ProductCategoryController::class, 'sellerIndex'])->name('categories.index');
-        Route::post('/categories', [ProductCategoryController::class, 'store'])->name('categories.store');
-        Route::put('/categories/{id}', [ProductCategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{id}', [ProductCategoryController::class, 'destroy'])->name('categories.destroy');
 
-
-        /* ORDERS FOR SELLER */
+        // PESANAN
         Route::get('/orders', [TransactionController::class, 'sellerOrders'])->name('orders.index');
-        Route::put('/orders/{id}/ship', [TransactionController::class, 'shipOrder'])->name('orders.ship');
-    });
 
+        // SALDO TOKO
+        Route::get('/balance', [StoreController::class, 'wallet'])->name('balance.index');
+        Route::get('/balance/history', [StoreController::class, 'walletHistory'])->name('balance.history');
+
+        // PENARIKAN DANA
+        Route::get('/withdraw', [StoreController::class, 'withdrawPage'])->name('withdraw.index');
+        Route::post('/withdraw', [StoreController::class, 'withdrawRequest'])->name('withdraw.request');
+
+        // INFORMASI BANK
+        Route::get('/bank', [StoreController::class, 'bankPage'])->name('bank.index');
+        Route::post('/bank', [StoreController::class, 'bankUpdate'])->name('bank.update');
+
+    });
 
 /* ADMIN ROUTES */
 Route::middleware(['auth', 'role:admin'])
