@@ -78,11 +78,15 @@ class SellerWithdrawalController extends Controller
             ])->withInput();
         }
 
-        if (! $store->bank_name || ! $store->bank_account_number || ! $store->bank_account_name) {
-            return back()->withErrors([
-                'bank' => 'Lengkapi data rekening bank di Pengaturan Toko sebelum melakukan penarikan.',
-            ]);
+        if (
+            empty($store->bank_name) ||
+            empty($store->bank_account_number) ||
+            empty($store->bank_account_name)
+        ) {
+            return back()
+                ->with('error', 'Data bank Anda masih kosong, harap isi di halaman Pengaturan Toko.');
         }
+
 
         Withdrawal::create([
             'store_balance_id'    => $storeBalance->id,
