@@ -11,11 +11,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
-         $middleware->alias([
+
+        // ====== ADMIN MIDDLEWARE ======
+        $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
+
+        // ====== SELLER MIDDLEWARE ======
+        $middleware->alias([
+            'seller' => \App\Http\Middleware\IsSeller::class,
+            'verified.seller' => \App\Http\Middleware\VerifiedSeller::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
