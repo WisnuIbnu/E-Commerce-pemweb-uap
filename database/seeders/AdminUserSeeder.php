@@ -20,11 +20,16 @@ class AdminUserSeeder extends Seeder
         ]);
 
         // 2. (OPSIONAL) Buat admin baru jika mau
-        // User::create([
-        //     'name' => 'Second Admin',
-        //     'email' => 'admin2@example.com',
-        //     'password' => Hash::make('password123'),
-        //     'role' => 'admin'
-        // ]);
+        User::create([
+<<<<<<< HEAD
+            'name' => 'Second Admin',
+            'email' => 'admin2@example.com',
+=======
+            'name' => 'Admin Sucipto',
+            'email' => 'sucipto@example.com',
+>>>>>>> 248a66fdfc86b0ed23ff66b8e186e1e5f0defc26
+            'password' => Hash::make('password123'),
+            'role' => 'admin'
+        ]);
     }
 }
