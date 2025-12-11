@@ -1,3 +1,8 @@
-@props(['disabled' => false])
-
-<input @disabled($disabled) {{ $attributes->merge(['class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm']) }}>
+<input 
+    {{ $attributes->merge(['class' => 'form-control']) }} 
+    style="
+        border: 2px solid #A2D2FF;
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-family: 'Lexend', sans-serif;
+    ">

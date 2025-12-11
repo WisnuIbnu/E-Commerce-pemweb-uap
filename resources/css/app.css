@@ -1,3 +1,65 @@
+@import "pages/landing.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* GLOBAL STYLES */
+:root {
+    --primary: theme(colors.sweet.400);
+    --primary-dark: theme(colors.sweet.500);
+    --text-dark: #1B1B1B;
+    --soft-gray: #FAFAFA;
+    --pink-accent: #ffc8dd;
+}
+
+.btn-primary {
+    @apply px-6 py-3 bg-[#6EA8FF] text-white font-semibold rounded-xl shadow-md hover:bg-[#4E8EEA] transition;
+}
+
+.btn-outline {
+    @apply px-6 py-3 border border-[#6EA8FF] text-[#6EA8FF] rounded-xl hover:bg-blue-50 transition;
+}
+
+.page-wrapper {
+    @apply min-h-screen bg-softgray;
+}
+
+.section {
+    @apply max-w-7xl mx-auto px-6 py-16;
+}
+
+.section-title {
+    @apply text-3xl font-bold text-textdark mb-8;
+}
+
+.card {
+    @apply bg-white border rounded-xl shadow-sm p-5;
+}
+
+.card-hover {
+    @apply hover:shadow-soft-lg transition;
+}
+
+.btn-primary {
+    @apply px-6 py-3 bg-sweet-400 text-white font-semibold rounded-xl shadow-soft-lg hover:bg-sweet-500 transition;
+}
+
+.btn-outline {
+    @apply px-6 py-3 border border-sweet-400 text-sweet-400 rounded-xl hover:bg-sweet-50 transition;
+}
+
+.btn-text {
+    @apply text-sweet-400 hover:text-sweet-500 transition;
+}
+
+.product-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-8;
+}
+
+.category-card {
+    @apply bg-white p-5 rounded-xl border shadow-sm hover:shadow-soft-lg transition text-center;
+}
+
+.product-card {
+    @apply bg-softgray p-4 rounded-xl border hover:shadow-soft-lg transition;
+}

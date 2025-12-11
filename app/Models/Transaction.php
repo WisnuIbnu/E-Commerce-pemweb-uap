@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'code',
         'buyer_id',
         'store_id',
         'address',
-        'address_id',
         'city',
         'postal_code',
         'shipping',
@@ -31,18 +33,20 @@ class Transaction extends Model
 
     public function buyer()
     {
-        return $this->belongsTo(Buyer::class);
+        return $this->belongsTo(Buyer::class, 'buyer_id');
     }
+
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
 
-    public function transactionDetails()
+    public function details()
     {
         return $this->hasMany(TransactionDetail::class);
     }
-    public function productReviews()
+
+    public function reviews()
     {
         return $this->hasMany(ProductReview::class);
     }

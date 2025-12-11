@@ -1,0 +1,24 @@
+.seller-main {
+    margin-left: 270px;
+    padding: 30px;
+}
+
+.seller-card {
+    @apply bg-white p-6 rounded-xl shadow border;
+}
+
+.seller-btn {
+    @apply bg-sweet-400 text-white px-4 py-2 rounded-lg hover:bg-sweet-500 transition;
+}
+
+.table {
+    @apply w-full text-left border-collapse;
+}
+
+.table th {
+    @apply border-b p-3 bg-gray-50 font-semibold;
+}
+
+.table td {
+    @apply border-b p-3;
+}
