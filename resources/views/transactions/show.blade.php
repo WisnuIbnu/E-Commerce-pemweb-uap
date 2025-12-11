@@ -326,7 +326,7 @@
                     {{-- TOMBOL / INFO SESUAI STATUS --}}
                     <div class="mt-4 flex items-center justify-between flex-wrap gap-3">
                         <a
-                            href="{{ route('transactions.index') }}"
+                            href="{{ route('orders.index') }}"
                             class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200
                                    text-gray-800 rounded-md font-semibold text-xs uppercase tracking-widest
                                    shadow-sm transition"
