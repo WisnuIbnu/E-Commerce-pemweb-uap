@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +14,38 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // daftar seeder yang ingin dipanggil (nama class)
+        $seeders = [
+            'UserAndStoreSeeder',
+            'StoreSeeder',
+            'ProductCategorySeeder',
+            'ProductSeeder',
+            'ProductImageSeeder',
+            'BuyerSeeder',
+            'StoreBalanceSeeder',
+            'StoreBalanceHistorySeeder',
+            'WithdrawalSeeder',
+            'TransactionSeeder',
+            'ProductReviewSeeder',
+        ];
 
-        User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@example.com',
-        ]);
+        foreach ($seeders as $seeder) {
+            $full = "Database\\Seeders\\{$seeder}";
+
+            if (class_exists($full)) {
+                $this->call($full);
+            } else {
+                // tampilkan peringatan supaya kamu tahu seeder mana yang hilang
+                $this->command->warn("Seeder class {$full} not found, skipping.");
+            }
+        }
+
+        // fallback: create an admin user (only if User model exists)
+        if (class_exists(\App\Models\User::class)) {
+            \App\Models\User::factory()->create([
+                'name' => 'admin',
+                'email' => 'admin@example.com',
+            ]);
+        }
     }
 }

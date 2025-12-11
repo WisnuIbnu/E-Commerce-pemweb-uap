@@ -6,30 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('stores', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('logo');
-            $table->text('about');
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->string('name')->unique();
+            $table->string('logo')->nullable();            // ADD
+            $table->text('about')->nullable();             // ADD (replace description)
             $table->string('phone');
-            $table->string('address_id');
-            $table->string('city');
-            $table->text('address');
-            $table->string('postal_code');
+
+            $table->string('address_id')->nullable();      // ADD
+            $table->string('city')->nullable();            // ADD
+            $table->string('address');
+            $table->string('postal_code')->nullable();     // ADD
+
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('stores');

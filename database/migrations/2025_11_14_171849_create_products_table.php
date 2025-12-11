@@ -18,10 +18,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->longText('description');
+            $table->json('features')->nullable();  // ← TAMBAHKAN INI
             $table->enum('condition', ['new', 'second']);
             $table->decimal('price', 26, 2);
             $table->integer('weight');
             $table->integer('stock');
+            $table->string('image')->nullable();  // ← TAMBAHKAN INI
             $table->timestamps();
         });
     }

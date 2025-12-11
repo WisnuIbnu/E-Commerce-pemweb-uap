@@ -1,0 +1,435 @@
+/* Puffy Baby - Baby Store Theme CSS */
+/* Path: resources/css/auth/auth.css */
+
+/* Base Layout & Background */
+body {
+    background: linear-gradient(135deg, #E4D6C5 0%, #8D957E 50%, #78898F 100%);
+    font-family: 'Figtree', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+/* Guest Layout Container */
+.min-h-screen {
+    background: transparent;
+    min-height: 100vh;
+}
+
+/* Logo Container - HIDE the text */
+.puffy-logo {
+    margin-bottom: 20px;
+    display: none; /* Hide the component logo text */
+}
+
+.puffy-logo svg,
+.puffy-logo img {
+    filter: drop-shadow(0 4px 6px rgba(152, 66, 22, 0.2));
+    transition: transform 0.3s ease;
+}
+
+.puffy-logo:hover svg,
+.puffy-logo:hover img {
+    transform: scale(1.05);
+}
+
+.puffy-logo .fill-current {
+    fill: #984216;
+}
+
+/* Card/Form Container - styling untuk div yang wrap {{ $slot }} */
+.w-full.sm\:max-w-md {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(141, 149, 126, 0.25);
+    padding: 48px 36px;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+/* Decorative Top Border - Multi color gradient */
+.w-full.sm\:max-w-md::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #984216 0%, #E4D6C5 25%, #8D957E 50%, #78898F 75%, #984216 100%);
+    border-radius: 24px 24px 0 0;
+}
+
+/* Brand Text - Puffy Baby */
+.w-full.sm\:max-w-md::after {
+    content: 'PuffyBaby';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #984216 0%, #8D957E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+    text-shadow: none;
+    white-space: nowrap;
+}
+
+/* Form inside card */
+form {
+    margin-top: 40px;
+}
+
+/* Form Sections/Divs */
+form > div {
+    margin-bottom: 24px;
+}
+
+form > div.mt-4 {
+    margin-top: 24px;
+}
+
+/* Session Status Messages */
+.mb-4[class*="status"],
+div[class*="status"] {
+    background: linear-gradient(135deg, #8D957E 0%, #78898F 100%);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Input Labels */
+label,
+.input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #984216;
+    margin-bottom: 10px;
+    letter-spacing: 0.3px;
+}
+
+/* Text Inputs */
+input[type="email"],
+input[type="password"],
+input[type="text"],
+.text-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #E4D6C5;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #333;
+    background-color: #fffdfb;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+    outline: none;
+    border-color: #8D957E;
+    box-shadow: 0 0 0 4px rgba(141, 149, 126, 0.15);
+    background-color: #fff;
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+/* Input Error Messages */
+.input-error,
+.text-sm.text-red-600,
+.mt-2[class*="error"] {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"].rounded {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #8D957E !important;
+    border-radius: 6px;
+    cursor: pointer;
+    accent-color: #8D957E;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #8D957E;
+    border-color: #8D957E !important;
+}
+
+/* Remember Me Label */
+label.inline-flex {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+label.inline-flex span {
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Links (Forgot Password, Already Registered) */
+a.underline {
+    color: #78898F;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+
+a.underline:hover {
+    color: #984216;
+    border-bottom-color: #984216;
+}
+
+a.underline:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(141, 149, 126, 0.2);
+    border-radius: 4px;
+}
+
+/* Primary Button (Log in / Register) */
+button[type="submit"],
+.primary-button,
+button.ms-3,
+button.ms-4 {
+    background: linear-gradient(135deg, #984216 0%, #a04c1e 100%);
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(152, 66, 22, 0.3);
+    letter-spacing: 0.5px;
+}
+
+button[type="submit"]:hover,
+.primary-button:hover {
+    background: linear-gradient(135deg, #a04c1e 0%, #b85624 100%);
+    box-shadow: 0 6px 20px rgba(152, 66, 22, 0.4);
+    transform: translateY(-2px);
+}
+
+button[type="submit"]:active,
+.primary-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(152, 66, 22, 0.3);
+}
+
+button[type="submit"]:disabled,
+.primary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Flex Container for Actions */
+.flex.items-center.justify-end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+/* Register Link Section */
+.register-link {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E4D6C5;
+}
+
+.register-link p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.register-link a {
+    color: #984216;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.register-link a:hover {
+    color: #8D957E;
+    text-decoration: underline;
+}
+
+/* Utility Classes */
+.block {
+    display: block;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-end {
+    justify-content: flex-end;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.mt-1 {
+    margin-top: 8px;
+}
+
+.mt-2 {
+    margin-top: 12px;
+}
+
+.mt-4 {
+    margin-top: 24px;
+}
+
+.mb-4 {
+    margin-bottom: 24px;
+}
+
+.ms-2 {
+    margin-left: 10px;
+}
+
+.ms-3 {
+    margin-left: 12px;
+}
+
+.ms-4 {
+    margin-left: 16px;
+}
+
+.text-sm {
+    font-size: 14px;
+}
+
+.text-gray-600 {
+    color: #555;
+}
+
+.rounded {
+    border-radius: 6px;
+}
+
+.rounded-md {
+    border-radius: 8px;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.focus\:outline-none:focus {
+    outline: none;
+}
+
+.focus\:ring-2:focus {
+    box-shadow: 0 0 0 3px rgba(141, 149, 126, 0.2);
+}
+
+.focus\:ring-offset-2:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 5px rgba(141, 149, 126, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .w-full.sm\:max-w-md {
+        padding: 36px 24px;
+        margin: 0 16px;
+    }
+    
+    .w-full.sm\:max-w-md::after {
+        font-size: 24px;
+        top: 16px;
+    }
+    
+    form {
+        margin-top: 32px;
+    }
+    
+    .flex.items-center.justify-end {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+    
+    button[type="submit"],
+    .primary-button {
+        width: 100%;
+        margin-left: 0 !important;
+    }
+    
+    a.underline {
+        text-align: center;
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .w-full.sm\:max-w-md {
+        padding: 32px 20px;
+    }
+    
+    .w-full.sm\:max-w-md::after {
+        font-size: 22px;
+    }
+}
+
+/* Animation untuk smooth appearance */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.w-full.sm\:max-w-md {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Focus visible untuk accessibility */
+*:focus-visible {
+    outline: 3px solid rgba(141, 149, 126, 0.5);
+    outline-offset: 2px;
+}
+
+/* Additional styling for better look */
+::selection {
+    background-color: #E4D6C5;
+    color: #984216;
+}
