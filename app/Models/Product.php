@@ -2,47 +2,46 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'store_id',
         'product_category_id',
         'name',
         'slug',
-        'description',
         'condition',
         'price',
         'weight',
         'stock',
+        'description',
     ];
 
-    protected $casts = [
-        'price' => 'decimal:2',
-    ];
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
-    public function productCategory()
-    {
-        return $this->belongsTo(ProductCategory::class);
-    }
-
+    // Relasi ke gambar
     public function productImages()
     {
         return $this->hasMany(ProductImage::class);
     }
 
-    public function transactionDetails()
+    // Alias supaya di view customer bisa panggil $product->images
+    public function images()
     {
-        return $this->hasMany(TransactionDetail::class);
+        return $this->productImages();
     }
-    public function productReviews()
+
+    // Relasi kategori
+    public function category()
     {
-        return $this->hasMany(ProductReview::class);
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
+    // Relasi store
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 }
