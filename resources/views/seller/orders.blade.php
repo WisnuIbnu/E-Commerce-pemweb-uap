@@ -33,7 +33,7 @@
                 </td>
                 <td style="padding: 1rem;">
                     <div>
-                        <div style="font-weight: bold;">{{ $order->user->name ?? 'Unknown' }}</div>
+                        <div style="font-weight: bold;">{{ $order->buyer->user->name ?? 'Unknown' }}</div>
                         <div style="font-size:0.85rem; color:var(--text-muted)">{{ $order->city }}</div>
                     </div>
                 </td>

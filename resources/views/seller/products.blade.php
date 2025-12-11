@@ -204,8 +204,8 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" placeholder="Describe your product..." rows="3"></textarea>
+                <label for="about">About Product</label>
+                <textarea id="about" name="about" placeholder="Describe your product..." rows="3"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem;">

@@ -32,11 +32,16 @@ class MainSeeder extends Seeder
             'role' => 'member',
         ]);
 
-        $buyer = User::create([
+        $buyerUser = User::create([
             'name' => 'John Buyer',
             'email' => 'buyer@flexsport.com',
             'password' => Hash::make('password'),
             'role' => 'member',
+        ]);
+        
+        $buyer = \App\Models\Buyer::create([
+            'user_id' => $buyerUser->id,
+            'phone_number' => '08129999999',
         ]);
 
         // 2. Create Single Store for Seller
@@ -44,7 +49,7 @@ class MainSeeder extends Seeder
             'user_id' => $seller->id,
             'name' => 'FlexSport Official',
             'slug' => 'flexsport-official',
-            'description' => 'The premier destination for professional sports equipment.',
+            'about' => 'The premier destination for professional sports equipment.',
             'address' => 'Jakarta Sports Complex, Building A',
             'city' => 'Jakarta',
             'phone' => '08123456789',
@@ -162,7 +167,7 @@ class MainSeeder extends Seeder
                 'product_category_id' => $catModels[$p['cat_idx']]->id,
                 'name' => $p['name'],
                 'slug' => \Illuminate\Support\Str::slug($p['name']),
-                'description' => $p['desc'],
+                'about' => $p['desc'],
                 'condition' => 'new',
                 'price' => $p['price'],
                 'weight' => rand(200, 2000),
@@ -174,15 +179,8 @@ class MainSeeder extends Seeder
                 'image' => $p['image'],
             ]);
             
-            // Random Reviews
-            if (rand(0, 1)) {
-                ProductReview::create([
-                    'product_id' => $product->id,
-                    'user_id' => $buyer->id,
-                    'rating' => rand(3, 5),
-                    'review' => 'Great product! Highly recommended.',
-                ]);
-            }
+            
+            // Random Reviews Removed (Requires completed transaction now)
 
             $productModels[] = $product;
         }
@@ -190,7 +188,7 @@ class MainSeeder extends Seeder
         // 5. Create Sample Transactions with Different Statuses
         // Transaction 1: Delivered
         $t1 = Transaction::create([
-            'user_id' => $buyer->id,
+            'buyer_id' => $buyer->id,
             'store_id' => $store->id,
             'code' => 'TRX-' . strtoupper(uniqid()),
             'address' => 'Jl. Sudirman No. 1',
@@ -213,9 +211,17 @@ class MainSeeder extends Seeder
             'subtotal' => 1250000,
         ]);
 
+        // Add Review for this transaction
+        ProductReview::create([
+            'transaction_id' => $t1->id,
+            'product_id' => $productModels[0]->id,
+            'rating' => 5,
+            'review' => 'Neon Striker Elite is amazing! Fits perfectly.',
+        ]);
+
         // Transaction 2: Shipped
         $t2 = Transaction::create([
-            'user_id' => $buyer->id,
+            'buyer_id' => $buyer->id,
             'store_id' => $store->id,
             'code' => 'TRX-' . strtoupper(uniqid()),
             'address' => 'Jl. Sudirman No. 1',
@@ -240,7 +246,7 @@ class MainSeeder extends Seeder
 
         // Transaction 3: Processing
         $t3 = Transaction::create([
-            'user_id' => $buyer->id,
+            'buyer_id' => $buyer->id,
             'store_id' => $store->id,
             'code' => 'TRX-' . strtoupper(uniqid()),
             'address' => 'Jl. Thamrin No. 5',

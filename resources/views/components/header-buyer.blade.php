@@ -24,6 +24,7 @@
                     <li><a href="{{ route('store.register') }}" class="{{ request()->routeIs('store.register') ? 'active' : '' }}" style="font-weight: 600;">Buka Toko</a></li>
                 @endif
                 <li><a href="{{ route('transaction.history') }}">Pesanan Saya</a></li>
+                <li><a href="{{ route('transaction.history') }}">Transaction Tracking</a></li>
             @endauth
         </ul>
         

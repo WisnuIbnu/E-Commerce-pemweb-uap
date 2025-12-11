@@ -97,8 +97,8 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Deskripsi Toko *</label>
-                <textarea id="description" name="description" required placeholder="Ceritakan tentang toko Anda...">{{ old('description') }}</textarea>
+                <label for="about">Tentang Toko *</label>
+                <textarea id="about" name="about" required placeholder="Ceritakan tentang toko Anda...">{{ old('about') }}</textarea>
             </div>
 
             <div class="form-group">

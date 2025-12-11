@@ -224,8 +224,19 @@ class BuyerController extends Controller
             $subtotal = collect($items)->sum(fn($i) => $i['price'] * $i['qty']);
             $shippingCost = 15000;
             
+            $user = auth()->user();
+            // Ensure buyer profile exists
+            $buyer = $user->buyer;
+            if (!$buyer) {
+                 $buyer = $user->buyer()->create([
+                    'user_id' => $user->id,
+                    'profile_picture' => null, // Default or handle later
+                    'phone_number' => null // Optional or from user?
+                 ]);
+            }
+
             $transaction = \App\Models\Transaction::create([
-                'user_id' => auth()->id(),
+                'buyer_id' => $buyer->id,
                 'store_id' => $storeId,
                 'code' => 'TRX-' . strtoupper(uniqid()),
                 'address' => $request->address,
@@ -262,7 +273,8 @@ class BuyerController extends Controller
 
     public function history()
     {
-        $transactions = \App\Models\Transaction::where('user_id', auth()->id()) // Refactored to user_id
+        $buyerId = auth()->user()->buyer->id ?? 0;
+        $transactions = \App\Models\Transaction::where('buyer_id', $buyerId)
                         ->with(['transactionDetails.product.productImages', 'store'])
                         ->latest()
                         ->get();
@@ -274,6 +286,15 @@ class BuyerController extends Controller
         }
 
         return view('buyer.transaction-history', compact('transactions'));
+    }
+
+    public function trackOrder(\App\Models\Transaction $transaction)
+    {
+        // Ensure the transaction belongs to the logged-in user's buyer profile
+        if ($transaction->buyer_id !== auth()->user()->buyer->id) {
+            abort(403);
+        }
+        return view('buyer.track-order', compact('transaction'));
     }
 
     public function showStoreRegistration()
@@ -300,7 +321,7 @@ class BuyerController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255|unique:stores,name',
-            'description' => 'required|string',
+            'about' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'phone' => 'required|string',
@@ -310,7 +331,7 @@ class BuyerController extends Controller
             'user_id' => auth()->id(),
             'name' => $request->name,
             'slug' => \Illuminate\Support\Str::slug($request->name),
-            'description' => $request->description,
+            'about' => $request->about, 
             'address' => $request->address,
             'city' => $request->city,
             'phone' => $request->phone,

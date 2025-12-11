@@ -66,7 +66,7 @@
                 
                 <div class="description">
                     <h3>Description</h3>
-                    <p>{{ $product->description }}</p>
+                    <p>{{ $product->about }}</p>
                 </div>
                 
                 <p style="color:#aaa; margin-bottom:1.5rem;"><strong>Weight:</strong> {{ $product->weight }} gram</p>

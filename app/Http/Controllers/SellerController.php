@@ -20,7 +20,7 @@ class SellerController extends Controller
             'products_count' => $store->products()->count(),
             'transactions_count' => $store->transactions()->count(),
             'balance' => $store->transactions()->where('payment_status', 'paid')->sum('grand_total') * 0.95,
-            'buyer_transactions' => \App\Models\Transaction::where('user_id', $user->id)->count(),
+            'buyer_transactions' => $user->buyer ? $user->buyer->transactions()->count() : 0,
         ];
 
         // Fetch seller's products for display
@@ -71,7 +71,7 @@ class SellerController extends Controller
     public function orders()
     {
         $orders = auth()->user()->store->transactions()
-                    ->with(['user', 'transactionDetails.product'])
+                    ->with(['buyer.user', 'transactionDetails.product'])
                     ->latest()
                     ->get();
                     
@@ -121,21 +121,15 @@ class SellerController extends Controller
             ->where('payment_status', 'paid')
             ->sum('grand_total') * 0.95; // 95% after 5% platform fee
         
-        // Get store balance record or create if doesn't exist
-        $storeBalance = \App\Models\StoreBalance::firstOrCreate(
-            ['store_id' => $store->id],
-            ['balance' => 0]
-        );
-        
-        // Get total withdrawn (approved withdrawals)
-        $totalWithdrawn = $storeBalance->withdrawals()
+        // Get total withdrawn (approved withdrawals) linked directly to store
+        $totalWithdrawn = $store->withdrawals()
             ->where('status', 'approved')
             ->sum('amount');
         
         $balance = $totalEarnings - $totalWithdrawn;
         
         // Get withdrawal history
-        $withdrawals = $storeBalance->withdrawals()
+        $withdrawals = $store->withdrawals()
             ->latest()
             ->get()
             ->toArray();
@@ -156,19 +150,15 @@ class SellerController extends Controller
             ->where('payment_status', 'paid')
             ->sum('grand_total') * 0.95; 
         
-        $storeBalance = \App\Models\StoreBalance::firstOrCreate(
-            ['store_id' => $store->id],
-            ['balance' => 0]
-        );
-        
-        $totalWithdrawn = $storeBalance->withdrawals()
+        // Get total withdrawn (approved withdrawals) linked directly to store
+        $totalWithdrawn = $store->withdrawals()
             ->where('status', 'approved')
             ->sum('amount');
         
         $balance = $totalEarnings - $totalWithdrawn;
 
         // Get withdrawal history
-        $withdrawals = $storeBalance->withdrawals()
+        $withdrawals = $store->withdrawals()
             ->latest()
             ->get();
 
@@ -312,7 +302,7 @@ class SellerController extends Controller
             'stock' => 'required|integer|min:0',
             'weight' => 'required|integer|min:1',
             'condition' => 'required|in:new,used',
-            'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -324,7 +314,7 @@ class SellerController extends Controller
             'stock' => $request->stock,
             'weight' => $request->weight,
             'condition' => $request->condition,
-            'description' => $request->description,
+            'about' => $request->about,
         ]);
 
         // Handle image upload
@@ -352,10 +342,10 @@ class SellerController extends Controller
             'stock' => 'required|integer|min:0',
             'weight' => 'required|integer|min:1',
             'condition' => 'required|in:new,used',
-            'description' => 'nullable|string',
+            'about' => 'nullable|string',
         ]);
 
-        $product->update($request->only(['name', 'product_category_id', 'price', 'stock', 'weight', 'condition', 'description']));
+        $product->update($request->only(['name', 'product_category_id', 'price', 'stock', 'weight', 'condition', 'about']));
 
         return redirect()->route('seller.products')->with('success', 'Product updated successfully!');
     }
@@ -405,7 +395,7 @@ class SellerController extends Controller
         ]);
 
         // Create withdrawal request with auto-approved status
-        $storeBalance->withdrawals()->create([
+        $store->withdrawals()->create([
             'amount' => $request->amount,
             'bank_name' => $request->bank_name,
             'bank_account_name' => $request->account_name,

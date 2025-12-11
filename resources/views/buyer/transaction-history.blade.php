@@ -148,8 +148,13 @@
                 <span style="color:var(--text-muted)">Sold by:</span> 
                 <strong>{{ $trans->store->name ?? 'Unknown Store' }}</strong>
             </div>
-            <div class="total-price">
-                Total: Rp {{ number_format($trans->grand_total, 0, ',', '.') }}
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="total-price">
+                    Total: Rp {{ number_format($trans->grand_total, 0, ',', '.') }}
+                </div>
+                <a href="{{ route('transaction.track', $trans->id) }}" class="btn btn-outline-primary" style="padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; border: 1px solid var(--primary); color: var(--primary);">
+                    Track Order
+                </a>
             </div>
         </div>
     </div>

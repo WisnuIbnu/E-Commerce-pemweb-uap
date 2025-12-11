@@ -11,7 +11,7 @@ use App\Http\Controllers\ChatbotController;
 Route::get('/', [BuyerController::class, 'index'])->name('home');
 Route::get('/collection', [BuyerController::class, 'collection'])->name('collection');
 Route::get('/product/{id?}', [BuyerController::class, 'product'])->name('product.detail'); 
-Route::get('/checkout', [BuyerController::class, 'checkout'])->name('checkout');
+Route::get('/checkout', [BuyerController::class, 'checkout'])->name('checkout')->middleware('auth');
 Route::get('/page/{slug}', [App\Http\Controllers\PageController::class, 'page'])->name('page');
 
 // Store Registration Routes (for buyers who want to become sellers)
@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/transaction-history', [BuyerController::class, 'history'])->name('transaction.history');
+    Route::get('/transaction/{transaction}/track', [BuyerController::class, 'trackOrder'])->name('transaction.track');
     
     // Checkout Processing
     Route::post('/checkout/process', [BuyerController::class, 'processCheckout'])->name('checkout.process');

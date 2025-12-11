@@ -11,8 +11,7 @@ class Store extends Model
         'user_id',
         'name',
         'slug',
-        'image',
-        'description',
+        'logo',
         'about',
         'phone',
         'address_id',
@@ -36,6 +35,11 @@ class Store extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class);
     }
 
     public function transactions()
