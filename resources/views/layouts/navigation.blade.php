@@ -6,7 +6,11 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
+<<<<<<< HEAD
                         <img src="{{ asset('images/logo.png') }}" class="h-12 w-auto" alt="Logo">
+=======
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+>>>>>>> 35a586f5630265c3eebb01037ea9a0d5330d5b6d
                     </a>
                 </div>
 
